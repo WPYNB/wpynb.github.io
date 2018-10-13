@@ -5,15 +5,22 @@
   
 
   
-  <title>Hexo</title>
+  <title>screen会话建立 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="&amp;ensp;&amp;ensp; 创建screen帮助会话一.screen使用方法&amp;ensp;&amp;ensp;创建新screen会话&amp;ensp;&amp;ensp;screen –S [SESSION]&amp;ensp;&amp;ensp;加入screen会话&amp;ensp;&amp;ensp;screen –x [SESSION]&amp;ensp;&amp;ensp;退出并关闭screen会话&amp;ensp;&amp;ensp;exit&amp;ensp;&amp;ensp;剥离当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="screen会话建立">
+<meta property="og:url" content="http://yoursite.com/2018/10/13/screen/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;ensp;&amp;ensp; 创建screen帮助会话一.screen使用方法&amp;ensp;&amp;ensp;创建新screen会话&amp;ensp;&amp;ensp;screen –S [SESSION]&amp;ensp;&amp;ensp;加入screen会话&amp;ensp;&amp;ensp;screen –x [SESSION]&amp;ensp;&amp;ensp;退出并关闭screen会话&amp;ensp;&amp;ensp;exit&amp;ensp;&amp;ensp;剥离当">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/2.png">
+<meta property="og:image" content="http://yoursite.com/images/3.png">
+<meta property="og:updated_time" content="2018-10-13T07:49:36.025Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="screen会话建立">
+<meta name="twitter:description" content="&amp;ensp;&amp;ensp; 创建screen帮助会话一.screen使用方法&amp;ensp;&amp;ensp;创建新screen会话&amp;ensp;&amp;ensp;screen –S [SESSION]&amp;ensp;&amp;ensp;加入screen会话&amp;ensp;&amp;ensp;screen –x [SESSION]&amp;ensp;&amp;ensp;退出并关闭screen会话&amp;ensp;&amp;ensp;exit&amp;ensp;&amp;ensp;剥离当">
+<meta name="twitter:image" content="http://yoursite.com/images/2.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -60,47 +67,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-更改开机自动登录" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/13/更改开机自动登录/" class="article-date">
-  <time datetime="2018-10-13T07:55:21.000Z" itemprop="datePublished">2018-10-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/13/更改开机自动登录/">更改开机自动登录</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ensp-ensp-CentOS7更改开机自动登录"><a href="#ensp-ensp-CentOS7更改开机自动登录" class="headerlink" title="&ensp;&ensp;CentOS7更改开机自动登录"></a>&ensp;&ensp;CentOS7更改开机自动登录</h1><h2 id="ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件"><a href="#ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件" class="headerlink" title="&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件"></a>&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/gmd/custom.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># GDM configuration storage</span></span><br><span class="line"></span><br><span class="line">[daemon]</span><br><span class="line"></span><br><span class="line">[security]</span><br><span class="line"></span><br><span class="line">[xdmcp]</span><br><span class="line"></span><br><span class="line">[chooser]</span><br><span class="line"></span><br><span class="line">[debug]</span><br><span class="line"><span class="comment"># Uncomment the line below to turn on debugging</span></span><br><span class="line"><span class="comment">#Enable=true</span></span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-在-daemon-下写入以下两行代码保存退出"><a href="#ensp-ensp-在-daemon-下写入以下两行代码保存退出" class="headerlink" title="&ensp;&ensp;在[daemon]下写入以下两行代码保存退出"></a>&ensp;&ensp;在[daemon]下写入以下两行代码保存退出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[daemon]</span><br><span class="line">AutomaticLoginEnable=true</span><br><span class="line">AutomaticLogin=root</span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-更改完成。"><a href="#ensp-ensp-更改完成。" class="headerlink" title="&ensp;&ensp;更改完成。"></a>&ensp;&ensp;更改完成。</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/13/更改开机自动登录/" data-id="cjn75uszl0002r8bf9henuagu" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-screen" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-screen" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/13/screen/" class="article-date">
   <time datetime="2018-10-13T07:25:13.000Z" itemprop="datePublished">2018-10-13</time>
@@ -113,8 +80,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/13/screen/">screen会话建立</a>
+    <h1 class="article-title" itemprop="name">
+      screen会话建立
     </h1>
   
 
@@ -138,56 +105,28 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/13/hello-world/" class="article-date">
-  <time datetime="2018-10-13T05:49:44.357Z" itemprop="datePublished">2018-10-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2018/10/13/更改开机自动登录/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
+          更改开机自动登录
+        
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/13/hello-world/">Hello World</a>
-    </h1>
   
+    <a href="/2018/10/13/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/13/hello-world/" data-id="cjn75usyn0000r8bfcen1uoez" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
-
 
 </section>
         
