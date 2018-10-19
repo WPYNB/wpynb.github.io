@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;yum可以解决包依赖性，相对rpm操作简单。一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。这里我已经事先创建好文件夹bak并把默认配置文件移入，创建了base.repo文件（文件名自定义，但必须以.repo为后缀。）12345678[root@centos7 b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="配置本地yum源">
+<meta property="og:url" content="http://yoursite.com/2018/10/19/配置本地yum源/index.html">
+<meta property="og:site_name" content="魏平洋的博客">
+<meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;yum可以解决包依赖性，相对rpm操作简单。一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。这里我已经事先创建好文件夹bak并把默认配置文件移入，创建了base.repo文件（文件名自定义，但必须以.repo为后缀。）12345678[root@centos7 b">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-19T11:53:28.543Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="配置本地yum源">
+<meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;yum可以解决包依赖性，相对rpm操作简单。一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。这里我已经事先创建好文件夹bak并把默认配置文件移入，创建了base.repo文件（文件名自定义，但必须以.repo为后缀。）12345678[root@centos7 b">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/19/配置本地yum源/"/>
+
+
+
+
+
+  <title>配置本地yum源 | 魏平洋的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">魏平洋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/19/配置本地yum源/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">配置本地yum源</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-19T19:16:07+08:00">
+                2018-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="ensp-ensp-ensp-ensp-yum可以解决包依赖性，相对rpm操作简单。"><a href="#ensp-ensp-ensp-ensp-yum可以解决包依赖性，相对rpm操作简单。" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;yum可以解决包依赖性，相对rpm操作简单。"></a>&ensp;&ensp;&ensp;&ensp;yum可以解决包依赖性，相对rpm操作简单。</h3><h2 id="一、找到yum配置文件-etc-yum-repo-d-下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。"><a href="#一、找到yum配置文件-etc-yum-repo-d-下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。" class="headerlink" title="一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。"></a>一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。</h2><p>这里我已经事先创建好文件夹bak并把默认配置文件移入，创建了base.repo文件（文件名自定义，但必须以.repo为后缀。）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 bak]#cd /etc/yum.repos.d/</span><br><span class="line">[root@centos7 yum.repos.d]#ls</span><br><span class="line">bak  base.repo</span><br><span class="line">[root@centos7 yum.repos.d]#cd bak</span><br><span class="line">[root@centos7 bak]#ls</span><br><span class="line">CentOS-Base.repo  CentOS-Debuginfo.repo  CentOS-Media.repo    CentOS-Vault.repo</span><br><span class="line">CentOS-CR.repo    CentOS-fasttrack.repo  CentOS-Sources.repo</span><br><span class="line">[root@centos7 bak]#</span><br></pre></td></tr></table></figure></p>
+<h2 id="二、建好后开始编辑创建好的配置文件。"><a href="#二、建好后开始编辑创建好的配置文件。" class="headerlink" title="二、建好后开始编辑创建好的配置文件。"></a>二、建好后开始编辑创建好的配置文件。</h2><h3 id="第一行中括号内自定义仓库名"><a href="#第一行中括号内自定义仓库名" class="headerlink" title="第一行中括号内自定义仓库名"></a>第一行中括号内自定义仓库名</h3><h3 id="第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系"><a href="#第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系" class="headerlink" title="第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系"></a>第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系</h3><h3 id="第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址-releasever是版本号变量。-basearch是操系统架构。"><a href="#第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址-releasever是版本号变量。-basearch是操系统架构。" class="headerlink" title="第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址 $releasever是版本号变量。$basearch是操系统架构。"></a>第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址 $releasever是版本号变量。$basearch是操系统架构。</h3><h3 id="第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）"><a href="#第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）" class="headerlink" title="第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）"></a>第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）</h3><h3 id="第五行为安装是否检查包签名，0为不检查1为检查"><a href="#第五行为安装是否检查包签名，0为不检查1为检查" class="headerlink" title="第五行为安装是否检查包签名，0为不检查1为检查"></a>第五行为安装是否检查包签名，0为不检查1为检查</h3><h3 id="第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。"><a href="#第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。" class="headerlink" title="第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。"></a>第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 yum.repos.d]#vim base.repo </span><br><span class="line">[base]</span><br><span class="line">name=centos7</span><br><span class="line">baseurl=file:///misc/cd/</span><br><span class="line">        https://mirrors.aliyun.com/centos/$releasever/os/$basearch/</span><br><span class="line">failovermethod=priority</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br></pre></td></tr></table></figure>
+<p>到此配置完成，wq保存退出</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/13/sed简单应用/" rel="next" title="sed简单应用">
+                <i class="fa fa-chevron-left"></i> sed简单应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ensp-ensp-ensp-ensp-yum可以解决包依赖性，相对rpm操作简单。"><span class="nav-number">1.</span> <span class="nav-text">    yum可以解决包依赖性，相对rpm操作简单。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、找到yum配置文件-etc-yum-repo-d-下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。"><span class="nav-number"></span> <span class="nav-text">一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、建好后开始编辑创建好的配置文件。"><span class="nav-number"></span> <span class="nav-text">二、建好后开始编辑创建好的配置文件。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一行中括号内自定义仓库名"><span class="nav-number">1.</span> <span class="nav-text">第一行中括号内自定义仓库名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系"><span class="nav-number">2.</span> <span class="nav-text">第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址-releasever是版本号变量。-basearch是操系统架构。"><span class="nav-number">3.</span> <span class="nav-text">第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址 $releasever是版本号变量。$basearch是操系统架构。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）"><span class="nav-number">4.</span> <span class="nav-text">第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五行为安装是否检查包签名，0为不检查1为检查"><span class="nav-number">5.</span> <span class="nav-text">第五行为安装是否检查包签名，0为不检查1为检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。"><span class="nav-number">6.</span> <span class="nav-text">第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
