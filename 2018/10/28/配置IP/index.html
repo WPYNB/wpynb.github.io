@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="魏平洋的博客">
 <meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;配置IP1.进入目录/etc/sysconfig/network-scripts/  ls看到配置文件ifcfg-网卡名称12345678910111213[root@CentOS7 ~]#cd /etc/sysconfig/network-scripts/[root@CentOS7 network-scripts]#lsifcfg-eth0   i">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-28T12:35:14.958Z">
+<meta property="og:updated_time" content="2018-11-05T12:13:41.348Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="配置IP">
 <meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;配置IP1.进入目录/etc/sysconfig/network-scripts/  ls看到配置文件ifcfg-网卡名称12345678910111213[root@CentOS7 ~]#cd /etc/sysconfig/network-scripts/[root@CentOS7 network-scripts]#lsifcfg-eth0   i">
@@ -356,7 +356,7 @@
 <h2 id="2-编辑"><a href="#2-编辑" class="headerlink" title="2.编辑"></a>2.编辑</h2><p>ifcfg-eth0为本地IP<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 network-scripts]#vim ifcfg-eth0</span><br><span class="line">BOOTPROTO=static  #设置网卡状态为静态   dhcp为自动获取</span><br><span class="line">NAME=eth0  #网卡描述</span><br><span class="line">DEVICE=eth0  #标明对那个网卡设置</span><br><span class="line">ONBOOT=yes  #开机自动启动</span><br><span class="line">IPADDR=192.168.50.7  #ip地址</span><br><span class="line">GATEWAY=192.168.50.1   #网关</span><br><span class="line">NETMASK=255.255.255.0   #子网掩码</span><br><span class="line"></span><br><span class="line">wq  #保存退出</span><br></pre></td></tr></table></figure></p>
 <p>ifcfg-eth1为桥接IP  这里我是DHCP自动获取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 network-scripts]#vim ifcfg-eth1</span><br><span class="line">DEVICE=eth1  #标明对那个网卡设置</span><br><span class="line">NAME=eth1   #网卡描述</span><br><span class="line">ONBOOT=yes  #开机自动启动</span><br><span class="line">BOOTPROTO=dhcp  #自动获取</span><br><span class="line">#IPADDR=172.18.133.223  #因为自动获取注释掉了</span><br><span class="line">#GATEWAY=172.18.0.1     #同上</span><br><span class="line">#NETMASK=255.255.0.0    #同上</span><br><span class="line"></span><br><span class="line">wq  #保存退出</span><br></pre></td></tr></table></figure></p>
 <h2 id="3-重启网络服务"><a href="#3-重启网络服务" class="headerlink" title="3.重启网络服务"></a>3.重启网络服务</h2><h3 id="centos6"><a href="#centos6" class="headerlink" title="centos6"></a>centos6</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS6 ~]#service network restart</span><br></pre></td></tr></table></figure>
-<h3 id="centos7"><a href="#centos7" class="headerlink" title="centos7"></a>centos7</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 ~]#[root@CentOS7 ~]#systemctl restart network</span><br></pre></td></tr></table></figure>
+<h3 id="centos7"><a href="#centos7" class="headerlink" title="centos7"></a>centos7</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 ~]#systemctl restart network</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -469,7 +469,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -480,7 +480,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
