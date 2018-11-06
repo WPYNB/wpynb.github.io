@@ -249,6 +249,315 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/Linux软硬连接/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/13/Linux软硬连接/" itemprop="url">Linux软硬连接</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T16:12:39+08:00">
+                2018-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/软链接硬链接/" itemprop="url" rel="index">
+                    <span itemprop="name">软链接硬链接</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、LInux软硬连接链接概念"><a href="#一、LInux软硬连接链接概念" class="headerlink" title="一、LInux软硬连接链接概念"></a>一、LInux软硬连接链接概念</h1><h2 id="Linux链接分为符号链接-Symbolic-Link-也叫软链接和硬链接-Hard-Link-两种，默认情况下，ln命令会产生硬链接。"><a href="#Linux链接分为符号链接-Symbolic-Link-也叫软链接和硬链接-Hard-Link-两种，默认情况下，ln命令会产生硬链接。" class="headerlink" title="Linux链接分为符号链接(Symbolic Link)也叫软链接和硬链接(Hard Link)两种，默认情况下，ln命令会产生硬链接。"></a>Linux链接分为符号链接(Symbolic Link)也叫软链接和硬链接(Hard Link)两种，默认情况下，ln命令会产生硬链接。</h2><h1 id="二、软连接"><a href="#二、软连接" class="headerlink" title="二、软连接"></a>二、软连接</h1><h2 id="ensp-ensp-ensp-ensp-1-创建软连接命令：ln-s-sourcefile-newfile"><a href="#ensp-ensp-ensp-ensp-1-创建软连接命令：ln-s-sourcefile-newfile" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;1.创建软连接命令：ln -s sourcefile newfile"></a>&ensp;&ensp;&ensp;&ensp;1.创建软连接命令：ln -s sourcefile newfile</h2><h2 id="ensp-ensp-ensp-ensp-2-简介："><a href="#ensp-ensp-ensp-ensp-2-简介：" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;2.简介："></a>&ensp;&ensp;&ensp;&ensp;2.简介：</h2><h2 id="软链接又叫做符号链接，软链接文件有类似于Wondows的快捷方式。它实际上是一个特殊的文件。"><a href="#软链接又叫做符号链接，软链接文件有类似于Wondows的快捷方式。它实际上是一个特殊的文件。" class="headerlink" title="软链接又叫做符号链接，软链接文件有类似于Wondows的快捷方式。它实际上是一个特殊的文件。"></a>软链接又叫做符号链接，软链接文件有类似于Wondows的快捷方式。它实际上是一个特殊的文件。</h2><h3 id="ensp-ensp-ensp-ensp-3-连接件特点："><a href="#ensp-ensp-ensp-ensp-3-连接件特点：" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;3.连接件特点："></a>&ensp;&ensp;&ensp;&ensp;3.连接件特点：</h3><h3 id="3-1-可以链接任何文件或者目录，还可以链接不同文件系统的文件或者目"><a href="#3-1-可以链接任何文件或者目录，还可以链接不同文件系统的文件或者目" class="headerlink" title="3.1  可以链接任何文件或者目录，还可以链接不同文件系统的文件或者目"></a>3.1  可以链接任何文件或者目录，还可以链接不同文件系统的文件或者目</h3><h3 id="3-2-要链接文件时，新文件是必须存在的，当源文件不存在时，建立的链接是一个空链接。空链接文件也可以操作，而且对空链接操作，例如，emptyfile是空链接，对emptyfile进行vim-emptyflie，并写入一些字符时保存时，系统就会自动生成一个emptyfile对应的源文件。空链接就会变成软链接。"><a href="#3-2-要链接文件时，新文件是必须存在的，当源文件不存在时，建立的链接是一个空链接。空链接文件也可以操作，而且对空链接操作，例如，emptyfile是空链接，对emptyfile进行vim-emptyflie，并写入一些字符时保存时，系统就会自动生成一个emptyfile对应的源文件。空链接就会变成软链接。" class="headerlink" title="3.2  要链接文件时，新文件是必须存在的，当源文件不存在时，建立的链接是一个空链接。空链接文件也可以操作，而且对空链接操作，例如，emptyfile是空链接，对emptyfile进行vim emptyflie，并写入一些字符时保存时，系统就会自动生成一个emptyfile对应的源文件。空链接就会变成软链接。"></a>3.2  要链接文件时，新文件是必须存在的，当源文件不存在时，建立的链接是一个空链接。空链接文件也可以操作，而且对空链接操作，例如，emptyfile是空链接，对emptyfile进行vim emptyflie，并写入一些字符时保存时，系统就会自动生成一个emptyfile对应的源文件。空链接就会变成软链接。</h3><h3 id="3-3-软链接相当于windows系统的快捷方式，windows系统下改变快捷方式，例如对快捷方式重命名等不会改变源文件的内容。而在linux系统下，改变newfile时，sourcefile也会同步改变。当然，改变sourcefile也会引发newfile的同步改变。"><a href="#3-3-软链接相当于windows系统的快捷方式，windows系统下改变快捷方式，例如对快捷方式重命名等不会改变源文件的内容。而在linux系统下，改变newfile时，sourcefile也会同步改变。当然，改变sourcefile也会引发newfile的同步改变。" class="headerlink" title="3.3   软链接相当于windows系统的快捷方式，windows系统下改变快捷方式，例如对快捷方式重命名等不会改变源文件的内容。而在linux系统下，改变newfile时，sourcefile也会同步改变。当然，改变sourcefile也会引发newfile的同步改变。"></a>3.3   软链接相当于windows系统的快捷方式，windows系统下改变快捷方式，例如对快捷方式重命名等不会改变源文件的内容。而在linux系统下，改变newfile时，sourcefile也会同步改变。当然，改变sourcefile也会引发newfile的同步改变。</h3><h3 id="3-4-删除newfile时，不会对sourcefile产生影响，但是删除sourcefile时，newfile就会变成一个空链接。当然，再对newfile写入内容，系统又会生成newfile对应的源文件。"><a href="#3-4-删除newfile时，不会对sourcefile产生影响，但是删除sourcefile时，newfile就会变成一个空链接。当然，再对newfile写入内容，系统又会生成newfile对应的源文件。" class="headerlink" title="3.4  删除newfile时，不会对sourcefile产生影响，但是删除sourcefile时，newfile就会变成一个空链接。当然，再对newfile写入内容，系统又会生成newfile对应的源文件。"></a>3.4  删除newfile时，不会对sourcefile产生影响，但是删除sourcefile时，newfile就会变成一个空链接。当然，再对newfile写入内容，系统又会生成newfile对应的源文件。</h3> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]<span class="comment">#ln -s f1 f2</span></span><br><span class="line">[root@centos7 data]<span class="comment">#echo "I am f1 file"&gt;&gt;f1</span></span><br><span class="line">[root@centos7 data]<span class="comment">#</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f1</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">I am f1 file</span><br><span class="line"></span><br><span class="line">[root@centos7 data]<span class="comment">#rm -rf f2</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f1</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">cat: f2: No such file or directory</span><br><span class="line">[root@centos7 data]<span class="comment">#</span></span><br><span class="line"></span><br><span class="line">[root@centos7 data]<span class="comment">#ln -s f1 f2</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">I am f1 file</span><br><span class="line"></span><br><span class="line">[root@centos7 data]<span class="comment">#rm -rf f1</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">cat: f2: No such file or directory</span><br><span class="line">[root@centos7 data]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>当删除原始文件f1时，软连接文件无效。</p>
+<h3 id="ensp-ensp-ensp-ensp-4-不足"><a href="#ensp-ensp-ensp-ensp-4-不足" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;4.不足:"></a>&ensp;&ensp;&ensp;&ensp;4.不足:</h3><h3 id="因为链接文件包含原文件的路径信息，所以当原文件从一个目录下移动到另一个目录下，再访问链接文件，系统就找不到了。"><a href="#因为链接文件包含原文件的路径信息，所以当原文件从一个目录下移动到另一个目录下，再访问链接文件，系统就找不到了。" class="headerlink" title="因为链接文件包含原文件的路径信息，所以当原文件从一个目录下移动到另一个目录下，再访问链接文件，系统就找不到了。"></a>因为链接文件包含原文件的路径信息，所以当原文件从一个目录下移动到另一个目录下，再访问链接文件，系统就找不到了。</h3><h1 id="三、硬链接"><a href="#三、硬链接" class="headerlink" title="三、硬链接"></a>三、硬链接</h1><h2 id="1-创建硬链接的命令：ln-sourcefile-newfile"><a href="#1-创建硬链接的命令：ln-sourcefile-newfile" class="headerlink" title="1.创建硬链接的命令：ln sourcefile newfile"></a>1.创建硬链接的命令：ln sourcefile newfile</h2><h2 id="2-简介"><a href="#2-简介" class="headerlink" title="2.简介"></a>2.简介</h2><h3 id="ensp-ensp-ensp-ensp-由于Linux下的文件是通过索引节点来识别文件的，硬链接可以认为是一个指针，是一个指向文件索引节点的指针。系统并部位它重新分配inode，每添加一个硬链接，文件的链接数就加一。说到这里，就不得不提一下inodeinode是Unix内部用于描述文件特性的数据结构。我们通常称inode为文件索引节点Index-Node-信息节点-。inode含有文件系统关于文件的大部分重要信息。在Unix创建文件时，同时会创建大量的inode节点。通常，文件系统磁盘空间中约百分之一的空间分配给了inode表。inode指的是数据结构，而索引编号实际上是inode的标识编号。inode表包含一份清单。列出了对应文件系统的所有文件inode编号，当用户搜索或者访问一个文件时，Unix系统通过inode表查找到相对应的inode编号。在找到inode编号后，相应的命令才能访问该inode-并对它进行访问等操作。"><a href="#ensp-ensp-ensp-ensp-由于Linux下的文件是通过索引节点来识别文件的，硬链接可以认为是一个指针，是一个指向文件索引节点的指针。系统并部位它重新分配inode，每添加一个硬链接，文件的链接数就加一。说到这里，就不得不提一下inodeinode是Unix内部用于描述文件特性的数据结构。我们通常称inode为文件索引节点Index-Node-信息节点-。inode含有文件系统关于文件的大部分重要信息。在Unix创建文件时，同时会创建大量的inode节点。通常，文件系统磁盘空间中约百分之一的空间分配给了inode表。inode指的是数据结构，而索引编号实际上是inode的标识编号。inode表包含一份清单。列出了对应文件系统的所有文件inode编号，当用户搜索或者访问一个文件时，Unix系统通过inode表查找到相对应的inode编号。在找到inode编号后，相应的命令才能访问该inode-并对它进行访问等操作。" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;由于Linux下的文件是通过索引节点来识别文件的，硬链接可以认为是一个指针，是一个指向文件索引节点的指针。系统并部位它重新分配inode，每添加一个硬链接，文件的链接数就加一。说到这里，就不得不提一下inodeinode是Unix内部用于描述文件特性的数据结构。我们通常称inode为文件索引节点Index Node(信息节点)。inode含有文件系统关于文件的大部分重要信息。在Unix创建文件时，同时会创建大量的inode节点。通常，文件系统磁盘空间中约百分之一的空间分配给了inode表。inode指的是数据结构，而索引编号实际上是inode的标识编号。inode表包含一份清单。列出了对应文件系统的所有文件inode编号，当用户搜索或者访问一个文件时，Unix系统通过inode表查找到相对应的inode编号。在找到inode编号后，相应的命令才能访问该inode,并对它进行访问等操作。"></a>&ensp;&ensp;&ensp;&ensp;由于Linux下的文件是通过索引节点来识别文件的，硬链接可以认为是一个指针，是一个指向文件索引节点的指针。系统并部位它重新分配inode，每添加一个硬链接，文件的链接数就加一。说到这里，就不得不提一下inodeinode是Unix内部用于描述文件特性的数据结构。我们通常称inode为文件索引节点Index Node(信息节点)。inode含有文件系统关于文件的大部分重要信息。在Unix创建文件时，同时会创建大量的inode节点。通常，文件系统磁盘空间中约百分之一的空间分配给了inode表。inode指的是数据结构，而索引编号实际上是inode的标识编号。inode表包含一份清单。列出了对应文件系统的所有文件inode编号，当用户搜索或者访问一个文件时，Unix系统通过inode表查找到相对应的inode编号。在找到inode编号后，相应的命令才能访问该inode,并对它进行访问等操作。</h3><h2 id="3-特点"><a href="#3-特点" class="headerlink" title="3.特点"></a>3.特点</h2><h3 id="3-1-sourcefile和newfile相互影响，同步执行。"><a href="#3-1-sourcefile和newfile相互影响，同步执行。" class="headerlink" title="3.1  sourcefile和newfile相互影响，同步执行。"></a>3.1  sourcefile和newfile相互影响，同步执行。</h3><h3 id="3-2-建立硬链接后，sourcefile和newfile的连接数都为2，当删除sourcefile文件后newfile文件不受影响，只是连接数减一，从链接文件变为普通文件。因为删除一个文件，实际上是删除inode信息。当链接数为0时，才会彻底删除该文件。也就是说，文件真正删除的条件是与之相关的所有硬链接文件都被删除。"><a href="#3-2-建立硬链接后，sourcefile和newfile的连接数都为2，当删除sourcefile文件后newfile文件不受影响，只是连接数减一，从链接文件变为普通文件。因为删除一个文件，实际上是删除inode信息。当链接数为0时，才会彻底删除该文件。也就是说，文件真正删除的条件是与之相关的所有硬链接文件都被删除。" class="headerlink" title="3.2  建立硬链接后，sourcefile和newfile的连接数都为2，当删除sourcefile文件后newfile文件不受影响，只是连接数减一，从链接文件变为普通文件。因为删除一个文件，实际上是删除inode信息。当链接数为0时，才会彻底删除该文件。也就是说，文件真正删除的条件是与之相关的所有硬链接文件都被删除。"></a>3.2  建立硬链接后，sourcefile和newfile的连接数都为2，当删除sourcefile文件后newfile文件不受影响，只是连接数减一，从链接文件变为普通文件。因为删除一个文件，实际上是删除inode信息。当链接数为0时，才会彻底删除该文件。也就是说，文件真正删除的条件是与之相关的所有硬链接文件都被删除。</h3><h3 id="3-3-硬链接不占用磁盘空间。"><a href="#3-3-硬链接不占用磁盘空间。" class="headerlink" title="3.3  硬链接不占用磁盘空间。"></a>3.3  硬链接不占用磁盘空间。</h3><h3 id="3-4-硬链接只作用于文件。"><a href="#3-4-硬链接只作用于文件。" class="headerlink" title="3.4  硬链接只作用于文件。"></a>3.4  硬链接只作用于文件。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]<span class="comment">#touch f1</span></span><br><span class="line">[root@centos7 data]<span class="comment">#ln f1 f2</span></span><br><span class="line">[root@centos7 data]<span class="comment">#ls -li</span></span><br><span class="line">total 0</span><br><span class="line">67 -rw-r--r--. 2 root root 0 Sep 29 15:31 f1</span><br><span class="line">67 -rw-r--r--. 2 root root 0 Sep 29 15:31 f2</span><br><span class="line">[root@centos7 data]<span class="comment">#ln -s f1 f3</span></span><br><span class="line">[root@centos7 data]<span class="comment">#ls -li</span></span><br><span class="line">total 0</span><br><span class="line">67 -rw-r--r--. 2 root root 0 Sep 29 15:31 f1</span><br><span class="line">67 -rw-r--r--. 2 root root 0 Sep 29 15:31 f2</span><br><span class="line">68 lrwxrwxrwx. 1 root root 2 Sep 29 15:31 f3 -&gt; f1</span><br><span class="line">[root@centos7 data]<span class="comment">#echo "I am f1 file"&gt;&gt;f1</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f1</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f3</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#rm -rf f3</span></span><br><span class="line">[root@centos7 data]<span class="comment">#cat f1</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f2</span></span><br><span class="line">I am f1 file</span><br><span class="line">[root@centos7 data]<span class="comment">#cat f3</span></span><br><span class="line">cat: f3: No such file or directory</span><br><span class="line">[root@centos7 data]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h2 id="4-不足"><a href="#4-不足" class="headerlink" title="4.不足"></a>4.不足</h2><h3 id="4-1-不允许给目录创建硬链接。"><a href="#4-1-不允许给目录创建硬链接。" class="headerlink" title="4.1  不允许给目录创建硬链接。"></a>4.1  不允许给目录创建硬链接。</h3><h3 id="4-2-只有在同一文件系统中的文件才能创建硬链接。"><a href="#4-2-只有在同一文件系统中的文件才能创建硬链接。" class="headerlink" title="4.2  只有在同一文件系统中的文件才能创建硬链接。"></a>4.2  只有在同一文件系统中的文件才能创建硬链接。</h3><h2 id="ensp-ensp-ensp-ensp-为什么不允许给目录创建硬链接？"><a href="#ensp-ensp-ensp-ensp-为什么不允许给目录创建硬链接？" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;为什么不允许给目录创建硬链接？"></a>&ensp;&ensp;&ensp;&ensp;为什么不允许给目录创建硬链接？</h2><h3 id="原因：系统在遍历文件夹的时候，假设可以创建目录的硬链接，则因为系统不能识别出该硬链接是链接还是文件本身。这样，系统就会无限的递归下去。而软链接可以被系统识别，就不会出现这样的问题。"><a href="#原因：系统在遍历文件夹的时候，假设可以创建目录的硬链接，则因为系统不能识别出该硬链接是链接还是文件本身。这样，系统就会无限的递归下去。而软链接可以被系统识别，就不会出现这样的问题。" class="headerlink" title="原因：系统在遍历文件夹的时候，假设可以创建目录的硬链接，则因为系统不能识别出该硬链接是链接还是文件本身。这样，系统就会无限的递归下去。而软链接可以被系统识别，就不会出现这样的问题。"></a>原因：系统在遍历文件夹的时候，假设可以创建目录的硬链接，则因为系统不能识别出该硬链接是链接还是文件本身。这样，系统就会无限的递归下去。而软链接可以被系统识别，就不会出现这样的问题。</h3><h2 id="ensp-ensp-ensp-ensp-为什么只有在同一文件系统下的文件才能创建硬链接？"><a href="#ensp-ensp-ensp-ensp-为什么只有在同一文件系统下的文件才能创建硬链接？" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;为什么只有在同一文件系统下的文件才能创建硬链接？"></a>&ensp;&ensp;&ensp;&ensp;为什么只有在同一文件系统下的文件才能创建硬链接？</h2><h3 id="原因：不同的文件系统可能具有相同的inode编号，假设可以在A系统创建B系统文件的硬链接，这是，假设B系统的文件B1的硬链接文件为A系统的A1。那么，理论上，他们具有相同的inode编号，如111，但是，假设此时A系统中本来就可能存在inode号为111的文件。假设此时想访问inode号为111的文件，那么久不知道到底是访问A系统的文件还是访问B系统的文件。"><a href="#原因：不同的文件系统可能具有相同的inode编号，假设可以在A系统创建B系统文件的硬链接，这是，假设B系统的文件B1的硬链接文件为A系统的A1。那么，理论上，他们具有相同的inode编号，如111，但是，假设此时A系统中本来就可能存在inode号为111的文件。假设此时想访问inode号为111的文件，那么久不知道到底是访问A系统的文件还是访问B系统的文件。" class="headerlink" title="原因：不同的文件系统可能具有相同的inode编号，假设可以在A系统创建B系统文件的硬链接，这是，假设B系统的文件B1的硬链接文件为A系统的A1。那么，理论上，他们具有相同的inode编号，如111，但是，假设此时A系统中本来就可能存在inode号为111的文件。假设此时想访问inode号为111的文件，那么久不知道到底是访问A系统的文件还是访问B系统的文件。"></a>原因：不同的文件系统可能具有相同的inode编号，假设可以在A系统创建B系统文件的硬链接，这是，假设B系统的文件B1的硬链接文件为A系统的A1。那么，理论上，他们具有相同的inode编号，如111，但是，假设此时A系统中本来就可能存在inode号为111的文件。假设此时想访问inode号为111的文件，那么久不知道到底是访问A系统的文件还是访问B系统的文件。</h3><h1 id="四、-总结："><a href="#四、-总结：" class="headerlink" title="四、 总结："></a>四、 总结：</h1><h3 id="软硬链接的相同点与区别："><a href="#软硬链接的相同点与区别：" class="headerlink" title="软硬链接的相同点与区别："></a>软硬链接的相同点与区别：</h3><h2 id="相同点："><a href="#相同点：" class="headerlink" title="相同点："></a>相同点：</h2><h3 id="1-链接文件newfile在创建前都必须为空。"><a href="#1-链接文件newfile在创建前都必须为空。" class="headerlink" title="1.链接文件newfile在创建前都必须为空。"></a>1.链接文件newfile在创建前都必须为空。</h3><h3 id="2-newfile和sourcefile的改变读会影响对方。"><a href="#2-newfile和sourcefile的改变读会影响对方。" class="headerlink" title="2.newfile和sourcefile的改变读会影响对方。"></a>2.newfile和sourcefile的改变读会影响对方。</h3><h2 id="不同点："><a href="#不同点：" class="headerlink" title="不同点："></a>不同点：</h2><h3 id="1-软链接可以跨文件系统，硬链接不可以。"><a href="#1-软链接可以跨文件系统，硬链接不可以。" class="headerlink" title="1.软链接可以跨文件系统，硬链接不可以。"></a>1.软链接可以跨文件系统，硬链接不可以。</h3><h3 id="2-软链接可以对目录链接。"><a href="#2-软链接可以对目录链接。" class="headerlink" title="2.软链接可以对目录链接。"></a>2.软链接可以对目录链接。</h3><h3 id="3-软链接可以对一个不存在的文件进行链接。"><a href="#3-软链接可以对一个不存在的文件进行链接。" class="headerlink" title="3.软链接可以对一个不存在的文件进行链接。"></a>3.软链接可以对一个不存在的文件进行链接。</h3><h3 id="4-硬链接通过inode访问文件，软链接不直接使用inode作为文件指针，而是使用文件路径名作为指针。"><a href="#4-硬链接通过inode访问文件，软链接不直接使用inode作为文件指针，而是使用文件路径名作为指针。" class="headerlink" title="4. 硬链接通过inode访问文件，软链接不直接使用inode作为文件指针，而是使用文件路径名作为指针。"></a>4. 硬链接通过inode访问文件，软链接不直接使用inode作为文件指针，而是使用文件路径名作为指针。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/更改开机自动登录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/13/更改开机自动登录/" itemprop="url">更改开机自动登录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T15:55:21+08:00">
+                2018-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/更改开机自动登录/" itemprop="url" rel="index">
+                    <span itemprop="name">更改开机自动登录</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ensp-ensp-CentOS7更改开机自动登录"><a href="#ensp-ensp-CentOS7更改开机自动登录" class="headerlink" title="&ensp;&ensp;CentOS7更改开机自动登录"></a>&ensp;&ensp;CentOS7更改开机自动登录</h1><h2 id="ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件"><a href="#ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件" class="headerlink" title="&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件"></a>&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/gmd/custom.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># GDM configuration storage</span></span><br><span class="line"></span><br><span class="line">[daemon]</span><br><span class="line"></span><br><span class="line">[security]</span><br><span class="line"></span><br><span class="line">[xdmcp]</span><br><span class="line"></span><br><span class="line">[chooser]</span><br><span class="line"></span><br><span class="line">[debug]</span><br><span class="line"><span class="comment"># Uncomment the line below to turn on debugging</span></span><br><span class="line"><span class="comment">#Enable=true</span></span><br></pre></td></tr></table></figure>
+<h2 id="ensp-ensp-在-daemon-下写入以下两行代码保存退出"><a href="#ensp-ensp-在-daemon-下写入以下两行代码保存退出" class="headerlink" title="&ensp;&ensp;在[daemon]下写入以下两行代码保存退出"></a>&ensp;&ensp;在[daemon]下写入以下两行代码保存退出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[daemon]</span><br><span class="line">AutomaticLoginEnable=true</span><br><span class="line">AutomaticLogin=root</span><br></pre></td></tr></table></figure>
+<h2 id="ensp-ensp-更改完成。"><a href="#ensp-ensp-更改完成。" class="headerlink" title="&ensp;&ensp;更改完成。"></a>&ensp;&ensp;更改完成。</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/screen/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -444,7 +753,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -455,7 +764,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

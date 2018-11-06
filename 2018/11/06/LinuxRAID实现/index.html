@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RAID的作用提高IO能力磁盘并行读写提高耐用性磁盘冗余来实现级别：多块磁盘组织在一起的工作方式有所不同RAID实现的方式外接式磁盘阵列：通过扩展卡提供适配能力内接式RAID：主板集成RAID控制器，安装OS前在BIOS里配置软件RAID：通过OS实现 RAID-0RAID 0的优缺点 读、写性能提升可用空间：N*min(S1,S2,…)无容错能力，如果坏掉一块，那么raid0就不能用了最少磁盘数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LinuxRAID实现">
+<meta property="og:url" content="http://yoursite.com/2018/11/06/LinuxRAID实现/index.html">
+<meta property="og:site_name" content="魏平洋的博客">
+<meta property="og:description" content="RAID的作用提高IO能力磁盘并行读写提高耐用性磁盘冗余来实现级别：多块磁盘组织在一起的工作方式有所不同RAID实现的方式外接式磁盘阵列：通过扩展卡提供适配能力内接式RAID：主板集成RAID控制器，安装OS前在BIOS里配置软件RAID：通过OS实现 RAID-0RAID 0的优缺点 读、写性能提升可用空间：N*min(S1,S2,…)无容错能力，如果坏掉一块，那么raid0就不能用了最少磁盘数">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/raid.png">
+<meta property="og:updated_time" content="2018-11-06T10:14:08.224Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LinuxRAID实现">
+<meta name="twitter:description" content="RAID的作用提高IO能力磁盘并行读写提高耐用性磁盘冗余来实现级别：多块磁盘组织在一起的工作方式有所不同RAID实现的方式外接式磁盘阵列：通过扩展卡提供适配能力内接式RAID：主板集成RAID控制器，安装OS前在BIOS里配置软件RAID：通过OS实现 RAID-0RAID 0的优缺点 读、写性能提升可用空间：N*min(S1,S2,…)无容错能力，如果坏掉一块，那么raid0就不能用了最少磁盘数">
+<meta name="twitter:image" content="http://yoursite.com/images/raid.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/06/LinuxRAID实现/"/>
+
+
+
+
+
+  <title>LinuxRAID实现 | 魏平洋的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">魏平洋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/06/LinuxRAID实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LinuxRAID实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-06T17:41:39+08:00">
+                2018-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/LinuxRAID实现/" itemprop="url" rel="index">
+                    <span itemprop="name">LinuxRAID实现</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="RAID的作用"><a href="#RAID的作用" class="headerlink" title="RAID的作用"></a>RAID的作用</h1><p>提高IO能力<br>磁盘并行读写<br>提高耐用性<br>磁盘冗余来实现<br>级别：多块磁盘组织在一起的工作方式有所不同<br>RAID实现的方式<br>外接式磁盘阵列：通过扩展卡提供适配能力<br>内接式RAID：主板集成RAID控制器，安装OS前在BIOS里配置<br>软件RAID：通过OS实现</p>
+<h1 id="RAID-0"><a href="#RAID-0" class="headerlink" title="RAID-0"></a>RAID-0</h1><p>RAID 0的优缺点</p>
+<p>读、写性能提升<br>可用空间：N*min(S1,S2,…)<br>无容错能力，如果坏掉一块，那么raid0就不能用了<br>最少磁盘数：2, 2+</p>
+<h1 id="RAID-1"><a href="#RAID-1" class="headerlink" title="RAID-1"></a>RAID-1</h1><p>RAID1的优缺点</p>
+<p>读性能提升、写性能略有下降<br>可用空间：1*min(S1,S2,…)<br>有冗余能力 ,只要不是两块硬盘同时损坏，基本上不会丢失数据<br>最少磁盘数：2, 2N</p>
+<h1 id="RAID-5"><a href="#RAID-5" class="headerlink" title="RAID-5"></a>RAID-5</h1><p>RAID5的优缺点</p>
+<p>读、写性能提升<br>可用空间：(N-1)*min(S1,S2,…)<br>有容错能力：允许最多1块磁盘损坏<br>最少磁盘数：3, 3+<br>如果一块硬盘损坏，也可以通过其他硬盘的校验位来重新建立数据。</p>
+<h1 id="RAID-6："><a href="#RAID-6：" class="headerlink" title="RAID-6："></a>RAID-6：</h1><p><img src="/images/raid.png" alt="Alt text"></p>
+<p>RAID6的优缺点</p>
+<p>和raid5类似，校验位分开写到了不同的磁盘<br>读、写性能提升<br>可用空间：(N-2)*min(S1,S2,…)<br>有容错能力：允许最多2块磁盘损坏<br>最少磁盘数：4, 4+</p>
+<h1 id="RAID-10："><a href="#RAID-10：" class="headerlink" title="RAID-10："></a>RAID-10：</h1><p>RAID10的优缺点<br>利用率只能达到百分之50<br>读、写性能提升<br>可用空间：N*min(S1,S2,…)/2<br>有容错能力：每组镜像最多只能坏一块<br>最少磁盘数：4, 4+</p>
+<h1 id="RAID-01"><a href="#RAID-01" class="headerlink" title="RAID-01"></a>RAID-01</h1><p>RAID 10是先镜射再分区数据，再将所有硬盘分为两组，视为是RAID 0的最低组合，然后将这两组各自视为RAID 1运作</p>
+<p>RAID 01则是跟RAID 10的程序相反，是先分区再将数据镜射到两组硬盘。它将所有的硬盘分为两组，变成RAID 1的最低组合，而将两组硬盘各自视为RAID 0运作。</p>
+<p>当RAID 10有一个硬盘受损，其余硬盘会继续运作。RAID 01只要有一个硬盘受损，<br>同组RAID 0的所有硬盘都会停止运作，只剩下其他组的硬盘运作，可靠性较低。</p>
+<h1 id="软RAID"><a href="#软RAID" class="headerlink" title="软RAID"></a>软RAID</h1><p>mdadm：为软RAID提供管理界面<br>RAID设备可命名为/dev/md0、/dev/md1、/dev/md2、/dev/md3等<br>支持的RAID级别：LINEAR, RAID0, RAID1, RAID4, RAID5, RAID6, RAID10<br>模式：<br>创建：-C<br>装配：-A<br>监控：-F<br>管理：-f, -r, -a</p>
+<h1 id="C-创建模式"><a href="#C-创建模式" class="headerlink" title="-C: 创建模式"></a>-C: 创建模式</h1><p>-n #: 使用n个块设备来创建此RAID<br>-l #：指明要创建的RAID的级别<br>-a {yes|no}：自动创建目标RAID设备的设备文件<br>-c CHUNK_SIZE: 指明块大小,单位k<br>-x #: 指明空闲盘的个数</p>
+<h1 id="D：显示raid的详细信息"><a href="#D：显示raid的详细信息" class="headerlink" title="-D：显示raid的详细信息"></a>-D：显示raid的详细信息</h1><p>mdadm-D /dev/md#<br>管理模式：<br>-f: 标记指定磁盘为损坏<br>-a: 添加磁盘<br>-r: 移除磁盘<br>观察md的状态：cat /proc/mdstat</p>
+<h1 id="创建一个RAID-0"><a href="#创建一个RAID-0" class="headerlink" title="创建一个RAID-0"></a>创建一个RAID-0</h1><p>1.用分区来创建raid ，首先创建两个raid的分区，大小一样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#fdisk -l /dev/sdb</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb: 161.1 GB, 161061273600 bytes, 314572800 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x90c3db64</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sdb1            2048    10487807     5242880   fd  Linux raid autodetect</span><br><span class="line">/dev/sdb2        10487808    20973567     5242880   fd  Linux raid autodetect</span><br></pre></td></tr></table></figure>
+<p>2.再把两个分区创建为raid-0,-C表示进入创建模式 -a自动创建设备文件 -l指定raid类型 -n指定块设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#mdadm -C -a yes /dev/md0 -l 0 -n 2 /dev/sdb&#123;1,2&#125;</span><br><span class="line">mdadm: Defaulting to version 1.2 metadata</span><br><span class="line">mdadm: array /dev/md0 started.</span><br></pre></td></tr></table></figure>
+<p>查看已经建立好raid的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#mdadm -D /dev/md0 </span><br><span class="line">/dev/md0:</span><br><span class="line">           Version : 1.2</span><br><span class="line">     Creation Time : Tue Oct 23 12:06:55 2018</span><br><span class="line">        Raid Level : raid0</span><br><span class="line">        Array Size : 10475520 (9.99 GiB 10.73 GB)</span><br><span class="line">      Raid Devices : 2</span><br><span class="line">     Total Devices : 2</span><br><span class="line">       Persistence : Superblock is persistent</span><br><span class="line"></span><br><span class="line">       Update Time : Tue Oct 23 12:06:55 2018</span><br><span class="line">             State : clean </span><br><span class="line">    Active Devices : 2</span><br><span class="line">   Working Devices : 2</span><br><span class="line">    Failed Devices : 0</span><br><span class="line">     Spare Devices : 0</span><br><span class="line"></span><br><span class="line">        Chunk Size : 512K</span><br><span class="line"></span><br><span class="line">Consistency Policy : none</span><br><span class="line"></span><br><span class="line">              Name : centos7.5.localdomain:0  (local to host centos7.5.localdomain)</span><br><span class="line">              UUID : c954f4cf:3428c9c3:4e5dfc8c:96c3aece</span><br><span class="line">            Events : 0</span><br><span class="line"></span><br><span class="line">    Number   Major   Minor   RaidDevice State</span><br><span class="line">       0       8       17        0      active sync   /dev/sdb1</span><br><span class="line">       1       8       18        1      active sync   /dev/sdb2</span><br></pre></td></tr></table></figure></p>
+<p>3.创建raid的文件系统</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#mkfs.xfs /dev/md0</span><br></pre></td></tr></table></figure>
+<p>4.挂载硬盘,把ID信息添加到/etc/fstab文件里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#blkid /dev/md0</span><br><span class="line">/dev/md0: UUID=&quot;56089a5a-833c-4415-8c54-789173344652&quot; TYPE=&quot;xfs&quot;</span><br><span class="line">[root@centos7 ~]#mount -a</span><br></pre></td></tr></table></figure>
+<h1 id="创建RAID-5"><a href="#创建RAID-5" class="headerlink" title="创建RAID-5"></a>创建RAID-5</h1><p>1.以centos6 4块硬盘来试验(b,c,d,e)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS6 ~]$lsblk</span><br><span class="line">NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sr0     11:0    1  3.7G  0 rom  </span><br><span class="line">sr1     11:1    1    2G  0 rom  </span><br><span class="line">sda      8:0    0  200G  0 disk </span><br><span class="line">├─sda1   8:1    0    1G  0 part /boot</span><br><span class="line">├─sda2   8:2    0 48.8G  0 part /</span><br><span class="line">├─sda3   8:3    0 29.3G  0 part /data</span><br><span class="line">├─sda4   8:4    0    1K  0 part </span><br><span class="line">└─sda5   8:5    0    2G  0 part [SWAP]</span><br><span class="line">sdb      8:16   0   20G  0 disk </span><br><span class="line">sdc      8:32   0   20G  0 disk </span><br><span class="line">sdd      8:48   0   20G  0 disk </span><br><span class="line">sde      8:64   0   20G  0 disk</span><br></pre></td></tr></table></figure>
+<p>2.设置为raid-5 -x 指一个备用硬盘 发现其他硬盘损坏，自己立马顶替损坏硬盘的位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS6 ~]$mdadm -C -a yes /dev/md1 -l 5 -n 3 -x 1 /dev/sd&#123;b..e&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3.查看新建的md1硬盘信息硬盘sde为备用硬盘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS6 ~]$mdadm -D /dev/md1</span><br><span class="line">/dev/md1:</span><br><span class="line">        Version : 1.2</span><br><span class="line">  Creation Time : Tue Oct 23 12:36:47 2018</span><br><span class="line">     Raid Level : raid5</span><br><span class="line">     Array Size : 41910272 (39.97 GiB 42.92 GB)</span><br><span class="line">  Used Dev Size : 20955136 (19.98 GiB 21.46 GB)</span><br><span class="line">   Raid Devices : 3</span><br><span class="line">  Total Devices : 4</span><br><span class="line">    Persistence : Superblock is persistent</span><br><span class="line"></span><br><span class="line">    Update Time : Tue Oct 23 12:38:32 2018</span><br><span class="line">          State : clean </span><br><span class="line"> Active Devices : 3</span><br><span class="line">Working Devices : 4</span><br><span class="line"> Failed Devices : 0</span><br><span class="line">  Spare Devices : 1</span><br><span class="line"></span><br><span class="line">         Layout : left-symmetric</span><br><span class="line">     Chunk Size : 512K</span><br><span class="line"></span><br><span class="line">           Name : CentOS6.10.localdomain:1  (local to host CentOS6.10.localdomain)</span><br><span class="line">           UUID : afc70631:08758f06:c3c8b61c:7668a8c5</span><br><span class="line">         Events : 18</span><br><span class="line"></span><br><span class="line">    Number   Major   Minor   RaidDevice State</span><br><span class="line">       0       8       16        0      active sync   /dev/sdb</span><br><span class="line">       1       8       32        1      active sync   /dev/sdc</span><br><span class="line">       4       8       48        2      active sync   /dev/sdd</span><br><span class="line"></span><br><span class="line">       3       8       64        -      spare   /dev/sde</span><br><span class="line"># 给硬盘建立文件系统即可挂载。</span><br></pre></td></tr></table></figure>
+<h1 id="软RAID管理"><a href="#软RAID管理" class="headerlink" title="软RAID管理"></a>软RAID管理</h1><p>生成配置文件：mdadm–D –s &gt;&gt; /etc/mdadm.conf<br>停止设备：mdadm–S /dev/md0<br>激活设备：mdadm–A –s /dev/md0 激活<br>强制启动：mdadm–R /dev/md0<br>删除raid信息：mdadm–zero-superblock /dev/sdb</p>
+<h1 id="软RAID测试和修复"><a href="#软RAID测试和修复" class="headerlink" title="软RAID测试和修复"></a>软RAID测试和修复</h1><p>模拟磁盘故障<br>mdadm /dev/md0 -f /dev/sda1<br>移除磁盘<br>mdadm /dev/md0 –r /dev/sda1<br>从软件RAID磁盘修复磁盘故障<br>•替换出故障的磁盘然后开机<br>•在备用驱动器上重建分区<br>•mdadm /dev/md0 -a /dev/sda1<br>mdadm /proc/mdstat及系统日志信息</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/06/linux常见压缩工具/" rel="next" title="linux常见压缩工具">
+                <i class="fa fa-chevron-left"></i> linux常见压缩工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID的作用"><span class="nav-number">1.</span> <span class="nav-text">RAID的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-0"><span class="nav-number">2.</span> <span class="nav-text">RAID-0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-1"><span class="nav-number">3.</span> <span class="nav-text">RAID-1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-5"><span class="nav-number">4.</span> <span class="nav-text">RAID-5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-6："><span class="nav-number">5.</span> <span class="nav-text">RAID-6：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-10："><span class="nav-number">6.</span> <span class="nav-text">RAID-10：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAID-01"><span class="nav-number">7.</span> <span class="nav-text">RAID-01</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软RAID"><span class="nav-number">8.</span> <span class="nav-text">软RAID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-创建模式"><span class="nav-number">9.</span> <span class="nav-text">-C: 创建模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#D：显示raid的详细信息"><span class="nav-number">10.</span> <span class="nav-text">-D：显示raid的详细信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建一个RAID-0"><span class="nav-number">11.</span> <span class="nav-text">创建一个RAID-0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建RAID-5"><span class="nav-number">12.</span> <span class="nav-text">创建RAID-5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软RAID管理"><span class="nav-number">13.</span> <span class="nav-text">软RAID管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#软RAID测试和修复"><span class="nav-number">14.</span> <span class="nav-text">软RAID测试和修复</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

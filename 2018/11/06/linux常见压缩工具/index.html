@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="压缩、解压缩工具compress/uncompresscompress压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；也可以源文件保留-d: 解压缩，相当于uncompress-c: 结果输出至标准输出,不删除原文件-v: 显示详情 uncompress解压缩123456[root@centos7 data]#ll -h bigfile -rw-r--r--. 1 root roo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux常见压缩工具">
+<meta property="og:url" content="http://yoursite.com/2018/11/06/linux常见压缩工具/index.html">
+<meta property="og:site_name" content="魏平洋的博客">
+<meta property="og:description" content="压缩、解压缩工具compress/uncompresscompress压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；也可以源文件保留-d: 解压缩，相当于uncompress-c: 结果输出至标准输出,不删除原文件-v: 显示详情 uncompress解压缩123456[root@centos7 data]#ll -h bigfile -rw-r--r--. 1 root roo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-06T09:34:24.388Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux常见压缩工具">
+<meta name="twitter:description" content="压缩、解压缩工具compress/uncompresscompress压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；也可以源文件保留-d: 解压缩，相当于uncompress-c: 结果输出至标准输出,不删除原文件-v: 显示详情 uncompress解压缩123456[root@centos7 data]#ll -h bigfile -rw-r--r--. 1 root roo">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/06/linux常见压缩工具/"/>
+
+
+
+
+
+  <title>linux常见压缩工具 | 魏平洋的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">魏平洋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/06/linux常见压缩工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux常见压缩工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-06T17:13:01+08:00">
+                2018-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/linux常见压缩解压缩工具/" itemprop="url" rel="index">
+                    <span itemprop="name">linux常见压缩解压缩工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="压缩、解压缩工具"><a href="#压缩、解压缩工具" class="headerlink" title="压缩、解压缩工具"></a>压缩、解压缩工具</h1><h2 id="compress-uncompress"><a href="#compress-uncompress" class="headerlink" title="compress/uncompress"></a>compress/uncompress</h2><p>compress<br>压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；<br>也可以源文件保留<br>-d: 解压缩，相当于uncompress<br>-c: 结果输出至标准输出,不删除原文件<br>-v: 显示详情</p>
+<h2 id="uncompress解压缩"><a href="#uncompress解压缩" class="headerlink" title="uncompress解压缩"></a>uncompress解压缩</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#ll -h bigfile </span><br><span class="line">-rw-r--r--. 1 root root 10M Oct 13 17:14 bigfile           #例如一个10M的文件</span><br><span class="line">[root@centos7 data]#compress bigfile                       #压缩这个文件</span><br><span class="line">[root@centos7 data]#ll bigfile.Z -h                        #查看压缩后的大小</span><br><span class="line">-rw-r--r--. 1 root root 6.5K Oct 13 17:14 bigfile.Z</span><br><span class="line">[root@centos7 data]#compress -c bigfile &gt; bigfile.Z        #保留源文件，并且压缩</span><br></pre></td></tr></table></figure>
+<h2 id="gzip-gunzip"><a href="#gzip-gunzip" class="headerlink" title="gzip/gunzip"></a>gzip/gunzip</h2><p>gzip<br>-d：解压缩，相当于gunzip<br>-c：结果输出至标准输出，保留原文件不改变<br>-#：1-9，指定压缩比，值越大压缩比越大<br>zcat：不显式解压缩的前提下查看文本文件内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#gzip w              #用gzip压缩文件w</span><br><span class="line">[root@centos7 data]#gzip -d w.gz        #解压缩文件</span><br><span class="line">[root@centos7 data]#gzip -c  w &gt; w.gz   #保留源文件，并且压缩文件</span><br><span class="line">[root@centos7 data]#zcat w.gz           #只查看压缩文件内容，不解压缩</span><br><span class="line">[root@centos7 ~]#tree | gzip &gt; tree.zp  #把命令的结果进行压缩</span><br></pre></td></tr></table></figure>
+<h2 id="bzip2-bunzip2-bzcat"><a href="#bzip2-bunzip2-bzcat" class="headerlink" title="bzip2/bunzip2/bzcat"></a>bzip2/bunzip2/bzcat</h2><p>bzip2 [OPTION]… FILE …<br>-k：keep, 保留原文件<br>-d：解压缩<br>-#：1-9，压缩比，默认为9<br>bzcat：不显式解压缩的前提下查看文本文件内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#bzip2  -k w</span><br></pre></td></tr></table></figure>
+<h2 id="xz-unxz-xzcat"><a href="#xz-unxz-xzcat" class="headerlink" title="xz/unxz/xzcat"></a>xz/unxz/xzcat</h2><p>xz[OPTION]… FILE …<br>-k: keep, 保留原文件<br>-d：解压缩<br>-#：1-9，压缩比，默认为6<br>unxzfile.xz解压缩<br>xzcat: 不显式解压缩的前提下查看文本文件内容</p>
+<h2 id="zip-unzip"><a href="#zip-unzip" class="headerlink" title="zip/unzip"></a>zip/unzip</h2><p>1.打包压缩支持压缩文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zip –r /backup/sysconfig /etc/sysconfig/</span><br><span class="line">解包解压缩</span><br><span class="line">unzip sysconfig.zip</span><br><span class="line">cat /var/log/messages | zip messages -</span><br><span class="line">unzip -p message &gt; message</span><br></pre></td></tr></table></figure></p>
+<p>2.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#zip -r etc /etc/sysconfig   #压缩文件夹</span><br><span class="line">[root@centos7 data]#unzip etc.zip               #解压缩文件夹</span><br><span class="line"></span><br><span class="line">## tar工具</span><br><span class="line">tar可以把很多的文件夹或者文件打包，然后压缩，经常用来做备份使用</span><br><span class="line">使用：</span><br><span class="line">(1) 创建归档</span><br><span class="line">tar -cpvf/PATH/FILE.tar FILE...  # c表示创建 p表示保留权限 v表示显示过程 f表示后面跟文件</span><br><span class="line">```bash</span><br><span class="line">[root@centos7 data]#tar cpvf etc.tar etc</span><br></pre></td></tr></table></figure></p>
+<p>3.追加文件至归档：注：不支持对压缩文件追加<br>tar -r -f /PATH/FILE.tar FILE…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar -rf etc.tar m       #把m文件追加到etc.tar文件中</span><br></pre></td></tr></table></figure>
+<p>4.查看归档文件中的文件列表<br>tar -t -f /PATH/FILE.tar</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar -tvf etc.tar</span><br></pre></td></tr></table></figure>
+<p>5.展开归档<br>tar -x -f /PATH/FILE.tar<br>tar -x -f /PATH/FILE.tar -C /PATH/</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar -xvf etc.tar -C /data/test/   #解压包，并且指定路径，默认是当前目录</span><br></pre></td></tr></table></figure>
+<p>6.结合压缩工具实现：归档并压缩<br>-j: bzip2, -z: gzip, -J: xz</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar zcvf etc.tar.gz /data/etc   #打包文件夹并且用zip压缩</span><br><span class="line">[root@centos7 data]#tar Jcvf etc.tar.xz /data/etc   #打包文件夹并且用xz压缩</span><br><span class="line">[root@centos7 data]#tar jcvf etc.tar.bz2 /data/etc  #打包文件夹并与用bzip2压缩</span><br></pre></td></tr></table></figure>
+<p>7.排除文件<br>-T需要打包的文件,-X选项指定包含要排除的文件列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#cat f1</span><br><span class="line">/data/bigfile</span><br><span class="line">[root@centos7 data]#cat f2</span><br><span class="line">/data/issue</span><br><span class="line">[root@centos7 data]#tar Jcvf /data/data.tar.xz -T f1 -X f2   #打包yes文件夹里的指定文件   不打包no文件夹里的文件</span><br><span class="line">[root@centos7 data]#tar -t -vf data.tar.xz                    #解包查看</span><br><span class="line">-rw-r--r-- root/root  10485760 2018-10-13 17:14 data/bigfile</span><br></pre></td></tr></table></figure>
+<p>8.splist:：分割一个文件为多个文件<br>分割大的tar 文件为多份小文件<br>split–b Size –d tar-file-name prefix-name</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#split -b 3M /data/etc2.tar etcbak-       #结尾用字母显示</span><br><span class="line">[root@centos7 data]#split -b 3M -d /data/etc2.tar etcbak-    #-d可以用数字结尾显示</span><br><span class="line">[root@centos7 data]#ll</span><br><span class="line">total 78004</span><br><span class="line">-rw-r--r--. 1 root root 33443840 Oct 13 20:23 etc2.tar</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-aa</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ab</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ac</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ad</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ae</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-af</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ag</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ah</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-ai</span><br><span class="line">-rw-r--r--. 1 root root  3145728 Oct 13 20:25 etcbak-aj</span><br><span class="line">-rw-r--r--. 1 root root  1986560 Oct 13 20:25 etcbak-ak</span><br><span class="line">[root@centos7 data]#cat etcbak-a* &gt; etc2.tar            #合并包，拆分的包还有保留</span><br></pre></td></tr></table></figure>
+<h2 id="cpio"><a href="#cpio" class="headerlink" title="cpio"></a>cpio</h2><p>功能：复制文件从或到归档<br>-o 将文件拷贝打包成文件或者将文件输出到设备上<br>-i解包，将打包文件解压或将设备上的备份还原到系统</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/05/CentOS6/boot下文件删除恢复/" rel="next" title="CentOS6 boot下文件删除恢复">
+                <i class="fa fa-chevron-left"></i> CentOS6 boot下文件删除恢复
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/06/LinuxRAID实现/" rel="prev" title="LinuxRAID实现">
+                LinuxRAID实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#压缩、解压缩工具"><span class="nav-number">1.</span> <span class="nav-text">压缩、解压缩工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#compress-uncompress"><span class="nav-number">1.1.</span> <span class="nav-text">compress/uncompress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uncompress解压缩"><span class="nav-number">1.2.</span> <span class="nav-text">uncompress解压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gzip-gunzip"><span class="nav-number">1.3.</span> <span class="nav-text">gzip/gunzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bzip2-bunzip2-bzcat"><span class="nav-number">1.4.</span> <span class="nav-text">bzip2/bunzip2/bzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xz-unxz-xzcat"><span class="nav-number">1.5.</span> <span class="nav-text">xz/unxz/xzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zip-unzip"><span class="nav-number">1.6.</span> <span class="nav-text">zip/unzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpio"><span class="nav-number">1.7.</span> <span class="nav-text">cpio</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
