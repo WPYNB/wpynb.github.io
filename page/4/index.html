@@ -249,6 +249,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/19/配置本地yum源/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="魏平洋的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/19/配置本地yum源/" itemprop="url">配置本地yum源</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-19T19:16:07+08:00">
+                2018-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/配置本地yum源/" itemprop="url" rel="index">
+                    <span itemprop="name">配置本地yum源</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="ensp-ensp-ensp-ensp-yum可以解决包依赖性，相对rpm操作简单。"><a href="#ensp-ensp-ensp-ensp-yum可以解决包依赖性，相对rpm操作简单。" class="headerlink" title="&ensp;&ensp;&ensp;&ensp;yum可以解决包依赖性，相对rpm操作简单。"></a>&ensp;&ensp;&ensp;&ensp;yum可以解决包依赖性，相对rpm操作简单。</h3><h2 id="一、找到yum配置文件-etc-yum-repo-d-下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。"><a href="#一、找到yum配置文件-etc-yum-repo-d-下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。" class="headerlink" title="一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。"></a>一、找到yum配置文件/etc/yum.repo.d/下。里面默认有配置文件，我们不用默认的配置文件，把目录下所有内容创建个目录移进去。</h2><p>这里我已经事先创建好文件夹bak并把默认配置文件移入，创建了base.repo文件（文件名自定义，但必须以.repo为后缀。）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 bak]#cd /etc/yum.repos.d/</span><br><span class="line">[root@centos7 yum.repos.d]#ls</span><br><span class="line">bak  base.repo</span><br><span class="line">[root@centos7 yum.repos.d]#cd bak</span><br><span class="line">[root@centos7 bak]#ls</span><br><span class="line">CentOS-Base.repo  CentOS-Debuginfo.repo  CentOS-Media.repo    CentOS-Vault.repo</span><br><span class="line">CentOS-CR.repo    CentOS-fasttrack.repo  CentOS-Sources.repo</span><br><span class="line">[root@centos7 bak]#</span><br></pre></td></tr></table></figure></p>
+<h2 id="二、建好后开始编辑创建好的配置文件。"><a href="#二、建好后开始编辑创建好的配置文件。" class="headerlink" title="二、建好后开始编辑创建好的配置文件。"></a>二、建好后开始编辑创建好的配置文件。</h2><h3 id="第一行中括号内自定义仓库名"><a href="#第一行中括号内自定义仓库名" class="headerlink" title="第一行中括号内自定义仓库名"></a>第一行中括号内自定义仓库名</h3><h3 id="第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系"><a href="#第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系" class="headerlink" title="第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系"></a>第二行name是一个仓库描述，可以随意写，但要有意义，一般建议写上用于什么操作系</h3><h3 id="第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址-releasever是版本号变量。-basearch是操系统架构。"><a href="#第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址-releasever是版本号变量。-basearch是操系统架构。" class="headerlink" title="第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址 $releasever是版本号变量。$basearch是操系统架构。"></a>第三行写配置路径，本地光盘挂在到哪个目录下。这里我写了两个路径，一个本地光盘。一个阿里yum源网络地址 $releasever是版本号变量。$basearch是操系统架构。</h3><h3 id="第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）"><a href="#第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）" class="headerlink" title="第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）"></a>第四行是顺序访问路径，因为我写了两个，如果第一个路径不能使用则自动使用第二个路径（使用网络路径前提机器要联网）</h3><h3 id="第五行为安装是否检查包签名，0为不检查1为检查"><a href="#第五行为安装是否检查包签名，0为不检查1为检查" class="headerlink" title="第五行为安装是否检查包签名，0为不检查1为检查"></a>第五行为安装是否检查包签名，0为不检查1为检查</h3><h3 id="第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。"><a href="#第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。" class="headerlink" title="第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。"></a>第六行为启用本仓库的意思，因为配置一个仓库写不写无所谓，如果配置多个仓库可以选择启用或禁用某个仓库。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 yum.repos.d]#vim base.repo </span><br><span class="line">[base]</span><br><span class="line">name=centos7</span><br><span class="line">baseurl=file:///misc/cd/</span><br><span class="line">        https://mirrors.aliyun.com/centos/$releasever/os/$basearch/</span><br><span class="line">failovermethod=priority</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br></pre></td></tr></table></figure>
+<p>到此配置完成，wq保存退出</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/sed简单应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -582,160 +737,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/更改开机自动登录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WPY">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="魏平洋的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/13/更改开机自动登录/" itemprop="url">更改开机自动登录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T15:55:21+08:00">
-                2018-10-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/更改开机自动登录/" itemprop="url" rel="index">
-                    <span itemprop="name">更改开机自动登录</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ensp-ensp-CentOS7更改开机自动登录"><a href="#ensp-ensp-CentOS7更改开机自动登录" class="headerlink" title="&ensp;&ensp;CentOS7更改开机自动登录"></a>&ensp;&ensp;CentOS7更改开机自动登录</h1><h2 id="ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件"><a href="#ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件" class="headerlink" title="&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件"></a>&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/gmd/custom.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># GDM configuration storage</span></span><br><span class="line"></span><br><span class="line">[daemon]</span><br><span class="line"></span><br><span class="line">[security]</span><br><span class="line"></span><br><span class="line">[xdmcp]</span><br><span class="line"></span><br><span class="line">[chooser]</span><br><span class="line"></span><br><span class="line">[debug]</span><br><span class="line"><span class="comment"># Uncomment the line below to turn on debugging</span></span><br><span class="line"><span class="comment">#Enable=true</span></span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-在-daemon-下写入以下两行代码保存退出"><a href="#ensp-ensp-在-daemon-下写入以下两行代码保存退出" class="headerlink" title="&ensp;&ensp;在[daemon]下写入以下两行代码保存退出"></a>&ensp;&ensp;在[daemon]下写入以下两行代码保存退出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[daemon]</span><br><span class="line">AutomaticLoginEnable=true</span><br><span class="line">AutomaticLogin=root</span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-更改完成。"><a href="#ensp-ensp-更改完成。" class="headerlink" title="&ensp;&ensp;更改完成。"></a>&ensp;&ensp;更改完成。</h2>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -786,7 +787,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -797,7 +798,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
