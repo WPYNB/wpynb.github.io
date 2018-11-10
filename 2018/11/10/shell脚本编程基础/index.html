@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是shell它是一种程序设计语言。作为命令语言，它交互式解释和执行用户输入的命令或者自动地解释和执行预先设定好的一连串的命令；作为程序设计语言，它定义了各种变量和参数，并提供了许多在高级语言中才具有的控制结构，包括循环和分支。 shell脚本的用途有：自动化常用命令执行系统管理和故障排除创建简单的应用程序处理文本或文件 创建shell脚本 第一行必须包括shell声明序列：#!/bin/bas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shell脚本编程基础">
+<meta property="og:url" content="http://yoursite.com/2018/11/10/shell脚本编程基础/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="什么是shell它是一种程序设计语言。作为命令语言，它交互式解释和执行用户输入的命令或者自动地解释和执行预先设定好的一连串的命令；作为程序设计语言，它定义了各种变量和参数，并提供了许多在高级语言中才具有的控制结构，包括循环和分支。 shell脚本的用途有：自动化常用命令执行系统管理和故障排除创建简单的应用程序处理文本或文件 创建shell脚本 第一行必须包括shell声明序列：#!/bin/bas">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-10T08:49:13.783Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="shell脚本编程基础">
+<meta name="twitter:description" content="什么是shell它是一种程序设计语言。作为命令语言，它交互式解释和执行用户输入的命令或者自动地解释和执行预先设定好的一连串的命令；作为程序设计语言，它定义了各种变量和参数，并提供了许多在高级语言中才具有的控制结构，包括循环和分支。 shell脚本的用途有：自动化常用命令执行系统管理和故障排除创建简单的应用程序处理文本或文件 创建shell脚本 第一行必须包括shell声明序列：#!/bin/bas">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/10/shell脚本编程基础/"/>
+
+
+
+
+
+  <title>shell脚本编程基础 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/10/shell脚本编程基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">shell脚本编程基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-10T15:54:13+08:00">
+                2018-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/shell脚本编程基础/" itemprop="url" rel="index">
+                    <span itemprop="name">shell脚本编程基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是shell"><a href="#什么是shell" class="headerlink" title="什么是shell"></a>什么是shell</h1><p>它是一种程序设计语言。作为命令语言，它交互式解释和执行用户输入的命令或者自动地解释和执行预先设定好的一连串的命令；作为程序设计语言，它定义了各种变量和参数，并提供了许多在高级语言中才具有的控制结构，包括循环和分支。</p>
+<p>shell脚本的用途有：<br>自动化常用命令<br>执行系统管理和故障排除<br>创建简单的应用程序<br>处理文本或文件</p>
+<h1 id="创建shell脚本-第一行必须包括shell声明序列：-bin-bash-首行shebang机制"><a href="#创建shell脚本-第一行必须包括shell声明序列：-bin-bash-首行shebang机制" class="headerlink" title="创建shell脚本 第一行必须包括shell声明序列：#!/bin/bash(首行shebang机制)"></a>创建shell脚本 第一行必须包括shell声明序列：#!/bin/bash(首行shebang机制)</h1><h1 id="编写shell脚本"><a href="#编写shell脚本" class="headerlink" title="编写shell脚本"></a>编写shell脚本</h1><p>用文本编辑器创建一个文件第一行写#!/bin/bash(首行shebang机制)声明<br>    想要给命令添加注释可以开头加#号，脚本不会运行#开头的行</p>
+<h2 id="脚本规范："><a href="#脚本规范：" class="headerlink" title="脚本规范："></a>脚本规范：</h2><p>脚本代码开头约定,以下都是可选项</p>
+<p>1、第一行一般为调用使用的语言<br>2、程序名，避免更改文件名为无法找到正确的文件<br>3、版本号<br>4、更改后的时间<br>5、作者相关信息<br>6、该程序的作用，及注意事项<br>7、最后是各版本的更新简要说明</p>
+<h2 id="下面来写人生中第一个脚本：-好鸡冻"><a href="#下面来写人生中第一个脚本：-好鸡冻" class="headerlink" title="下面来写人生中第一个脚本：   好鸡冻"></a>下面来写人生中第一个脚本：   好鸡冻</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">#********************************************************************</span><br><span class="line">#Author:		WeiPingYang</span><br><span class="line">#QQ: 			812756780</span><br><span class="line">#Date: 			2018-11-10</span><br><span class="line">#FileName：		f1.sh</span><br><span class="line">#URL: 			http://wpynb.github.io</span><br><span class="line">#Description：		The test script</span><br><span class="line">#Copyright (C): 	2018 All rights reserved</span><br><span class="line">#********************************************************************</span><br><span class="line"></span><br><span class="line">echo &quot;Hello word!&quot;</span><br><span class="line">[root@centos7 data]#bash hello.sh </span><br><span class="line">Hello word!</span><br></pre></td></tr></table></figure>
+<h1 id="脚本调试"><a href="#脚本调试" class="headerlink" title="脚本调试"></a>脚本调试</h1><p>执行脚本要加执行x权限<br>bash -n检测脚本中的语法错误<br>bash -x可以显示执行的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#bash  -x hello.sh      </span><br><span class="line">+ echo &apos;Hello word!&apos;</span><br><span class="line">Hello word!</span><br><span class="line">+ adadadad</span><br><span class="line">hello.sh: line 17: adadadad: command not found</span><br></pre></td></tr></table></figure></p>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><p>变量，是指没有固定的值，可以改变的数。<br>比如说一个a=1 其实程序并不把a当成数字1，他只会当成一个字符串，除非给他强制转换 a=int(1)才会把a当成一个数字1. linux中bash默认会自动做转换。</p>
+<h2 id="变量命名法则："><a href="#变量命名法则：" class="headerlink" title="变量命名法则："></a>变量命名法则：</h2><p>1、不能使程序中的保留字：例如if, for<br>2、只能使用数字、字母及下划线，且不能以数字开头<br>3、见名知义<br>4、统一命名规则：驼峰命名法</p>
+<h2 id="变量引用：-name-name"><a href="#变量引用：-name-name" class="headerlink" title="变量引用：${name} $name"></a>变量引用：${name} $name</h2><p>“ “：弱引用，其中的变量引用会被替换为变量值<br>‘ ‘：强引用，其中的变量引用不会被替换为变量值，而保持原字符串<br>定义变量前面要加$符号</p>
+<h1 id="删除变量"><a href="#删除变量" class="headerlink" title="删除变量"></a>删除变量</h1><p>显示已定义的所有变量：set<br>删除变量：unset name</p>
+<h1 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h1><p>在linux中我们常用的变量叫普通变量，我们定义一个变量之后只能在当前的bash执行，如果新开一个bash就无法执行在上一个bash里建立的变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#echo $a</span><br><span class="line">hello</span><br><span class="line">[root@centos7 ~]#bash</span><br><span class="line">[root@centos7 ~]#echo $a</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]#</span><br><span class="line"></span><br><span class="line">如果想要其他子`bash`也可以执行这个命令，可以写在环境变量里面  </span><br><span class="line">`export name=VALUE`  </span><br><span class="line">`declare -x name=VALUE`  </span><br><span class="line">显示所有环境变量：`env``printenv``export``declare -x`</span><br><span class="line">### 变量引用（）</span><br><span class="line">如果把一个变量放入到`（）`里那么这个变量之后在括号里才有用，出了括号就无效了；</span><br><span class="line">**例：**  </span><br><span class="line">```bash</span><br><span class="line">[root@centos7 ~]#name=wpy;(echo $name;name=wang;echo $name)</span><br><span class="line">wpy</span><br><span class="line">wang</span><br></pre></td></tr></table></figure>
+<h1 id="位置变量"><a href="#位置变量" class="headerlink" title="位置变量"></a>位置变量</h1><p>位置变量是在执行一个程序的时候后面跟上内容（可以是命令），它会写到程序里预留的$的位置<br>$1, $2, …：对应第1、第2等参数<br>$0: 命令本身<br>$: 传递给脚本的所有参数，全部参数合为一个字符串<br>$@: 传递给脚本的所有参数，每个参数为独立字符串<br><strong>$@ $ 只在被双引号包起来的时候才会有差异</strong></p>
+<h1 id="只读变量（常亮）"><a href="#只读变量（常亮）" class="headerlink" title="只读变量（常亮）"></a>只读变量（常亮）</h1><p>只读变量创建了之后只能查看不能修改，也不能删除,下面两个命令创建效果一样<br>查看只读变量：<br>    readonly–p</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#readonly a=3</span><br><span class="line">[root@centos7 data]#a=2</span><br><span class="line">-bash: a: readonly variable</span><br><span class="line"></span><br><span class="line">[root@centos7 data]#declare -r b=1</span><br><span class="line">[root@centos7 data]#b=2</span><br><span class="line">-bash: b: readonly variable</span><br></pre></td></tr></table></figure>
+<h1 id="查看直接结果退出状态"><a href="#查看直接结果退出状态" class="headerlink" title="查看直接结果退出状态"></a>查看直接结果退出状态</h1><p>如果想知道命令执行的成功与否可用命令来查看，返回0即为成功，返回1-255其中的数字就为失败<br>但是只能显示最后一条命令的成功或者失败，也可以自己指定状态码：exit number</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#dadadad &amp;&gt; /dev/null </span><br><span class="line">[root@centos7 data]#echo $?</span><br><span class="line">127</span><br><span class="line">[root@centos7 data]#ls &amp;&gt; /dev/null        </span><br><span class="line">[root@centos7 data]#echo $?</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<h2 id="退出状态码"><a href="#退出状态码" class="headerlink" title="退出状态码"></a>退出状态码</h2><p>bash自定义退出状态码<br>exit [n]：自定义退出状态码<br>注意：脚本中一旦遇到exit命令，脚本会立即终止；终止退出状态取决于exit命令后面的数字<br>注意：如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码</p>
+<h1 id="bash中的算术运算"><a href="#bash中的算术运算" class="headerlink" title="bash中的算术运算"></a>bash中的算术运算</h1><p>乘法符号有些场景中需要转义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+</span><br><span class="line">-</span><br><span class="line">*</span><br><span class="line">/</span><br><span class="line">% #取模</span><br></pre></td></tr></table></figure></p>
+<h2 id="实现算术运算"><a href="#实现算术运算" class="headerlink" title="实现算术运算"></a>实现算术运算</h2><p>可用用let $[] $(( ) 来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#let a=1+1 |echo $a</span><br><span class="line">2</span><br><span class="line">[root@centos7 ~]#let b=10%3;echo $b</span><br><span class="line">1</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]#a=$[1+1]</span><br><span class="line">[root@centos7 ~]#echo $a </span><br><span class="line">2</span><br><span class="line">[root@centos7 ~]#b=$[2**2]</span><br><span class="line">[root@centos7 ~]#echo $b</span><br><span class="line">4</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]#b=$((2*3));echo $b</span><br><span class="line">6</span><br><span class="line">[root@centos7 ~]#a=$((1+2));echo $a</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h2 id="随机数生成器"><a href="#随机数生成器" class="headerlink" title="随机数生成器"></a>随机数生成器</h2><p>bash有内建的随机数生成器：$RANDOM（0-32767）<br>例：做一个脚本，内容要有颜色，并且颜色随机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">color=&quot;\033[1;$[RANDOM%7+31]m&quot;</span><br><span class="line">end=&quot;\033[0m&quot;</span><br><span class="line">echo -e &quot;$color 颜色 $end&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h1><p>逻辑运算主要体现在真和假<br>0为true<br>1位false<br>与运算:必须都是true否则都是false<br>1 与 1 = 1<br>1 与 0 = 1<br>0 与 1 = 1<br>0 与 0 = 0<br>或运算：只要其中一个为true，就是true ，否则就是false<br>1 或1 = 1<br>1 或0 = 0<br>0 或1 = 0<br>0 或0 = 0<br>非：取反，真为假，假为真<br>! 1 = 0 ! true<br>! 0 = 1 ! false<br>异或：^ 异或的两个值,相同为假，不同为真</p>
+<h1 id="短路与短路或"><a href="#短路与短路或" class="headerlink" title="短路与短路或"></a>短路与短路或</h1><p>短路与（&amp; &amp; ），如果前面的项有结果又为假的，那么结果必定为假，如果前面的项为真，那么后面的必须执行<br>第一个为1，结果必定为1<br>第一个为0，第二个必须要参与运算<br>短路或（||）如果前面的为真，那么就一定为真，且后面的一定不会再执行，如果前面的为假，那么后面的必须执行<br>第一个为0，结果必定为0<br>第一个为1，第二个必须要参与运算</p>
+<h1 id="条件测试"><a href="#条件测试" class="headerlink" title="条件测试"></a>条件测试</h1><p>判断某需求是否满足，需要由测试机制来实现test,被判断的字符最好用” “ 引起来，不管是数字还是字符串都可以测试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#a=10</span><br><span class="line">[root@centos7 data]#b=20</span><br><span class="line">[root@centos7 data]#[ $a = $20 ]</span><br><span class="line">[root@centos7 data]#echo $?</span><br><span class="line">1</span><br><span class="line">[root@centos7 data]#a=10</span><br><span class="line">[root@centos7 data]#b=10</span><br><span class="line">[root@centos7 data]#[ $a = $b ]</span><br><span class="line">[root@centos7 data]#echo $?</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<p>也可以测试一个单独的字符串是否为空 -z 如果字符串为空，就判断为真 -n 如果字符串不为空就为真，为空就是假</p>
+<h2 id="bash的数值测试"><a href="#bash的数值测试" class="headerlink" title="bash的数值测试:"></a>bash的数值测试:</h2><p>-gt是否大于<br>-ge是否大于等于<br>-eq是否等于<br>-ne是否不等于<br>-lt是否小于<br>-le是否小于等于<br>=~ 左侧字符串是否能够被右侧的PATTERN所匹配</p>
+<h1 id="条件性的执行操作符"><a href="#条件性的执行操作符" class="headerlink" title="条件性的执行操作符"></a>条件性的执行操作符</h1><p>我们可以用短路与和短路或来实现命令是否继续执行<br>例：判断一个用户是否存在，如果存在则不做操作，如果不存在则创建这个用户。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#username=2018 ;id $username &amp;&gt; /dev/null || useradd $username</span><br><span class="line"></span><br><span class="line">[root@centos7 data]#age=19;[ &quot;$age&quot; -lt 20 ] &amp;&amp; echo &quot;I love &quot; || echo &quot;gun&quot;</span><br><span class="line">I love </span><br><span class="line">[root@centos7 data]#age=22;[ &quot;$age&quot; -lt 20 ] &amp;&amp; echo &quot;I love &quot; || echo &quot;gun&quot;  </span><br><span class="line">gun</span><br></pre></td></tr></table></figure>
+<p>取出硬盘利用率大于10就提示警告</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">number=`df | grep -v ^/dev/sr0 |grep -Eo &quot;[[:digit:]]&#123;1,2&#125;%&quot;|sort -nr|head -1|tr -d &quot;%&quot;`</span><br><span class="line">[ $number -gt 10 ] &amp;&amp; wall disk will be full $number</span><br></pre></td></tr></table></figure>
+<p>ping 一个地址，如果能通就显示up,不同就显示down</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a=&quot;ping -c1 -w1 $1&quot;</span><br><span class="line">[ $# -eq 0 ] &amp;&amp; echo &quot;please input righe ip address&quot; &amp;&amp; exit</span><br><span class="line">$1=[[:digit:]]&#123;1,3&#125;</span><br><span class="line">$a &amp;&gt; /dev/null &amp;&amp;  echo &quot;$1 is up&quot; || echo &quot;$1 is down&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="Bash的文件测试"><a href="#Bash的文件测试" class="headerlink" title="Bash的文件测试:"></a>Bash的文件测试:</h1><p>-r FILE：是否存在且可读<br>-w FILE: 是否存在且可写<br>-x FILE: 是否存在且可执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#[ -x ping.sh ] &amp;&amp; echo &quot;true&quot; || echo &quot;false&quot;</span><br><span class="line">false</span><br></pre></td></tr></table></figure></p>
+<h1 id="文件特殊权限测试："><a href="#文件特殊权限测试：" class="headerlink" title="文件特殊权限测试："></a>文件特殊权限测试：</h1><p>-u FILE：是否存在且拥有suid权限<br>-g FILE：是否存在且拥有sgid权限<br>-k FILE：是否存在且拥有sticky权限</p>
+<h1 id="存在性测试"><a href="#存在性测试" class="headerlink" title="存在性测试:"></a>存在性测试:</h1><p>-a FILE：同-e<br>-e FILE: 文件存在性测试，存在为真，否则为假</p>
+<h1 id="存在性及类别测试"><a href="#存在性及类别测试" class="headerlink" title="存在性及类别测试:"></a>存在性及类别测试:</h1><p>-b FILE：是否存在且为块设备文件<br>-c FILE：是否存在且为字符设备文件<br>-d FILE：是否存在且为目录文件<br>-f FILE：是否存在且为普通文件<br>-h FILE 或-L FILE：存在且为符号链接文件<br>-p FILE：是否存在且为命名管道文件<br>-S FILE：是否存在且为套接字文件</p>
+<h1 id="文件大小测试："><a href="#文件大小测试：" class="headerlink" title="文件大小测试："></a>文件大小测试：</h1><p>-s FILE: 是否存在且非空</p>
+<h1 id="文件是否打开："><a href="#文件是否打开：" class="headerlink" title="文件是否打开："></a>文件是否打开：</h1><p>-t fd: fd文件描述符是否在某终端已经打开<br>-N FILE：文件自从上一次被读取之后是否被修改过<br>-O FILE：当前有效用户是否为文件属主<br>-G FILE：当前有效用户是否为文件属组</p>
+<h1 id="双目测试："><a href="#双目测试：" class="headerlink" title="双目测试："></a>双目测试：</h1><p>FILE1 -efFILE2: FILE1是否是FILE2的硬链接<br>FILE1 -ntFILE2: FILE1是否新于FILE2（mtime）<br>FILE1 -otFILE2: FILE1是否旧于FILE2</p>
+<h1 id="bash的配置文件"><a href="#bash的配置文件" class="headerlink" title="bash的配置文件"></a>bash的配置文件</h1><p>全局配置：<br>/etc/profile<br>/etc/profile.d/*.sh<br>/etc/bashrc</p>
+<h1 id="个人配置："><a href="#个人配置：" class="headerlink" title="个人配置："></a>个人配置：</h1><p>~/.bash_profile<br>~/.bashrc</p>
+<h1 id="编辑配置文件生效"><a href="#编辑配置文件生效" class="headerlink" title="编辑配置文件生效"></a>编辑配置文件生效</h1><p>修改profile和bashrc文件后需生效<br>两种方法:<br>1重新启动shell进程<br>2 . 或source<br>例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. ~/.bashrc</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/10/进程管理与计划任务/" rel="next" title="进程管理与计划任务">
+                <i class="fa fa-chevron-left"></i> 进程管理与计划任务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是shell"><span class="nav-number">1.</span> <span class="nav-text">什么是shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建shell脚本-第一行必须包括shell声明序列：-bin-bash-首行shebang机制"><span class="nav-number">2.</span> <span class="nav-text">创建shell脚本 第一行必须包括shell声明序列：#!/bin/bash(首行shebang机制)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写shell脚本"><span class="nav-number">3.</span> <span class="nav-text">编写shell脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本规范："><span class="nav-number">3.1.</span> <span class="nav-text">脚本规范：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下面来写人生中第一个脚本：-好鸡冻"><span class="nav-number">3.2.</span> <span class="nav-text">下面来写人生中第一个脚本：   好鸡冻</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#脚本调试"><span class="nav-number">4.</span> <span class="nav-text">脚本调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#变量"><span class="nav-number">5.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量命名法则："><span class="nav-number">5.1.</span> <span class="nav-text">变量命名法则：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量引用：-name-name"><span class="nav-number">5.2.</span> <span class="nav-text">变量引用：${name} $name</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除变量"><span class="nav-number">6.</span> <span class="nav-text">删除变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境变量"><span class="nav-number">7.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#位置变量"><span class="nav-number">8.</span> <span class="nav-text">位置变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#只读变量（常亮）"><span class="nav-number">9.</span> <span class="nav-text">只读变量（常亮）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看直接结果退出状态"><span class="nav-number">10.</span> <span class="nav-text">查看直接结果退出状态</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#退出状态码"><span class="nav-number">10.1.</span> <span class="nav-text">退出状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bash中的算术运算"><span class="nav-number">11.</span> <span class="nav-text">bash中的算术运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现算术运算"><span class="nav-number">11.1.</span> <span class="nav-text">实现算术运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机数生成器"><span class="nav-number">11.2.</span> <span class="nav-text">随机数生成器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#逻辑运算"><span class="nav-number">12.</span> <span class="nav-text">逻辑运算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#短路与短路或"><span class="nav-number">13.</span> <span class="nav-text">短路与短路或</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件测试"><span class="nav-number">14.</span> <span class="nav-text">条件测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bash的数值测试"><span class="nav-number">14.1.</span> <span class="nav-text">bash的数值测试:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件性的执行操作符"><span class="nav-number">15.</span> <span class="nav-text">条件性的执行操作符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bash的文件测试"><span class="nav-number">16.</span> <span class="nav-text">Bash的文件测试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件特殊权限测试："><span class="nav-number">17.</span> <span class="nav-text">文件特殊权限测试：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存在性测试"><span class="nav-number">18.</span> <span class="nav-text">存在性测试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存在性及类别测试"><span class="nav-number">19.</span> <span class="nav-text">存在性及类别测试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件大小测试："><span class="nav-number">20.</span> <span class="nav-text">文件大小测试：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件是否打开："><span class="nav-number">21.</span> <span class="nav-text">文件是否打开：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#双目测试："><span class="nav-number">22.</span> <span class="nav-text">双目测试：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bash的配置文件"><span class="nav-number">23.</span> <span class="nav-text">bash的配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人配置："><span class="nav-number">24.</span> <span class="nav-text">个人配置：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置文件生效"><span class="nav-number">25.</span> <span class="nav-text">编辑配置文件生效</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
