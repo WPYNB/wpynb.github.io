@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="&amp;ensp;&amp;ensp;CentOS7更改开机自动登录&amp;ensp;&amp;ensp;用vi打开/etc/gmd/custom.conf配置文件123456789101112131415vi /etc/gmd/custom.conf# GDM configuration storage[daemon][security][xdmcp][chooser][debug]# Uncomment the line">
+<meta name="description" content="CentOS6启动流程1.加载BIOS的硬件信息，获取第一个启动设备2.读取第一个启动设备MBR的引导加载程序(grub)的启动信息3.加载核心操作系统的核心信息，核心开始解压缩，并尝试驱动所有的硬件设备4.核心执行init程序，并获取默认的运行信息5.init程序执行/etc/rc.d/rc.sysinit文件6.启动核心的外挂模块7.init执行运行的各个批处理文件(scripts)8.ini">
 <meta property="og:type" content="article">
-<meta property="og:title" content="更改开机自动登录">
-<meta property="og:url" content="http://yoursite.com/2018/10/13/更改开机自动登录/index.html">
+<meta property="og:title" content="CentOS6启动流程">
+<meta property="og:url" content="http://yoursite.com/2018/11/13/CentOS6启动流程/index.html">
 <meta property="og:site_name" content="海之子">
-<meta property="og:description" content="&amp;ensp;&amp;ensp;CentOS7更改开机自动登录&amp;ensp;&amp;ensp;用vi打开/etc/gmd/custom.conf配置文件123456789101112131415vi /etc/gmd/custom.conf# GDM configuration storage[daemon][security][xdmcp][chooser][debug]# Uncomment the line">
+<meta property="og:description" content="CentOS6启动流程1.加载BIOS的硬件信息，获取第一个启动设备2.读取第一个启动设备MBR的引导加载程序(grub)的启动信息3.加载核心操作系统的核心信息，核心开始解压缩，并尝试驱动所有的硬件设备4.核心执行init程序，并获取默认的运行信息5.init程序执行/etc/rc.d/rc.sysinit文件6.启动核心的外挂模块7.init执行运行的各个批处理文件(scripts)8.ini">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-14T08:12:33.131Z">
+<meta property="og:updated_time" content="2018-11-13T05:12:05.942Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="更改开机自动登录">
-<meta name="twitter:description" content="&amp;ensp;&amp;ensp;CentOS7更改开机自动登录&amp;ensp;&amp;ensp;用vi打开/etc/gmd/custom.conf配置文件123456789101112131415vi /etc/gmd/custom.conf# GDM configuration storage[daemon][security][xdmcp][chooser][debug]# Uncomment the line">
+<meta name="twitter:title" content="CentOS6启动流程">
+<meta name="twitter:description" content="CentOS6启动流程1.加载BIOS的硬件信息，获取第一个启动设备2.读取第一个启动设备MBR的引导加载程序(grub)的启动信息3.加载核心操作系统的核心信息，核心开始解压缩，并尝试驱动所有的硬件设备4.核心执行init程序，并获取默认的运行信息5.init程序执行/etc/rc.d/rc.sysinit文件6.启动核心的外挂模块7.init执行运行的各个批处理文件(scripts)8.ini">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/13/更改开机自动登录/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/13/CentOS6启动流程/"/>
 
 
 
 
 
-  <title>更改开机自动登录 | 海之子</title>
+  <title>CentOS6启动流程 | 海之子</title>
   
 
 
@@ -252,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/13/更改开机自动登录/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/CentOS6启动流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WPY">
@@ -269,7 +269,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">更改开机自动登录</h1>
+          <h1 class="post-title" itemprop="name headline">CentOS6启动流程</h1>
         
 
         <div class="post-meta">
@@ -281,8 +281,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T15:55:21+08:00">
-                2018-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T11:53:00+08:00">
+                2018-11-13
               </time>
             
 
@@ -315,8 +315,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/更改开机自动登录/" itemprop="url" rel="index">
-                    <span itemprop="name">更改开机自动登录</span>
+                  <a href="/categories/linux/CentOS6启动流程/" itemprop="url" rel="index">
+                    <span itemprop="name">CentOS6启动流程</span>
                   </a>
                 </span>
 
@@ -352,9 +352,32 @@
       
 
       
-        <h1 id="ensp-ensp-CentOS7更改开机自动登录"><a href="#ensp-ensp-CentOS7更改开机自动登录" class="headerlink" title="&ensp;&ensp;CentOS7更改开机自动登录"></a>&ensp;&ensp;CentOS7更改开机自动登录</h1><h2 id="ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件"><a href="#ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件" class="headerlink" title="&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件"></a>&ensp;&ensp;用vi打开/etc/gmd/custom.conf配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/gmd/custom.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># GDM configuration storage</span></span><br><span class="line"></span><br><span class="line">[daemon]</span><br><span class="line"></span><br><span class="line">[security]</span><br><span class="line"></span><br><span class="line">[xdmcp]</span><br><span class="line"></span><br><span class="line">[chooser]</span><br><span class="line"></span><br><span class="line">[debug]</span><br><span class="line"><span class="comment"># Uncomment the line below to turn on debugging</span></span><br><span class="line"><span class="comment">#Enable=true</span></span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-在-daemon-下写入以下两行代码保存退出"><a href="#ensp-ensp-在-daemon-下写入以下两行代码保存退出" class="headerlink" title="&ensp;&ensp;在[daemon]下写入以下两行代码保存退出"></a>&ensp;&ensp;在[daemon]下写入以下两行代码保存退出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[daemon]</span><br><span class="line">AutomaticLoginEnable=true</span><br><span class="line">AutomaticLogin=root</span><br></pre></td></tr></table></figure>
-<h2 id="ensp-ensp-更改完成。"><a href="#ensp-ensp-更改完成。" class="headerlink" title="&ensp;&ensp;更改完成。"></a>&ensp;&ensp;更改完成。</h2>
+        <h1 id="CentOS6启动流程"><a href="#CentOS6启动流程" class="headerlink" title="CentOS6启动流程"></a>CentOS6启动流程</h1><p>1.加载BIOS的硬件信息，获取第一个启动设备<br>2.读取第一个启动设备MBR的引导加载程序(grub)的启动信息<br>3.加载核心操作系统的核心信息，核心开始解压缩，并尝试驱动所有的硬件设备<br>4.核心执行init程序，并获取默认的运行信息<br>5.init程序执行/etc/rc.d/rc.sysinit文件<br>6.启动核心的外挂模块<br>7.init执行运行的各个批处理文件(scripts)<br>8.init执行/etc/rc.d/rc.local<br>9.执行/bin/login程序，等待用户登录</p>
+<h2 id="启动概括"><a href="#启动概括" class="headerlink" title="启动概括"></a>启动概括</h2><p>POST：Power-On-Self-Test，加电自检，是BIOS功能的一个主要部分。负责完成对CPU、主板、内存、硬盘子系统、显示子系统、串并行接口、键盘等硬件情况的检测</p>
+<p>ROM：BIOS，Basic Input and Output System，保存着有关计算机系统最重要的基本输入输出程序，系统信息设置、开机加电自检程序和系统启动自举程序等</p>
+<p>RAM：CMOS互补金属氧化物半导体，保存各项参数的设定</p>
+<p>按次序查找引导设备，第一个有引导程序的设备为本次启动设备</p>
+<p>bootloader: 引导加载器，引导程序</p>
+<p>windows: ntloader，仅是启动OS</p>
+<p>Linux：功能丰富，提供菜单，允许用户选择要启动系统或不同的内核版本；把用户选定的内核装载到内存中的特定空间中，解压、展开，并把系统控制权移交给内核</p>
+<h2 id="开机流程总结"><a href="#开机流程总结" class="headerlink" title="开机流程总结"></a>开机流程总结</h2><p>1，开机加电自检<br>2，读取mbr里面的Grub的1.5阶段<br>3，2阶段，boot下的/boot/grub/grub.conf定义了vmlinux的路径，以及根在哪，读取根需要有initramfs.img来加载驱动<br>4，读取系统里的第一个进程 /etc/init 然后读取/etc/inittab/下对应的模式，再读取/etc/rc.d/rc.sysinit的初始化脚本，根据模式再读取/etc/rc*.d/下的文件，先运行K开头的，再运行S开头的，最后运行/etc/rc.d/rc.local.</p>
+<h3 id="MBR："><a href="#MBR：" class="headerlink" title="MBR："></a>MBR：</h3><p>第一个扇区<br>前446字节 bootloader<br>中间64字节 分区表<br>最后2字节 55AA</p>
+<h3 id="GRUP："><a href="#GRUP：" class="headerlink" title="GRUP："></a>GRUP：</h3><p>primary boot loader : 1st stage，1.5 stage<br>secondary boot loader ：2nd stage，分区文件</p>
+<p>###：kernel：</p>
+<p>自身初始化：<br>探测可识别到的所有硬件设备<br>加载硬件驱动程序（借助于ramdisk加载驱动）<br>以只读方式挂载根文件系统<br>运行用户空间的第一个应用程序：/sbin/init</p>
+<h3 id="init程序的类型："><a href="#init程序的类型：" class="headerlink" title="init程序的类型："></a>init程序的类型：</h3><p>SysV: init, CentOS 5之前<br>配置文件：/etc/inittab</p>
+<p>Upstart: init,CentOS 6<br>配置文件：/etc/inittab, /etc/init/*.conf</p>
+<p>Systemd：systemd, CentOS 7<br>配置文件：/usr/lib/systemd/system<br>/etc/systemd/system</p>
+<h3 id="CentOS-6-etc-inittab"><a href="#CentOS-6-etc-inittab" class="headerlink" title="CentOS 6 /etc/inittab"></a>CentOS 6 /etc/inittab</h3><p>/etc/inittab中记录了开机进入的runlevel的类型</p>
+<p>运行级别：为系统运行或维护等目的而设定；0-6：7个级别。<br>0：关机<br>1：单用户模式(root自动登录), single, 维护模式<br>2: 多用户模式，启动网络功能，但不会启动NFS；维护模式<br>3: 多用户模式，正常模式；字符界面<br>4: 预留级别,可同3级别<br>5: 多用户模式，正常模式；图形界面<br>6: 重启<br>默认级别:3;5<br>切换级别：init (0-6)<br>查看当前级别：runlevel ; who -r</p>
+<h2 id="chkconfig命令"><a href="#chkconfig命令" class="headerlink" title="chkconfig命令"></a>chkconfig命令</h2><p>chkconfig命令<br>查看服务在所有级别的启动或关闭设定情形：<br>chkconfig 【–list】 【name】</p>
+<p>添加：<br>SysV的服务脚本放置于/etc/rc.d/init.d (/etc/init.d)<br>chkconfig –add name</p>
+<p>删除：<br>chkconfig –del name</p>
+<p>修改指定的链接类型<br>chkconfig [–level levels] name 《on|off|reset》<br>–level LLLL: 指定要设置的级别；省略时表示2345</p>
+<p>显示所有：chkconfig –list</p>
+<h1 id="CentOS7启动流程"><a href="#CentOS7启动流程" class="headerlink" title="CentOS7启动流程"></a>CentOS7启动流程</h1><p>UEFi或BIOS初始化，运行POST开机自检<br>选择启动设备<br>引导装载程序, centos7是grub2<br>加载装载程序的配置文件：<br>/etc/grub.d/<br>/etc/default/grub<br>/boot/grub2/grub.cfg<br>加载initramfs驱动模块<br>加载内核选项<br>内核初始化，centos7使用systemd代替init<br>执行initrd.target所有单元，包括挂载/etc/fstab<br>从initramfs根文件系统切换到磁盘根目录<br>systemd执行默认target配置，配置文件/etc/systemd/system/default.target<br>systemd执行sysinit.target初始化系统及basic.target准备操作系统<br>systemd启动multi-user.target下的本机与服务器服务<br>systemd执行multi-user.target下的/etc/rc.d/rc.local<br>Systemd执行multi-user.target下的getty.target及登录服务<br>systemd执行graphical需要的服务</p>
+<p>启动时间：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 ~]#systemd-analyze</span><br><span class="line">Startup finished in 2.158s (kernel) + 1.880s (initrd) + 11.428s (userspace) = 15.467s</span><br><span class="line">[root@CentOS7 ~]#</span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     
@@ -378,8 +401,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/13/screen/" rel="next" title="screen会话建立">
-                <i class="fa fa-chevron-left"></i> screen会话建立
+              <a href="/2018/11/10/shell脚本编程基础/" rel="next" title="shell脚本编程基础">
+                <i class="fa fa-chevron-left"></i> shell脚本编程基础
               </a>
             
           </div>
@@ -387,10 +410,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/13/Linux软硬连接/" rel="prev" title="Linux软硬连接">
-                Linux软硬连接 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -513,7 +532,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ensp-ensp-CentOS7更改开机自动登录"><span class="nav-number">1.</span> <span class="nav-text">  CentOS7更改开机自动登录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ensp-ensp-用vi打开-etc-gmd-custom-conf配置文件"><span class="nav-number">1.1.</span> <span class="nav-text">  用vi打开/etc/gmd/custom.conf配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ensp-ensp-在-daemon-下写入以下两行代码保存退出"><span class="nav-number">1.2.</span> <span class="nav-text">  在[daemon]下写入以下两行代码保存退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ensp-ensp-更改完成。"><span class="nav-number">1.3.</span> <span class="nav-text">  更改完成。</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CentOS6启动流程"><span class="nav-number">1.</span> <span class="nav-text">CentOS6启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动概括"><span class="nav-number">1.1.</span> <span class="nav-text">启动概括</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开机流程总结"><span class="nav-number">1.2.</span> <span class="nav-text">开机流程总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MBR："><span class="nav-number">1.2.1.</span> <span class="nav-text">MBR：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GRUP："><span class="nav-number">1.2.2.</span> <span class="nav-text">GRUP：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init程序的类型："><span class="nav-number">1.2.3.</span> <span class="nav-text">init程序的类型：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CentOS-6-etc-inittab"><span class="nav-number">1.2.4.</span> <span class="nav-text">CentOS 6 /etc/inittab</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chkconfig命令"><span class="nav-number">1.3.</span> <span class="nav-text">chkconfig命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CentOS7启动流程"><span class="nav-number">2.</span> <span class="nav-text">CentOS7启动流程</span></a></li></ol></div>
             
 
           </div>
