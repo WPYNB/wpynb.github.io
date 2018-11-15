@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="海之子">
 <meta property="og:description" content="压缩、解压缩工具compress/uncompresscompress压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；也可以源文件保留-d: 解压缩，相当于uncompress-c: 结果输出至标准输出,不删除原文件-v: 显示详情 uncompress解压缩123456[root@centos7 data]#ll -h bigfile -rw-r--r--. 1 root roo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-06T11:42:42.372Z">
+<meta property="og:updated_time" content="2018-11-15T11:33:44.404Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux常见压缩工具">
 <meta name="twitter:description" content="压缩、解压缩工具compress/uncompresscompress压缩完之后会自动给压缩的文件加上.Z的后缀，并且会把源文件删除；也可以源文件保留-d: 解压缩，相当于uncompress-c: 结果输出至标准输出,不删除原文件-v: 显示详情 uncompress解压缩123456[root@centos7 data]#ll -h bigfile -rw-r--r--. 1 root roo">
@@ -360,9 +360,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#bzip2  -k w</span><br></pre></td></tr></table></figure>
 <h2 id="xz-unxz-xzcat"><a href="#xz-unxz-xzcat" class="headerlink" title="xz/unxz/xzcat"></a>xz/unxz/xzcat</h2><p>xz[OPTION]… FILE …<br>-k: keep, 保留原文件<br>-d：解压缩<br>-#：1-9，压缩比，默认为6<br>unxzfile.xz解压缩<br>xzcat: 不显式解压缩的前提下查看文本文件内容</p>
 <h2 id="zip-unzip"><a href="#zip-unzip" class="headerlink" title="zip/unzip"></a>zip/unzip</h2><p>1.打包压缩支持压缩文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zip –r /backup/sysconfig /etc/sysconfig/</span><br><span class="line">解包解压缩</span><br><span class="line">unzip sysconfig.zip</span><br><span class="line">cat /var/log/messages | zip messages -</span><br><span class="line">unzip -p message &gt; message</span><br></pre></td></tr></table></figure></p>
-<p>2.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#zip -r etc /etc/sysconfig   #压缩文件夹</span><br><span class="line">[root@centos7 data]#unzip etc.zip               #解压缩文件夹</span><br><span class="line"></span><br><span class="line">## tar工具</span><br><span class="line">tar可以把很多的文件夹或者文件打包，然后压缩，经常用来做备份使用</span><br><span class="line">使用：</span><br><span class="line">(1) 创建归档</span><br><span class="line">tar -cpvf/PATH/FILE.tar FILE...  # c表示创建 p表示保留权限 v表示显示过程 f表示后面跟文件</span><br><span class="line">```bash</span><br><span class="line">[root@centos7 data]#tar cpvf etc.tar etc</span><br></pre></td></tr></table></figure></p>
-<p>3.追加文件至归档：注：不支持对压缩文件追加<br>tar -r -f /PATH/FILE.tar FILE…</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar -rf etc.tar m       #把m文件追加到etc.tar文件中</span><br></pre></td></tr></table></figure>
+<p>2.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#zip -r etc /etc/sysconfig   #压缩文件夹</span><br><span class="line">[root@centos7 data]#unzip etc.zip               #解压缩文件夹</span><br></pre></td></tr></table></figure></p>
+<h2 id="tar工具"><a href="#tar工具" class="headerlink" title="tar工具"></a>tar工具</h2><p>tar可以把很多的文件夹或者文件打包，然后压缩，经常用来做备份使用<br>使用：<br>(1) 创建归档</p>
+<p>tar -cpvf/PATH/FILE.tar FILE…  # c表示创建 p表示保留权限 v表示显示过程 f表示后面跟文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar cpvf etc.tar etc</span><br></pre></td></tr></table></figure></p>
+<p>3.追加文件至归档：注：不支持对压缩文件追加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -r -f /PATH/FILE.tar FILE…</span><br><span class="line"></span><br><span class="line">[root@centos7 data]#tar -rf etc.tar m       #把m文件追加到etc.tar文件中</span><br></pre></td></tr></table></figure></p>
 <p>4.查看归档文件中的文件列表<br>tar -t -f /PATH/FILE.tar</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 data]#tar -tvf etc.tar</span><br></pre></td></tr></table></figure>
 <p>5.展开归档<br>tar -x -f /PATH/FILE.tar<br>tar -x -f /PATH/FILE.tar -C /PATH/</p>
@@ -487,7 +488,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -498,7 +499,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -533,7 +534,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#压缩、解压缩工具"><span class="nav-number">1.</span> <span class="nav-text">压缩、解压缩工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#compress-uncompress"><span class="nav-number">1.1.</span> <span class="nav-text">compress/uncompress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uncompress解压缩"><span class="nav-number">1.2.</span> <span class="nav-text">uncompress解压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gzip-gunzip"><span class="nav-number">1.3.</span> <span class="nav-text">gzip/gunzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bzip2-bunzip2-bzcat"><span class="nav-number">1.4.</span> <span class="nav-text">bzip2/bunzip2/bzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xz-unxz-xzcat"><span class="nav-number">1.5.</span> <span class="nav-text">xz/unxz/xzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zip-unzip"><span class="nav-number">1.6.</span> <span class="nav-text">zip/unzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpio"><span class="nav-number">1.7.</span> <span class="nav-text">cpio</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#压缩、解压缩工具"><span class="nav-number">1.</span> <span class="nav-text">压缩、解压缩工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#compress-uncompress"><span class="nav-number">1.1.</span> <span class="nav-text">compress/uncompress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uncompress解压缩"><span class="nav-number">1.2.</span> <span class="nav-text">uncompress解压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gzip-gunzip"><span class="nav-number">1.3.</span> <span class="nav-text">gzip/gunzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bzip2-bunzip2-bzcat"><span class="nav-number">1.4.</span> <span class="nav-text">bzip2/bunzip2/bzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xz-unxz-xzcat"><span class="nav-number">1.5.</span> <span class="nav-text">xz/unxz/xzcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zip-unzip"><span class="nav-number">1.6.</span> <span class="nav-text">zip/unzip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tar工具"><span class="nav-number">1.7.</span> <span class="nav-text">tar工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpio"><span class="nav-number">1.8.</span> <span class="nav-text">cpio</span></a></li></ol></li></ol></div>
             
 
           </div>
