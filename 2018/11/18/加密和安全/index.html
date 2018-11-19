@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="墨菲定律墨菲定律：一种心理学效应，是由爱德华·墨菲（Edward A. Murphy）提出的，原话：如果有两种或两种以上的方式去做某件事情，而其中一种选择方式将导致灾难，则必定有人会做出这种选择 主要内容：任何事都没有表面看起来那么简单所有的事都会比你预计的时间长会出错的事总会出错如果你担心某种情况发生，那么它就更有可能发生 安全机制信息安全防护的目标保密性 Confidentiality">
+<meta property="og:type" content="article">
+<meta property="og:title" content="加密和安全">
+<meta property="og:url" content="http://yoursite.com/2018/11/18/加密和安全/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="墨菲定律墨菲定律：一种心理学效应，是由爱德华·墨菲（Edward A. Murphy）提出的，原话：如果有两种或两种以上的方式去做某件事情，而其中一种选择方式将导致灾难，则必定有人会做出这种选择 主要内容：任何事都没有表面看起来那么简单所有的事都会比你预计的时间长会出错的事总会出错如果你担心某种情况发生，那么它就更有可能发生 安全机制信息安全防护的目标保密性 Confidentiality">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-19T12:44:56.511Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="加密和安全">
+<meta name="twitter:description" content="墨菲定律墨菲定律：一种心理学效应，是由爱德华·墨菲（Edward A. Murphy）提出的，原话：如果有两种或两种以上的方式去做某件事情，而其中一种选择方式将导致灾难，则必定有人会做出这种选择 主要内容：任何事都没有表面看起来那么简单所有的事都会比你预计的时间长会出错的事总会出错如果你担心某种情况发生，那么它就更有可能发生 安全机制信息安全防护的目标保密性 Confidentiality">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/18/加密和安全/"/>
+
+
+
+
+
+  <title>加密和安全 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/18/加密和安全/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">加密和安全</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-18T17:52:01+08:00">
+                2018-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/加密和安全/" itemprop="url" rel="index">
+                    <span itemprop="name">加密和安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="墨菲定律"><a href="#墨菲定律" class="headerlink" title="墨菲定律"></a>墨菲定律</h1><p>墨菲定律：一种心理学效应，是由爱德华·墨菲（Edward A. Murphy）提出的，<br>原话：如果有两种或两种以上的方式去做某件事情，而其中一种选择方式将导<br>致灾难，则必定有人会做出这种选择</p>
+<p>主要内容：<br>任何事都没有表面看起来那么简单<br>所有的事都会比你预计的时间长<br>会出错的事总会出错<br>如果你担心某种情况发生，那么它就更有可能发生</p>
+<h1 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h1><h2 id="信息安全防护的目标"><a href="#信息安全防护的目标" class="headerlink" title="信息安全防护的目标"></a>信息安全防护的目标</h2><p>保密性 Confidentiality<br>完整性 Integrity<br>可用性 Usability<br>可控制性 Controlability<br>不可否认性 Non-repudiation</p>
+<h2 id="安全防护环节"><a href="#安全防护环节" class="headerlink" title="安全防护环节"></a>安全防护环节</h2><p>物理安全：各种设备/主机、机房环境<br>系统安全：主机或设备的操作系统<br>应用安全：各种网络服务、应用程序<br>网络安全：对网络访问的控制、防火墙规则<br>数据安全：信息的备份与恢复、加密解密<br>管理安全：各种保障性的规范、流程、方法</p>
+<h2 id="安全攻击：STRIDE"><a href="#安全攻击：STRIDE" class="headerlink" title="安全攻击：STRIDE"></a>安全攻击：STRIDE</h2><p>Spoofing 假冒<br>Tampering 篡改<br>Repudiation 否认<br>Information Disclosure 信息泄漏<br>Denial of Service 拒绝服务<br>Elevation of Privilege 提升权限</p>
+<h2 id="安全设计基本原则"><a href="#安全设计基本原则" class="headerlink" title="安全设计基本原则"></a>安全设计基本原则</h2><p>使用成熟的安全系统<br>以小人之心度输入数据<br>外部系统是不安全的<br>最小授权<br>减少外部接口<br>缺省使用安全模式<br>安全不是似是而非<br>从STRIDE思考<br>在入口处检查<br>从管理上保护好你的系统</p>
+<h1 id="安全算法"><a href="#安全算法" class="headerlink" title="安全算法"></a>安全算法</h1><h2 id="常用安全技术"><a href="#常用安全技术" class="headerlink" title="常用安全技术"></a>常用安全技术</h2><p>认证<br>授权<br>审计<br>安全通信</p>
+<h2 id="密码算法和协议"><a href="#密码算法和协议" class="headerlink" title="密码算法和协议"></a>密码算法和协议</h2><p>对称加密<br>公钥加密<br>单向加密<br>认证协议</p>
+<h2 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h2><h3 id="对称加密：加密和解密使用同一个密钥"><a href="#对称加密：加密和解密使用同一个密钥" class="headerlink" title="对称加密：加密和解密使用同一个密钥"></a>对称加密：加密和解密使用同一个密钥</h3><p>DES：Data Encryption Standard，56bits<br>3DES：<br>AES：Advanced (128, 192, 256bits)<br>Blowfish，Twofish<br>IDEA，RC6，CAST5</p>
+<h3 id="特性："><a href="#特性：" class="headerlink" title="特性："></a>特性：</h3><pre><code>1、加密、解密使用同一个密钥，效率高
+2、将原始数据分割成固定大小的块，逐个进行加密
+</code></pre><h3 id="缺陷："><a href="#缺陷：" class="headerlink" title="缺陷："></a>缺陷：</h3><pre><code>1、密钥过多
+2、密钥分发
+3、数据来源无法确认
+</code></pre><h2 id="非对称加密算法"><a href="#非对称加密算法" class="headerlink" title="非对称加密算法"></a>非对称加密算法</h2><h3 id="公钥加密：密钥是成对出现"><a href="#公钥加密：密钥是成对出现" class="headerlink" title="公钥加密：密钥是成对出现"></a>公钥加密：密钥是成对出现</h3><p>公钥：公开给所有人；public key<br>公钥：自己留存，必须保证其私密性；secret key</p>
+<h3 id="特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然"><a href="#特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然" class="headerlink" title="特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然"></a>特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然</h3><h3 id="功能："><a href="#功能：" class="headerlink" title="功能："></a>功能：</h3><pre><code>数字签名：主要在于让接收方确认发送方身份
+对称密钥交换：发送方用对方的公钥加密一个对称密钥后发送给对方
+数据加密：适合加密较小数据
+</code></pre><h3 id="缺点：密钥长，加密解密效率低下"><a href="#缺点：密钥长，加密解密效率低下" class="headerlink" title="缺点：密钥长，加密解密效率低下"></a>缺点：密钥长，加密解密效率低下</h3><h3 id="算法："><a href="#算法：" class="headerlink" title="算法："></a>算法：</h3><pre><code>RSA（加密，数字签名）
+DSA（数字签名）
+ELGamal
+</code></pre><h3 id="基于一对公钥-密钥对"><a href="#基于一对公钥-密钥对" class="headerlink" title="基于一对公钥/密钥对"></a>基于一对公钥/密钥对</h3><pre><code>用密钥对中的一个加密，另一个解密
+</code></pre><h3 id="实现加密："><a href="#实现加密：" class="headerlink" title="实现加密："></a>实现加密：</h3><pre><code>接收者
+    生成公钥/密钥对：P和S
+    公开公钥P，保密密钥S
+发送者
+    使用接收者的公钥来加密消息M
+    将P(M)发送给接收者
+接收者
+    使用密钥S来解密：M=S(P(M))
+</code></pre><h3 id="实现数字签名："><a href="#实现数字签名：" class="headerlink" title="实现数字签名："></a>实现数字签名：</h3><pre><code>发送者
+    生成公钥/密钥对：P和S
+    公开公钥P，保密密钥S
+    使用密钥S来加密消息M
+    发送给接收者S(M)
+接收者
+    使用发送者的公钥来解密M=P(S(M))
+    结合签名和加
+    分离签名
+</code></pre><h1 id="对称加密的实现"><a href="#对称加密的实现" class="headerlink" title="对称加密的实现"></a>对称加密的实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpg -c file，加密文件</span><br><span class="line">gpg -o OUTFILE -d file，解密文件</span><br></pre></td></tr></table></figure>
+<h2 id="公钥加密"><a href="#公钥加密" class="headerlink" title="公钥加密"></a>公钥加密</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gpg --gen-key，生成公钥</span><br><span class="line">gpg -a --export -o /PATH/FILE 导出公钥</span><br><span class="line">gpg --import 导出公钥的路径</span><br><span class="line">gpg -e -r </span><br><span class="line">gpg --delete-keys，删除</span><br></pre></td></tr></table></figure>
+<h1 id="CA和证书"><a href="#CA和证书" class="headerlink" title="CA和证书"></a>CA和证书</h1><p>PKI：Public key Infrastructure<br>    签证机构：CA（Certificate Authority）<br>    注册机构：RA<br>    证书吊销列表：CRL<br>    证书存取库：<br>x.509，定义证书结构和证书协议标准<br>    主体名称<br>    有限期限<br>    序列号<br>    发行者签名</p>
+<h2 id="证书获取"><a href="#证书获取" class="headerlink" title="证书获取"></a>证书获取</h2><p>证书获取两种方法：<br>    使用证书授权机构<br>        生成证书请求(csr)<br>        将证书请求csr发送给CA<br>        CA签名颁发证书<br>    自签名的证书<br>        自己签发自己的公钥</p>
+<h2 id="SSL：Secure-Socket-Layer，TLS：Transport-Layer-security"><a href="#SSL：Secure-Socket-Layer，TLS：Transport-Layer-security" class="headerlink" title="SSL：Secure Socket Layer，TLS：Transport Layer security"></a>SSL：Secure Socket Layer，TLS：Transport Layer security</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SSL 2.0 Netscape(1995)</span><br><span class="line">TLS 1.2 (2008)</span><br><span class="line">TLS 1.3 (2015)</span><br><span class="line">SSL通信的过程分为两个阶段：</span><br><span class="line">1. 握手阶段(协商阶段):客户端和服务器端认证对方身份（依赖于PKI体系，利用数字证书进行身份认证），并协商通信中使用的安全参数、密码套件以及主密钥。 后续通信使用的所有密钥都是通过MasterSecret生成。</span><br><span class="line">2. 应用阶段:在握手阶段完成后进入，在应用阶段通信双方使用握手阶段协商好的密钥进行安全通信</span><br></pre></td></tr></table></figure>
+<h2 id="OpenSSL"><a href="#OpenSSL" class="headerlink" title="OpenSSL"></a>OpenSSL</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">包含三个组件：</span><br><span class="line">    openssl：命令行工具</span><br><span class="line">    libcrypto：加密算法库</span><br><span class="line">    libssl：加密模块应用</span><br><span class="line">对称密钥的加密</span><br><span class="line">    openssl enc </span><br><span class="line">    算法：3des, aes, blowfish, twofish</span><br><span class="line">    加密：</span><br><span class="line">    openssl enc -e -des3 -a -salt -in testfile -out testfile.cipher</span><br><span class="line">    解密：</span><br><span class="line">    openssl enc -d -des3 -a -salt –in testfile.cipher -out testfile</span><br><span class="line">单向加密</span><br><span class="line">    openssl passwd -1 -salt </span><br><span class="line">生成随机数</span><br><span class="line">    openssl rand -base64|hex NUMBER</span><br><span class="line">生成私钥</span><br><span class="line">    (umask 077;openssl genrsa -out cakey.key -des 2048)</span><br><span class="line">    openssl rsa -in test.key –out test2.key 将加密key解密</span><br><span class="line">从私钥中提取公钥</span><br><span class="line">    openssl rsa -in 私钥文件 -pubout -out 公钥文件</span><br></pre></td></tr></table></figure>
+<h3 id="OpenSSL自建CA"><a href="#OpenSSL自建CA" class="headerlink" title="OpenSSL自建CA"></a>OpenSSL自建CA</h3><p>创建CA的配置文件/etc/pki/tls/openssl.cnf<br>    三种策略：match匹配、 optional可选、 supplied提供<br>    match：要求申请填写的信息跟CA设置信息必须一致<br>    optional：可有可无，跟CA设置信息可不一致<br>    supplied：必须填写这项申请信息</p>
+<p>1.切换至CA文件夹<br>cd /etc/pki/CA<br>2.建立根CA的私钥<br>(umask 077;openssl genrsa -out private/cakey.pem 2048)<br>3.生成自签名的证书<br>openssl req -new -x509 -key private/cakey.pem cacert.pem -days 3650<br>        -new：生成新证书签署请求<br>        -x509：生成自签证书<br>        -key：生成请求是用到的私钥文件<br>        -days n：证书的有效期限<br>        -out cacert.pem：证书的保存路径<br>        -subj arg：用于指定生成的证书请求的用户信息，或者处理证书请求时用指定参数替换。生成证书请求时，如果不指定此选项，程序会提示用户来输入各个用户信息，包括国名、组织等信息，如果采用此选择，则不需要用户输入了。比如：-subj /CN=china/OU=test/O=abc/CN=forxy，注意这里等属性必须大写。<br>        -config filename：使用的config文件的名称。本选项如果没有设置，将使用缺省的config文件。配置的写法可以参考openssl.cnf，其中有关于生成证书请求的设置。<br>4.创建数据库文件和序列号编号文件</p>
+<h3 id="客户端生成证书"><a href="#客户端生成证书" class="headerlink" title="客户端生成证书"></a>客户端生成证书</h3><p>1.生成私钥文件<br>(umask 077;openssl genrsa -out ssl/httpd.key)<br>2.生成证书请求<br>openssl req -new -key httpd.key -out httpd.csr<br>3.将证书传送到CA<br>scp -P5788 httpd.csr root@CentOS7:/etc/pki/CA</p>
+<h3 id="CA签署证书"><a href="#CA签署证书" class="headerlink" title="CA签署证书"></a>CA签署证书</h3><p>openssl ca -in httpd.csr -out httpd.crt -days 1000</p>
+<h3 id="将证书传回客户端"><a href="#将证书传回客户端" class="headerlink" title="将证书传回客户端"></a>将证书传回客户端</h3><p>scp -P5788 httpd.crt root@node2:/etc/httpd/ssl/</p>
+<p>查看生成的证书的信息</p>
+<p>openssl x509 -in httpd.crt -noout -text|-subject|-serial</p>
+<h2 id="吊销证书"><a href="#吊销证书" class="headerlink" title="吊销证书"></a>吊销证书</h2><p>1.openssl ca -revoke httpd.crt</p>
+<p>2.生成吊销列表序列号文件<br>    吊销证书的编号(第一次吊销一个证书)<br>        echo 01 &gt; /etc/pki/CA/crlnumber</p>
+<p>3.更新吊销列表<br>    openssl ca -gencrl -out /etc/pki/CA/crl.pem</p>
+<p>4.查看crl文件<br>    openssl crl -in /PATH/CRL_FILE.crl -noout -text</p>
+<h1 id="aide，主要用于检查文件的完整性"><a href="#aide，主要用于检查文件的完整性" class="headerlink" title="aide，主要用于检查文件的完整性"></a>aide，主要用于检查文件的完整性</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">默认系统没有安装，使用yum -y install aide</span><br><span class="line">默认的配置文件/etc/aide.conf，定义监控的策略</span><br><span class="line">aide --init 初始化AIDE监控数据库</span><br><span class="line">生成检查数据库</span><br><span class="line">    mv /var/lib/aide.new.db.gz /var/lib/aide.db.gz</span><br><span class="line">aide -C，检查文件</span><br><span class="line">aide -update，更新数据库文件</span><br></pre></td></tr></table></figure>
+<h1 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">默认授权的规则：/etc/sudoers，建议使用visudo打开检查语法</span><br><span class="line">        root.   ALL=(ALL) . ALL </span><br><span class="line">    切换用户，使用sudo -u 执行命令</span><br><span class="line">    who   HOST=(runas)  command</span><br><span class="line">        who：</span><br><span class="line">            username，root</span><br><span class="line">            #uid，0</span><br><span class="line">            %group，%wheel</span><br><span class="line">            #gid，0</span><br><span class="line">            User_Alias和Group_Alias</span><br><span class="line">    HOST:</span><br><span class="line">        ip或者域名</span><br><span class="line">        network(/netmask)</span><br><span class="line">        Host_Alias</span><br><span class="line">    command</span><br><span class="line">        command name</span><br><span class="line">        directory</span><br><span class="line">        sudoedit</span><br><span class="line">        Cmnd_Alias</span><br><span class="line">sudo别名类型：User_Alias Runas_Alias Host_Alias Cmnd_Alias</span><br><span class="line">别名格式：[A_Z]([A-Z][0-9]_)*</span><br><span class="line">sudo命令</span><br><span class="line">    sudo[-u user] command</span><br><span class="line">        -u user 默认为root</span><br><span class="line">        -l，ll 列出用户在主机上可用和被禁止的命令</span><br><span class="line">        -p 改变询问密码的提示符号</span><br></pre></td></tr></table></figure>
+<h1 id="tcp-wrappers"><a href="#tcp-wrappers" class="headerlink" title="tcp_wrappers"></a>tcp_wrappers</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">查看那些服务可以接受tcp_wrapper控制</span><br><span class="line">    ldd vsftpd | grep &quot;libwrap&quot;</span><br><span class="line">基本语法：</span><br><span class="line">    daemon_list@host: client_list</span><br></pre></td></tr></table></figure>
+<h1 id="PAM-认证机制"><a href="#PAM-认证机制" class="headerlink" title="PAM 认证机制"></a>PAM 认证机制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">pam模块的保存路径/lib64/security/*.so</span><br><span class="line">模块的配置文件/etc/security</span><br><span class="line">主配置文件：/etc/pam.d/*.conf</span><br><span class="line">    格式：</span><br><span class="line">    type control module_path arguments</span><br><span class="line">        type：</span><br><span class="line">            auth，负责验证</span><br><span class="line">            account，负责账号的有效性</span><br><span class="line">            Password，复杂检查用户修改密码复杂性的要求</span><br><span class="line">            Session，负责检查使用该服务前的操作</span><br><span class="line">            -type</span><br><span class="line">        control：</span><br><span class="line">            required，一票否决，认证失败，还会接下来认证</span><br><span class="line">            requisite，一票否决，认证失败，就不会往下认证</span><br><span class="line">            sufficient，一票通过，认证通过，就不往后检查</span><br><span class="line">            optional，可选，成功与否不起关键作用</span><br><span class="line">            include，包含其他的认证文件的配置</span><br><span class="line">        module_path：</span><br><span class="line">            相对路径：放在/lib64/securtity的模块</span><br><span class="line">            绝对路径：</span><br><span class="line">        arguments：</span><br></pre></td></tr></table></figure>
+<h2 id="pam认证过程"><a href="#pam认证过程" class="headerlink" title="pam认证过程"></a>pam认证过程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Service--&gt;pam配置文件--&gt;pam_*.so</span><br></pre></td></tr></table></figure>
+<p>ulimit</p>
+<pre><code>-m，限制打开内存数
+-u，限制最大打开的进程数
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/13/awk简单应用/" rel="next" title="awk简单应用">
+                <i class="fa fa-chevron-left"></i> awk简单应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/19/SSH服务/" rel="prev" title="SSH服务">
+                SSH服务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#墨菲定律"><span class="nav-number">1.</span> <span class="nav-text">墨菲定律</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全机制"><span class="nav-number">2.</span> <span class="nav-text">安全机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#信息安全防护的目标"><span class="nav-number">2.1.</span> <span class="nav-text">信息安全防护的目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全防护环节"><span class="nav-number">2.2.</span> <span class="nav-text">安全防护环节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全攻击：STRIDE"><span class="nav-number">2.3.</span> <span class="nav-text">安全攻击：STRIDE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全设计基本原则"><span class="nav-number">2.4.</span> <span class="nav-text">安全设计基本原则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全算法"><span class="nav-number">3.</span> <span class="nav-text">安全算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用安全技术"><span class="nav-number">3.1.</span> <span class="nav-text">常用安全技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#密码算法和协议"><span class="nav-number">3.2.</span> <span class="nav-text">密码算法和协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对称加密算法"><span class="nav-number">3.3.</span> <span class="nav-text">对称加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对称加密：加密和解密使用同一个密钥"><span class="nav-number">3.3.1.</span> <span class="nav-text">对称加密：加密和解密使用同一个密钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特性："><span class="nav-number">3.3.2.</span> <span class="nav-text">特性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺陷："><span class="nav-number">3.3.3.</span> <span class="nav-text">缺陷：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非对称加密算法"><span class="nav-number">3.4.</span> <span class="nav-text">非对称加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#公钥加密：密钥是成对出现"><span class="nav-number">3.4.1.</span> <span class="nav-text">公钥加密：密钥是成对出现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然"><span class="nav-number">3.4.2.</span> <span class="nav-text">特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能："><span class="nav-number">3.4.3.</span> <span class="nav-text">功能：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点：密钥长，加密解密效率低下"><span class="nav-number">3.4.4.</span> <span class="nav-text">缺点：密钥长，加密解密效率低下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法："><span class="nav-number">3.4.5.</span> <span class="nav-text">算法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于一对公钥-密钥对"><span class="nav-number">3.4.6.</span> <span class="nav-text">基于一对公钥/密钥对</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现加密："><span class="nav-number">3.4.7.</span> <span class="nav-text">实现加密：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现数字签名："><span class="nav-number">3.4.8.</span> <span class="nav-text">实现数字签名：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对称加密的实现"><span class="nav-number">4.</span> <span class="nav-text">对称加密的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#公钥加密"><span class="nav-number">4.1.</span> <span class="nav-text">公钥加密</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CA和证书"><span class="nav-number">5.</span> <span class="nav-text">CA和证书</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#证书获取"><span class="nav-number">5.1.</span> <span class="nav-text">证书获取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL：Secure-Socket-Layer，TLS：Transport-Layer-security"><span class="nav-number">5.2.</span> <span class="nav-text">SSL：Secure Socket Layer，TLS：Transport Layer security</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenSSL"><span class="nav-number">5.3.</span> <span class="nav-text">OpenSSL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenSSL自建CA"><span class="nav-number">5.3.1.</span> <span class="nav-text">OpenSSL自建CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端生成证书"><span class="nav-number">5.3.2.</span> <span class="nav-text">客户端生成证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CA签署证书"><span class="nav-number">5.3.3.</span> <span class="nav-text">CA签署证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将证书传回客户端"><span class="nav-number">5.3.4.</span> <span class="nav-text">将证书传回客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#吊销证书"><span class="nav-number">5.4.</span> <span class="nav-text">吊销证书</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#aide，主要用于检查文件的完整性"><span class="nav-number">6.</span> <span class="nav-text">aide，主要用于检查文件的完整性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sudo"><span class="nav-number">7.</span> <span class="nav-text">sudo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcp-wrappers"><span class="nav-number">8.</span> <span class="nav-text">tcp_wrappers</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PAM-认证机制"><span class="nav-number">9.</span> <span class="nav-text">PAM 认证机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pam认证过程"><span class="nav-number">9.1.</span> <span class="nav-text">pam认证过程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

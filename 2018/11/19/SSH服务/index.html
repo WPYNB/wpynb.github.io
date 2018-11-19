@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ssh简介ssh: secure shell, protocol, 22/tcp, 安全的远程登录 具体的软件实现：     OpenSSH: ssh协议的开源实现，CentOS默认安装     dropbear：另一个开源实现 SSH协议版本     v1: 基于CRC-32做MAC，不安全；man-in-middle     v2：双方主机协议选择安全的MAC方式     基于DH算法做密钥交">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSH服务">
+<meta property="og:url" content="http://yoursite.com/2018/11/19/SSH服务/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="ssh简介ssh: secure shell, protocol, 22/tcp, 安全的远程登录 具体的软件实现：     OpenSSH: ssh协议的开源实现，CentOS默认安装     dropbear：另一个开源实现 SSH协议版本     v1: 基于CRC-32做MAC，不安全；man-in-middle     v2：双方主机协议选择安全的MAC方式     基于DH算法做密钥交">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-19T12:45:32.081Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSH服务">
+<meta name="twitter:description" content="ssh简介ssh: secure shell, protocol, 22/tcp, 安全的远程登录 具体的软件实现：     OpenSSH: ssh协议的开源实现，CentOS默认安装     dropbear：另一个开源实现 SSH协议版本     v1: 基于CRC-32做MAC，不安全；man-in-middle     v2：双方主机协议选择安全的MAC方式     基于DH算法做密钥交">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/19/SSH服务/"/>
+
+
+
+
+
+  <title>SSH服务 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/SSH服务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SSH服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T20:38:56+08:00">
+                2018-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/ssh服务/" itemprop="url" rel="index">
+                    <span itemprop="name">ssh服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ssh简介"><a href="#ssh简介" class="headerlink" title="ssh简介"></a>ssh简介</h1><pre><code>ssh: secure shell, protocol, 22/tcp, 安全的远程登录
+具体的软件实现：
+    OpenSSH: ssh协议的开源实现，CentOS默认安装
+    dropbear：另一个开源实现
+SSH协议版本
+    v1: 基于CRC-32做MAC，不安全；man-in-middle
+    v2：双方主机协议选择安全的MAC方式
+    基于DH算法做密钥交换，基于RSA或DSA实现身份认证
+两种方式的用户登录认证：
+    基于password
+    基于key
+
+相关包：
+    openssh
+    openssh-clients
+    openssh-server
+工具：
+基于C/S结构
+Client: ssh, scp, sftp，slogin
+Windows客户端：
+xshell, putty, securecrt, sshsecureshellclient
+Server: sshd
+</code></pre><h1 id="ssh协议"><a href="#ssh协议" class="headerlink" title="ssh协议"></a>ssh协议</h1><pre><code>22/tcp
+client：ssh，scp，sftp
+server：sshd
+配置文件：/etc/ssh/ssh_config
+Host PATTERN
+    StrictHostKeyChecking no 首次登录不显示检查提示
+    ssh [option] host [command]
+    [option]
+    -p port，指定远程服务器的端口
+    -b，指定连接的源IP
+    -t，强制伪tty分配
+        ssh -t remoteserver1 ssh -t remoteserver2 ssh remoteserver3
+    -X，启用x11转发
+    -C，压缩
+基于密钥的登录方式
+1. client生成基于当前用户一对公钥私钥，手动将公钥传送到server的authorized_keys
+2. server生成随机字符，并且用client的公钥加密这字符串，将此加密的字符传送至client
+3. client将此加密字符串用自身的私钥解密，得到这个随机字符串，并将此随机字符与server端比较，如比对正确，则允许登录，否则则拒绝
+生成一对私钥公钥
+ssh-keygen -t rsa -P &quot;&quot; -f /root/.ssh/id_rsa
+
+传送公钥至server
+ssh-copy-id -i ~/.ssh/id_rsa.pub USER@IP
+</code></pre><h2 id="私钥加密代理"><a href="#私钥加密代理" class="headerlink" title="私钥加密代理"></a>私钥加密代理</h2><pre><code>ssh-agent bash
+ssh-add 输入私钥的密码
+</code></pre><p>scp [option] host:file<br>    [option]<br>        -p port，指定连接的端口<br>        -C，压缩<br>        -p，保留源文件的权限<br>        -r，递归复制</p>
+<h2 id="SSH端口转发"><a href="#SSH端口转发" class="headerlink" title="SSH端口转发"></a>SSH端口转发</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">本地转发：</span><br><span class="line">    -L localport:remotehost:remotehostport sshserver</span><br><span class="line">    选项：</span><br><span class="line">        -f 后台启用</span><br><span class="line">        -N 不打开远程shell，处于等待状态</span><br><span class="line">        -g 启用网关功能</span><br><span class="line">远程转发:</span><br><span class="line">    -R sshserverport:remotehost:remotehostport sshserver</span><br><span class="line">动态端口转发：</span><br><span class="line">    -D sshserverport:remotehost:remotehostport sshserver</span><br></pre></td></tr></table></figure>
+<h2 id="sshd服务器配置"><a href="#sshd服务器配置" class="headerlink" title="sshd服务器配置"></a>sshd服务器配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">安全的策略</span><br><span class="line">    port，默认为22，建议修改为其它端口</span><br><span class="line">    ListenAddress，默认监听所有IP地址，建议修改成只监听本地IP</span><br><span class="line">    LoginGraceTime，默认为2m分钟</span><br><span class="line">    PermitRootLogin，默认为允许root用户登录，建议修改成禁止</span><br><span class="line">    MaxAuthTries，默认值为6</span><br><span class="line">    MaxSessions，默认为一个连接里可打开2个会话</span><br><span class="line">    GSSAPIAuthorication，默认为yes，建议修改为no</span><br><span class="line">    USEDNS，默认为yes，建议修改为弄</span><br><span class="line">    PasswordAuthoriacation，默认为no，建议修改为yes</span><br><span class="line">    ClientAliveInterval，默认为0，客户端多久时间不活动就断开连接</span><br><span class="line">    ClientAliveCountMax，默认为3，客户端总共多少次不活动时就断开连接</span><br><span class="line">    MaxStartups，默认未认证的连接为10</span><br><span class="line">    Allowusers，默认没有此选项，添加此选项默认允许谁登陆</span><br><span class="line">    设置防火墙ssh访问策略</span><br><span class="line">    经常分析日志：日志/var/log/secure</span><br></pre></td></tr></table></figure>
+<h2 id="rsync"><a href="#rsync" class="headerlink" title="rsync"></a>rsync</h2><p>rsync </p>
+<pre><code>[option] src... dest...
+[option]
+    -t，保留时间戳
+    -v，显示过程
+    -r，递归复制
+    -g，保留组信息
+    -o，保留所有者信息
+    -a，存档，相当于-rlptgoD，但不保留ACL和SELinux属性
+    -l，将软链接文件本身进行复制
+    -L，将软链接文件指向的文件复制
+    -e，指定命令行选项，例如指定端口&quot;ssh -p PORT&quot;
+    --delete 删除DEST中SRC没有的文件
+    --exclude 过滤指定文件，如--exclude “logs”会把文件名包含logs的文件或者目录过滤掉，不同步
+</code></pre><h3 id="rsync服务器和客户端"><a href="#rsync服务器和客户端" class="headerlink" title="rsync服务器和客户端"></a>rsync服务器和客户端</h3><pre><code>配置文件在/etc/rsyncd.conf
+    centos6：可使用/usr/bin/rsync --daemon
+    centos7：可使用systemctl start rsyncd
+rsync.conf配置文件
+    包含全局配置块以及模块配置块
+        port，指明rsync服务器的监听的端口，默认为873
+        log file，指明rsync日志文件的保存路径
+        pid file，指明启动rsync服务器使用的pid文件路径
+        []，模块名，定义每个目录
+        path，数据的路径
+        use chroot true|false，指明传输文件是否chroot到path指定的目录下
+        max connections，指定最大的连接数，默认为0
+        uid/gid，指明传输时使用哪个组或者哪个用户
+        host allow，指明那些主机可以允许传输
+        auth user，指明传输验证的用户
+        secrets file，指明密码文件，密码文件权限必须为600
+</code></pre><p>示例：<br>rsync -avL <a href="mailto:root@192.168.56.83" target="_blank" rel="noopener">root@192.168.56.83</a>::test/test1 /tmp/test–password-file=/usr/pass</p>
+<h1 id="pssh"><a href="#pssh" class="headerlink" title="pssh"></a>pssh</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pssh:</span><br><span class="line">    -h，主机文件列表</span><br><span class="line">    -H，主机的字符串</span><br><span class="line">    -i，执行的命令列表命令列表最好使用&apos;&apos;</span><br><span class="line">    -A，基于密码验证</span><br><span class="line">    -o OUTDIR，输出目录</span><br></pre></td></tr></table></figure>
+<h2 id="pscp-pssh，功能是将本地文件批量复制到远程主机"><a href="#pscp-pssh，功能是将本地文件批量复制到远程主机" class="headerlink" title="pscp.pssh，功能是将本地文件批量复制到远程主机"></a>pscp.pssh，功能是将本地文件批量复制到远程主机</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pscp.pssh [option] local remote</span><br><span class="line">-h，主机文件列表</span><br><span class="line">-H，主机的字符串</span><br><span class="line">-v，显示过程</span><br><span class="line">-r，递归复制</span><br><span class="line">将本地curl.sh 复制到/app/目录</span><br><span class="line">pscp.pssh -H 192.168.1.10 /root/test/curl.sh /app/</span><br></pre></td></tr></table></figure>
+<h2 id="pslurp，将远程服务器的文件拉取至本地"><a href="#pslurp，将远程服务器的文件拉取至本地" class="headerlink" title="pslurp，将远程服务器的文件拉取至本地"></a>pslurp，将远程服务器的文件拉取至本地</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-L LOCALDIR，指定本地目录</span><br><span class="line">-r，递归复制</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/18/加密和安全/" rel="next" title="加密和安全">
+                <i class="fa fa-chevron-left"></i> 加密和安全
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ssh简介"><span class="nav-number">1.</span> <span class="nav-text">ssh简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ssh协议"><span class="nav-number">2.</span> <span class="nav-text">ssh协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#私钥加密代理"><span class="nav-number">2.1.</span> <span class="nav-text">私钥加密代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH端口转发"><span class="nav-number">2.2.</span> <span class="nav-text">SSH端口转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sshd服务器配置"><span class="nav-number">2.3.</span> <span class="nav-text">sshd服务器配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rsync"><span class="nav-number">2.4.</span> <span class="nav-text">rsync</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rsync服务器和客户端"><span class="nav-number">2.4.1.</span> <span class="nav-text">rsync服务器和客户端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pssh"><span class="nav-number">3.</span> <span class="nav-text">pssh</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pscp-pssh，功能是将本地文件批量复制到远程主机"><span class="nav-number">3.1.</span> <span class="nav-text">pscp.pssh，功能是将本地文件批量复制到远程主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pslurp，将远程服务器的文件拉取至本地"><span class="nav-number">3.2.</span> <span class="nav-text">pslurp，将远程服务器的文件拉取至本地</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
