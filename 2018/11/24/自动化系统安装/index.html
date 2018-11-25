@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="PXE+DHCP自动安装DHCP：(Dynamic Host Configuration Protocol)yum install dhcp  DHCP的工作流程：1. 客户端发起一个DHCP DISCOVER请求发现当前局域网中DHCP的服务器 2. DHCP服务器收到客户端请求后，响应DHCP OFFER，确定一个没有使用的IP地址给客户端 3. 客户端收到后，发送DHCP REQUEST确定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动化系统安装">
+<meta property="og:url" content="http://yoursite.com/2018/11/24/自动化系统安装/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="PXE+DHCP自动安装DHCP：(Dynamic Host Configuration Protocol)yum install dhcp  DHCP的工作流程：1. 客户端发起一个DHCP DISCOVER请求发现当前局域网中DHCP的服务器 2. DHCP服务器收到客户端请求后，响应DHCP OFFER，确定一个没有使用的IP地址给客户端 3. 客户端收到后，发送DHCP REQUEST确定">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T07:55:53.615Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自动化系统安装">
+<meta name="twitter:description" content="PXE+DHCP自动安装DHCP：(Dynamic Host Configuration Protocol)yum install dhcp  DHCP的工作流程：1. 客户端发起一个DHCP DISCOVER请求发现当前局域网中DHCP的服务器 2. DHCP服务器收到客户端请求后，响应DHCP OFFER，确定一个没有使用的IP地址给客户端 3. 客户端收到后，发送DHCP REQUEST确定">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/24/自动化系统安装/"/>
+
+
+
+
+
+  <title>自动化系统安装 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/24/自动化系统安装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自动化系统安装</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-24T22:27:16+08:00">
+                2018-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/自动化系统安装/" itemprop="url" rel="index">
+                    <span itemprop="name">自动化系统安装</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="PXE-DHCP自动安装"><a href="#PXE-DHCP自动安装" class="headerlink" title="PXE+DHCP自动安装"></a>PXE+DHCP自动安装</h1><h2 id="DHCP：-Dynamic-Host-Configuration-Protocol"><a href="#DHCP：-Dynamic-Host-Configuration-Protocol" class="headerlink" title="DHCP：(Dynamic Host Configuration Protocol)"></a>DHCP：(Dynamic Host Configuration Protocol)</h2><pre><code>yum install dhcp 
+</code></pre><h3 id="DHCP的工作流程："><a href="#DHCP的工作流程：" class="headerlink" title="DHCP的工作流程："></a>DHCP的工作流程：</h3><pre><code>1. 客户端发起一个DHCP DISCOVER请求发现当前局域网中DHCP的服务器
+2. DHCP服务器收到客户端请求后，响应DHCP OFFER，确定一个没有使用的IP地址给客户端
+3. 客户端收到后，发送DHCP REQUEST确定使用该地址
+4. 最后DHCP服务器发送DHCP ACK确认客户端的连接后，发送DHCP服务器的相关配置给客户端
+</code></pre><p>DHCP服务的原则：</p>
+<pre><code>1. 本地优先
+2. 先到先得
+</code></pre><p>配置DHCP sever<br>    默认配置文件：/etc/dhcp/dhcpd.conf<br>/etc/dhcp/dhcpd.conf，默认为空，使用/usr/share/doc/dhcp-4.2.5/dhcpd.conf.example复制到/etc/dhcp/dhcpd.conf<br>默认以分配的地址信息在/var/lib/dhcp/dhcpd-leases</p>
+<h3 id="全局配置："><a href="#全局配置：" class="headerlink" title="全局配置："></a>全局配置：</h3><pre><code>default-lease-time  //默认租期时间
+max-lease-time      //最大租期时间
+</code></pre><h3 id="子网配置："><a href="#子网配置：" class="headerlink" title="子网配置："></a>子网配置：</h3><pre><code>subnet IPADDR netmask NETMASK { //定义子网
+    range IPRANG;    //定义IP的范围
+    option route IP;    //定义默认网关
+    option domain-name-servers  DNS;//定义默认DNS
+    filename        //定义引导文件名称
+        示例：
+            filename &quot;pxelinux.0&quot;;
+    next-server     //提供引导文件的服务器的IP地址
+        示例：
+            next-server 192.168.50.7;
+} 
+</code></pre><h3 id="单个主机配置："><a href="#单个主机配置：" class="headerlink" title="单个主机配置："></a>单个主机配置：</h3><pre><code>host 名称 {
+    hardware ethernet   //主机的MAC地址
+    fixed-address       //固定分配一个IP地址
+}
+</code></pre><p>重新获取地址：dhclient -d，如出现bound new ip表示dhcp服务器正常启动</p>
+<h2 id="TFTP："><a href="#TFTP：" class="headerlink" title="TFTP："></a>TFTP：</h2><pre><code>yum install tftp-server，服务器端
+yum install tftp，客户端
+</code></pre><p>systemctl start tftp.service<br>    默认监听 69/udp</p>
+<p>默认路径 /var/lib/tftpboot<br>PXE，Preboot Eccution Environment(预启动执行环境)，网络自动安装单个版本系统<br>    yum install syslinux(centos7)，syslinux-nonlinux(centos6)</p>
+<pre><code>mkdir /var/lib/tftpboot/pxelinux.cfg/
+
+cp /usr/share/syslinux/{pxelinux.0,menu.c32} /var/lib/tftpboot
+
+cp /media/cdrom/isolinux/{initrd.img,vmlinuz} /var/lib/tftpboot/
+
+cp /media/cdrom/isolinux/isolinux.cfg /var/lib/tftpboot/pxelinux.cfg/default
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vim /var/lib/tftpboot/pxelinux.cfg/default</span><br><span class="line">    default menu.c32</span><br><span class="line">    timeout 100</span><br><span class="line">    label linux</span><br><span class="line">      menu label ^Auto install CentOS 7                                   </span><br><span class="line">      kernel vmlinuz</span><br><span class="line">      append initrd=initrd.img ks=http://192.168.50.7/centos/7/ks.cfg</span><br><span class="line"> </span><br><span class="line">    label local</span><br><span class="line">      menu label Boot from ^local drive</span><br><span class="line">      localboot 0xffff</span><br></pre></td></tr></table></figure>
+<p>使用网络启动主机，实现网络自动安装</p>
+<h1 id="Cobbler"><a href="#Cobbler" class="headerlink" title="Cobbler"></a>Cobbler</h1><h2 id="cobbler基本用法"><a href="#cobbler基本用法" class="headerlink" title="cobbler基本用法"></a>cobbler基本用法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">快速网络安装linux操作系统的服务，也可以支持网络安装windows</span><br><span class="line">配置文件：</span><br><span class="line">    /etc/cobbler/setting，主配置文件</span><br><span class="line">    /etc/cobbler/iso，iso模板配置文件</span><br><span class="line">    /etc/cobbler/pxe，pxe模板配置文件</span><br><span class="line">    /etc/cobbler/user.conf，web服务授权配置文件</span><br><span class="line">    /etc/cobbler/users.digest，web访问的用户名</span><br><span class="line">    /etc/cobbler/dhcp.template，dhcp服务器模板文件</span><br><span class="line">    /etc/cobbler/dnsmasq.template，dns服务器模板文件</span><br><span class="line">    /etc/cobbler/tftpd.template，tftp服务器模板文件</span><br><span class="line">    /etc/cobbler/modules.conf，模块的配置文件</span><br><span class="line">数据目录：</span><br><span class="line">    /var/lib/cobbler/kickstart，默认存放kickstart文件的路径</span><br><span class="line">    /var/lib/cobbler/loaders，默认存放各种引导程序的路径</span><br><span class="line">镜像目录</span><br><span class="line">    /var/www/cobbler/ks_mirror/，导入的发行版系统的所有数据</span><br><span class="line">    /var/www/cobbler/images/，导入发行版kernel和initrd镜像用于远程网络启动</span><br><span class="line">    /var/www/cobbler/repo_mirror/，yum 仓库存储目录</span><br><span class="line">日志目录</span><br><span class="line">    /var/log/cobbler/installing: 客户端安装日志</span><br><span class="line">    /var/log/cobbler/cobbler.log : cobbler日志</span><br><span class="line">cobbler常用命令</span><br><span class="line">    cobbler check，检查当前配置是否正确</span><br><span class="line">    cobbler sync，同步配置到数据目录</span><br><span class="line">    cobbler list，列出所有的cobbler元素</span><br><span class="line">    cobbler distro，查看导入的发行版信息</span><br><span class="line">    cobbler profile，查看配置信息</span><br><span class="line">    cobbler import，导入cobbler镜像</span><br></pre></td></tr></table></figure>
+<h2 id="cobbler安装配置："><a href="#cobbler安装配置：" class="headerlink" title="cobbler安装配置："></a>cobbler安装配置：</h2><p>1.yum install cobbler httpd dhcp</p>
+<p>2.确认httpd、tftp-sever已经启动且已经开机自启systemctl start httpd tftpd</p>
+<p>3.启动cobbler，systemctl start cobblerd.service</p>
+<p>4.初次cobbler check //检查cobbler运行环境</p>
+<h3 id="修改-etc-cobbler-setting"><a href="#修改-etc-cobbler-setting" class="headerlink" title="修改/etc/cobbler/setting"></a>修改/etc/cobbler/setting</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server: 127.0.0.1修改成本地网卡的监听地址server：192.168.56.81</span><br><span class="line">next_server: 127.0.0.1 修改成tftp服务器的监听地址server：192.168.56.81</span><br><span class="line">default_password_crypted: &quot;$1$mF86/UHC$WvcIcX2t6crBz2onWxyac.&quot; 修改成用openssl rand passwd -1 生成的口令</span><br><span class="line">manage_dhcp: 0 修改成 manage_dhcp: 1</span><br></pre></td></tr></table></figure>
+<p>6.systemctl restart cobblerd</p>
+<p>7.cobbler get-loaders</p>
+<p>8.再次cobbler check检查cobbler运行环境</p>
+<h3 id="vim-etc-cobbler-dhcp-template"><a href="#vim-etc-cobbler-dhcp-template" class="headerlink" title="vim /etc/cobbler/dhcp.template"></a>vim /etc/cobbler/dhcp.template</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">subnet 192.168.56.0 netmask 255.255.255.0 &#123;</span><br><span class="line">     option routers             192.168.50.0;</span><br><span class="line">     option domain-name-servers 192.168.50.1;</span><br><span class="line">     option subnet-mask         255.255.255.0;</span><br><span class="line">     range dynamic-bootp        192.168.50.100 192.168.50.254;</span><br><span class="line">     default-lease-time         21600;</span><br><span class="line">     max-lease-time             43200;</span><br><span class="line">     next-server                $next_server;</span><br></pre></td></tr></table></figure>
+<p>10.cobbler sync，同步配置到数据目录</p>
+<p>11.cp ks.cfg /var/lib/cobbler/kickstart<br>    ks.cfg文件中url改为 –url=$tree<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[root@CentOS7 xitonganzhuang]#cat ks6-mini.cfg </span><br><span class="line"># Kickstart file automatically generated by anaconda.</span><br><span class="line"></span><br><span class="line">#version=DEVEL</span><br><span class="line">install</span><br><span class="line">url --url=http://192.168.50.6/centos/6/os/x86_64/ #如用cobbler安装此处应改为--url=$tree,以cobbler源作为安装</span><br><span class="line">lang en_US.UTF-8</span><br><span class="line">keyboard us</span><br><span class="line">text</span><br><span class="line">reboot</span><br><span class="line">network --onboot yes --device eth0 --bootproto dhcp --noipv6</span><br><span class="line">rootpw  --iscrypted $6$94vgGkLmngghquyQ$r/KnyOxTShd3MUTgRCxi4n95ygXYBGvtmaiaHbbWJJr4q508TdOlJpeZsZ1gcgT2BMuq7MeR4HusLqQD2Yr/h1</span><br><span class="line">firewall --disabled</span><br><span class="line">authconfig --enableshadow --passalgo=sha512</span><br><span class="line">selinux --disabled</span><br><span class="line">timezone Asia/Shanghai</span><br><span class="line">bootloader --location=mbr --driveorder=sda --append=&quot;crashkernel=auto rhgb quiet&quot;</span><br><span class="line"># The following is the partition information you requested</span><br><span class="line"># Note that any partitions you deleted are not expressed</span><br><span class="line"># here so unless you clear all partitions first, this is</span><br><span class="line"># not guaranteed to work</span><br><span class="line">clearpart --all</span><br><span class="line">zerombr</span><br><span class="line"></span><br><span class="line">part /boot --fstype=ext4 --size=1024</span><br><span class="line">part / --fstype=ext4 --size=50000</span><br><span class="line">part /data --fstype=ext4 --size=30000</span><br><span class="line"></span><br><span class="line">part swap --size=2048</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">%packages</span><br><span class="line">@core</span><br><span class="line">%end</span><br></pre></td></tr></table></figure></p>
+<h1 id="cobbler-web的实现"><a href="#cobbler-web的实现" class="headerlink" title="cobbler web的实现"></a>cobbler web的实现</h1><h2 id="cobbler-web安装"><a href="#cobbler-web安装" class="headerlink" title="cobbler web安装"></a>cobbler web安装</h2><ol>
+<li>yum install cobbler-web</li>
+<li>systemctl reload httpd</li>
+<li>访问浏览器<a href="https://192.168.50.7/cobbler_web" target="_blank" rel="noopener">https://192.168.50.7/cobbler_web</a></li>
+</ol>
+<h2 id="修改cobbler-web的验证方式"><a href="#修改cobbler-web的验证方式" class="headerlink" title="修改cobbler-web的验证方式"></a>修改cobbler-web的验证方式</h2><pre><code>module = authn_configfile
+vim /etc/cobbler/modules.conf
+[authentication]
+module = authn_configfile
+</code></pre><p>使用htdigest /etc/cobbler/users.digest Cobbler wpycob创建wpycob的账号</p>
+<pre><code>module = authn_pam
+vim /etc/cobbler/modules.conf
+    [authentication]
+    module = authn_pam
+    [admin]
+    admin = &quot;USERNAME&quot;
+    Cobbler = &quot;&quot;
+</code></pre><p>创建用户：useradd USERNAME</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/SSH服务/" rel="next" title="SSH服务">
+                <i class="fa fa-chevron-left"></i> SSH服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PXE-DHCP自动安装"><span class="nav-number">1.</span> <span class="nav-text">PXE+DHCP自动安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP：-Dynamic-Host-Configuration-Protocol"><span class="nav-number">1.1.</span> <span class="nav-text">DHCP：(Dynamic Host Configuration Protocol)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP的工作流程："><span class="nav-number">1.1.1.</span> <span class="nav-text">DHCP的工作流程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局配置："><span class="nav-number">1.1.2.</span> <span class="nav-text">全局配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子网配置："><span class="nav-number">1.1.3.</span> <span class="nav-text">子网配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单个主机配置："><span class="nav-number">1.1.4.</span> <span class="nav-text">单个主机配置：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TFTP："><span class="nav-number">1.2.</span> <span class="nav-text">TFTP：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cobbler"><span class="nav-number">2.</span> <span class="nav-text">Cobbler</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cobbler基本用法"><span class="nav-number">2.1.</span> <span class="nav-text">cobbler基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cobbler安装配置："><span class="nav-number">2.2.</span> <span class="nav-text">cobbler安装配置：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-etc-cobbler-setting"><span class="nav-number">2.2.1.</span> <span class="nav-text">修改/etc/cobbler/setting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim-etc-cobbler-dhcp-template"><span class="nav-number">2.2.2.</span> <span class="nav-text">vim /etc/cobbler/dhcp.template</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cobbler-web的实现"><span class="nav-number">3.</span> <span class="nav-text">cobbler web的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cobbler-web安装"><span class="nav-number">3.1.</span> <span class="nav-text">cobbler web安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改cobbler-web的验证方式"><span class="nav-number">3.2.</span> <span class="nav-text">修改cobbler-web的验证方式</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
