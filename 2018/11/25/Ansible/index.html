@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Ansible特性1.模块化：调用特定的模块，完成特定任务 2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块 3.支持自定义模块 4.基于Python语言实现 5.部署简单，基于python和SSH(默认已安装)，agentless 6.安全，基于OpenSSH 7.支持playbook编排任务 8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况 9">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ansible">
+<meta property="og:url" content="http://yoursite.com/2018/11/25/Ansible/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="Ansible特性1.模块化：调用特定的模块，完成特定任务 2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块 3.支持自定义模块 4.基于Python语言实现 5.部署简单，基于python和SSH(默认已安装)，agentless 6.安全，基于OpenSSH 7.支持playbook编排任务 8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况 9">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-27T09:38:46.896Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ansible">
+<meta name="twitter:description" content="Ansible特性1.模块化：调用特定的模块，完成特定任务 2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块 3.支持自定义模块 4.基于Python语言实现 5.部署简单，基于python和SSH(默认已安装)，agentless 6.安全，基于OpenSSH 7.支持playbook编排任务 8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况 9">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/25/Ansible/"/>
+
+
+
+
+
+  <title>Ansible | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/Ansible/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ansible</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T16:05:59+08:00">
+                2018-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Ansible特性"><a href="#Ansible特性" class="headerlink" title="Ansible特性"></a>Ansible特性</h1><p>1.模块化：调用特定的模块，完成特定任务</p>
+<p>2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块</p>
+<p>3.支持自定义模块</p>
+<p>4.基于Python语言实现</p>
+<p>5.部署简单，基于python和SSH(默认已安装)，agentless</p>
+<p>6.安全，基于OpenSSH</p>
+<p>7.支持playbook编排任务</p>
+<p>8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况</p>
+<p>9.无需代理不依赖PKI（无需ssl）</p>
+<p>10.可使用任何编程语言写模块</p>
+<p>11.YAML格式，编排任务，支持丰富的数据结构</p>
+<p>12.较强大的多层解决方案</p>
+<h1 id="Ansible主要组成部分"><a href="#Ansible主要组成部分" class="headerlink" title="Ansible主要组成部分"></a>Ansible主要组成部分</h1><p>1.ANSIBLE PLAYBOOKS：任务剧本（任务集），编排定义Ansible任务集的配置文件，由Ansible顺序依次执行，通常是JSON格式的YML文件</p>
+<p>2.INVENTORY：Ansible管理主机的清单/etc/anaible/hosts</p>
+<p>3.MODULES：Ansible执行命令的功能模块，多数为内置核心模块，也可自定义</p>
+<p>4.PLUGINS：模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等，该功能不常用</p>
+<p>5.API：供第三方程序调用的应用程序编程接口</p>
+<p>6.ANSIBLE：组合INVENTORY、API、MODULES、PLUGINS的绿框，可以理解为是ansible命令工具，其为核心执行工具</p>
+<h1 id="Ansible安装配置"><a href="#Ansible安装配置" class="headerlink" title="Ansible安装配置"></a>Ansible安装配置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ansible</span><br><span class="line">配置文件</span><br><span class="line">    /etc/ansible/ansible.cfg，主配置文件</span><br><span class="line">        打开日志记录log_path = /var/log/ansible.log</span><br><span class="line">        禁止sshkey主机检查，host_key_checking = False</span><br><span class="line">        默认模块，module_name=shell</span><br><span class="line">    /etc/ansible/hosts，主机清单</span><br><span class="line">        示例：</span><br><span class="line">            [webservs]</span><br><span class="line">            192.168.50.6:5788</span><br><span class="line">            192.168.50.7:5788</span><br><span class="line">            192.168.50.107:5788</span><br><span class="line">    还可以使用列表式主机列表</span><br><span class="line">        示例：</span><br><span class="line">            [websrvs]</span><br><span class="line">                www[0:100].abc.com</span><br><span class="line">            [dbsrvs]</span><br><span class="line">                ab-[a:f].abc.com</span><br><span class="line">    /etc/ansible/roles，角色的目录</span><br></pre></td></tr></table></figure>
+<h1 id="Ansible常用命令"><a href="#Ansible常用命令" class="headerlink" title="Ansible常用命令"></a>Ansible常用命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ansible-doc，查看ansible模块的帮助</span><br><span class="line">    -a，显示所有模块的文档</span><br><span class="line">    -l，列出所有的模块</span><br><span class="line">    -s，以分片查看该模块的帮助</span><br><span class="line">ansible-playbook *.yml 执行相关的剧本文件</span><br><span class="line">    --check -C 检查，并不执行</span><br><span class="line">    --list-hosts 列出运行任务的主机</span><br><span class="line">    --list-tags 列出tag</span><br><span class="line">    --list-tasks 列出task</span><br><span class="line">ansible-galaxy，已经生成好角色文件</span><br><span class="line">ansible &lt;HOST-PATTERN&gt; [-m modules -a args]</span><br><span class="line">    -k，以密码的形式的验证主机</span><br><span class="line">    -all，所有主机清单列表中的主机</span><br><span class="line">    -v，查看执行过程</span><br><span class="line">    -K，提示输入sudo时的密码</span><br><span class="line">    -a，该模块的参数</span><br><span class="line">    -u，执行远程命令时的用户</span><br><span class="line">    -C, --check 检查，并不执行</span><br></pre></td></tr></table></figure>
+<h1 id="ansible的Host-pattern"><a href="#ansible的Host-pattern" class="headerlink" title="ansible的Host-pattern"></a>ansible的Host-pattern</h1><p>ALL表示所有清单中的所有主机<br>    ansible all -m ping</p>
+<p><code>*</code>通配符<br>    ansible 192.168.50. *  -m ping</p>
+<p><code>:</code>表示主机清单的中的或的关系<br>    ansible “websrvs:appsrvs” -m ping</p>
+<p><code>:</code>&amp;表示主机清单中与的关系<br>    ansible “websrvs:&amp;dbsrvs” -m ping</p>
+<p><code>:!</code>表示主机清单内非的关系<br>    ansible ‘websrvs:!dbsrvs’ -m ping<br>    在websrvs，但不在dbsrvs的主机列表<br>    注意：单使用非的关系时，需要用单引号</p>
+<h1 id="ansible的常用模块"><a href="#ansible的常用模块" class="headerlink" title="ansible的常用模块"></a>ansible的常用模块</h1><h2 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h2><pre><code>ansible websrvs -m ping
+    验证主机该清单内主机的在线与否
+</code></pre><h2 id="command"><a href="#command" class="headerlink" title="command"></a>command</h2><pre><code>ansible websrvs -m command -a &apos;COMMAND&apos;
+    在远程主机上执行命令
+    COMMAND不支持|&amp;变量等
+</code></pre><h2 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h2><pre><code>ansible websrvs -m shell -a &apos;COMMAND&apos;
+    在远程主机执行shell命令，可执行command不能执行的管道等
+    chdir：在执行shell命令前切换至指定的目录
+</code></pre><h2 id="script"><a href="#script" class="headerlink" title="script"></a>script</h2><pre><code>ansible websrvs -m script -a &apos;可执行脚本&apos;
+    在远程主机执行脚本
+</code></pre><h2 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h2><pre><code>ansible websrvs -m copy -a &apos;&apos;
+    从服务器复制文件到客户端
+    src：指定源
+    dest：指定目标
+    content：指定文件的内容
+    mode：指定文件或者目录权限
+    backup：如果文件事先存在，则创建备份
+例：ansible websrvs -m copy -a &quot;src=/etc/fstab dest=tmp/f1 owner=root group=root backup=yes mode=644&quot;
+</code></pre><h2 id="fetch"><a href="#fetch" class="headerlink" title="fetch"></a>fetch</h2><pre><code>ansisble websrvs -m fetch -a &quot;&quot;
+    从客户端提取文件至服务器端
+    dest：服务器端的保存路径
+    src：客户端的源文件路径
+</code></pre><h2 id="file"><a href="#file" class="headerlink" title="file"></a>file</h2><pre><code>ansible websrvs -m file -a &apos;&apos;
+    state：absent，link|hard，file，directory(创建时，需要指定src)
+    src：指定源
+    path：指定目标
+    owner：文件的所有者
+    group：文件的所属组
+    mode：文件的权限
+    backup：如果文件事先存在，则创建备份
+</code></pre><h2 id="hostname"><a href="#hostname" class="headerlink" title="hostname"></a>hostname</h2><pre><code>ansible websrvs -m hostname -a &apos;&apos;
+    指定主机名
+    name：主机名
+</code></pre><h2 id="cron"><a href="#cron" class="headerlink" title="cron"></a>cron</h2><pre><code>ansible websrvs -m cron -a &apos;&apos;
+    创建计划任务
+    minute
+    hour
+    day
+    month
+    weekday
+    name：任务计划的名称
+    disable：true|False
+</code></pre><h2 id="yum"><a href="#yum" class="headerlink" title="yum"></a>yum</h2><pre><code>ansible websrvs -m yum -a &apos;&apos;
+    yum安装多个软件，前提yum源需要指定正确
+    state：absent，present
+    name：指定需要安装或者卸载的程序的名称，多个程序之间用,隔开
+</code></pre><h2 id="service"><a href="#service" class="headerlink" title="service"></a>service</h2><pre><code>ansible websrvs -m service -a &apos;&apos;
+    服务的相关操作，如启动，停止等
+    name：指定的服务的名称，只能是单个服务
+    enabled：yes|no，指定服务是否开机自启
+    state：started，stopped，reloaded，restarted
+</code></pre><h2 id="user"><a href="#user" class="headerlink" title="user"></a>user</h2><pre><code>ansible websrvs -m user -a &apos;&apos;
+    创建或者删除指定的账号
+    name：账号的名称
+    uid：账号的uid
+    home：账号的家目录
+    password：指定账号的密码
+    state：absent，present
+    remove：yes，删除时同时删除其家目录
+    shell：指定用户的shell
+    system：yes，创建系统账号
+</code></pre><h2 id="group"><a href="#group" class="headerlink" title="group"></a>group</h2><pre><code>ansible websrvs -m group -a &apos;&apos;
+    创建或者删除指定的组
+    name：组的名称
+    gid：组的gid
+    state：absent，present
+    system：yes，创建系统组
+</code></pre><h2 id="unarchive"><a href="#unarchive" class="headerlink" title="unarchive"></a>unarchive</h2><pre><code>ansible websrvs -m unarchive -a &apos;&apos;
+    拷贝并解压缩文件
+    src：指定需要解压的文件
+    dest：指定解压缩的路径
+    remote_src：yes|no，设置为yes表示文件已经在远程主机上
+    creates：判断解压缩的路径存在与否，存在则不运行
+    owner：文件的所有者
+    group：文件的所属组
+    mode：文件的权限
+</code></pre><h2 id="mysql-db"><a href="#mysql-db" class="headerlink" title="mysql_db"></a>mysql_db</h2><pre><code>ansible dbsrvs -m mysql_db -a &apos;&apos;
+    修改mysql数据库
+    name：数据库名称
+    config_file：指定数据库的配置文件
+    login_user：登录用户名
+    login_password：登录的密码
+    state：absent，present
+    login_host：登录的主机
+    host_all: yes：表明所有的主机
+</code></pre><h2 id="mysql-user"><a href="#mysql-user" class="headerlink" title="mysql_user"></a>mysql_user</h2><pre><code>ansible dbsrvs -m mysql_user -a &apos;&apos;
+    name：修改的用户名
+    config_file：指定数据库的配置文件
+    priv：用户的权限
+    login_user：登录用户名
+    login_password：登录的密码
+    state：absent，present
+    login_host：登录的主机
+    host_all: yes：表明所有的主机
+</code></pre><h1 id="ansible-playbook"><a href="#ansible-playbook" class="headerlink" title="ansible playbook"></a>ansible playbook</h1><h2 id="playbook语法"><a href="#playbook语法" class="headerlink" title="playbook语法"></a>playbook语法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">采用yaml语言编写，playbook由一个或多个剧本组成</span><br><span class="line">playbook核心元素：</span><br><span class="line">    Host 执行远程主机列表</span><br><span class="line">    Tasks 任务集</span><br><span class="line">    Varniables 内置变量或自定义变量在playbook中调用</span><br><span class="line">    Template 模板</span><br><span class="line">    Handlers和notify结合使用，由特定条件触发操作，满足条件方才执行，否则不执行</span><br><span class="line">    tags 标签选择性运行playbook部分代码</span><br><span class="line">playbook基础组件：</span><br><span class="line">    Host 主机用于指定要执行任务的主机</span><br><span class="line">    remote_user：可用于Host和task中，也可使用sudo方式在远程主机执行任务</span><br><span class="line">        示例：</span><br><span class="line">            - hosts: websrvs</span><br><span class="line">              remote_user: root</span><br><span class="line">    task和action</span><br><span class="line">        主机部分是task list，task list各任务按次序逐个在hosts中指定的所有主机上执行</span><br><span class="line">        每个task都应该有其name</span><br><span class="line">        tasks的格式</span><br><span class="line">            1. action: module arguments</span><br><span class="line">            2. module: arguments</span><br><span class="line">        注意：shell和command模块后面跟命令，而非key=value</span><br></pre></td></tr></table></figure>
+<h2 id="playbook中的变量"><a href="#playbook中的变量" class="headerlink" title="playbook中的变量"></a>playbook中的变量</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">变量名：字母和下划线，且只能以字母开头</span><br><span class="line">变量的来源：</span><br><span class="line">    1. ansible setup facts</span><br><span class="line">    2. 在/etc/ansible/hosts定义</span><br><span class="line">        普通变量，主机组的主机单独定义，优先级高于公共变量</span><br><span class="line">        组变量，针对主机组所有主机定义统一变量</span><br><span class="line">    3. 使用ansible-playbook -e &quot;var1=value1 var2=value2...&quot; *.yml调用变量</span><br><span class="line">    4. 在playbook中定义</span><br><span class="line">        示例：</span><br><span class="line">            - vars：</span><br><span class="line">              - var1: value1</span><br><span class="line">              - var2: value2</span><br><span class="line">    5. 在单独文件定义</span><br><span class="line">    6. 在角色文件中定义</span><br><span class="line">变量的使用：</span><br><span class="line">    1. 通过 &#123;&#123; variable_name &#125;&#125;调用</span><br><span class="line">    2. 使用ansible-playbook -e 选项指定</span><br><span class="line">1、register变量的命名不能用 -中横线，比如dev-sda6_result，则会被解析成sda6_result，dev会被丢掉，所以不要用- </span><br><span class="line">2、ignore_errors这个关键字很重要，一定要配合设置成True，否则如果命令执行不成功，即 echo $?不为0，则在其语句后面的ansible语句不会被执行，导致程序中止。</span><br></pre></td></tr></table></figure>
+<h1 id="ansiable-template"><a href="#ansiable-template" class="headerlink" title="ansiable template"></a>ansiable template</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">根据模块文件动态生成对应的配置文件</span><br><span class="line">Jinja2语言</span><br><span class="line">    字符串：使用单引号或双引号</span><br><span class="line">    数字：整数，浮点数</span><br><span class="line">    列表：[item1,item2,...]</span><br><span class="line">    元组：(item1,item2...)</span><br><span class="line">    字典：&#123;key:value1,key:value2,...&#125;</span><br><span class="line">    布尔型：true/false</span><br><span class="line">算术运算：+，-，*，/，//，%，**</span><br><span class="line">    示例：</span><br><span class="line">        work_process &#123;&#123; ansible_processor_count * ansible_processor_cores &#125;&#125;</span><br><span class="line">比较操作：==，!=，&gt;，&gt;=，&lt;，&lt;=</span><br><span class="line">逻辑运算：and，or，not</span><br><span class="line">when：条件测试:如果需要根据变量、 facts或此前任务的执行结果来做为某task执行与否</span><br><span class="line">    示例：</span><br><span class="line">        - name： Install mysql-server</span><br><span class="line">          yum： name=mariadb-server state=present</span><br><span class="line">          when: ansible_distribution_major_version == &quot;7&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">迭代：</span><br><span class="line">    对迭代项的引用，固定变量名为&quot;item&quot;</span><br><span class="line">    要在task中使用with——items给定要迭代的元素列表</span><br><span class="line">    列表格式：</span><br><span class="line">        字符串</span><br><span class="line">        字典</span><br><span class="line">    示例：</span><br><span class="line">        - name: add groups</span><br><span class="line">          group: name=&#123;&#123; item &#125;&#125; state=present</span><br><span class="line">          with_items:</span><br><span class="line">            - test1</span><br><span class="line">            - test2</span><br><span class="line">            - test3</span><br><span class="line">        - name:</span><br><span class="line">            user:</span><br><span class="line">              name=&#123;&#123; item.name &#125;&#125;</span><br><span class="line">              group=&#123;&#123; item.group &#125;&#125;</span><br><span class="line">              state=present</span><br><span class="line">          with_items:</span><br><span class="line">            - &#123; name: &apos;user1&apos;, group:&apos;test1&apos; &#125;</span><br><span class="line">            - &#123; name: &apos;user2&apos;, group:&apos;test2&apos; &#125;</span><br><span class="line">            - &#123; name: &apos;user3&apos;, group:&apos;test3&apos; &#125;</span><br><span class="line">for：需定义在template文件中</span><br><span class="line">    示例：/tmeplates/nginx.conf.j2</span><br><span class="line">        &#123;% for vhost in vhosts %&#125;</span><br><span class="line">            server &#123;</span><br><span class="line">                listen &#123;&#123; vhosts_port &#125;&#125;</span><br><span class="line">                server_name &#123;&#123; vhosts_server_name &#125;&#125;</span><br><span class="line">                root &#123;&#123; vhosts_root_directory &#125;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">            &#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="ansible-roles"><a href="#ansible-roles" class="headerlink" title="ansible roles"></a>ansible roles</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">常见的目录结构</span><br><span class="line">    roles/ httpd.yml  //调用该角色需使用的文件</span><br><span class="line">        ├── httpd   //角色的名称</span><br><span class="line">        │   ├── files  //存放copy或script等模块调用用到的文件</span><br><span class="line">        │   ├── handlers //至少包含一个main.yml文件，用来存放notify触发条件的文件</span><br><span class="line">        │   ├── tasks //至少应该包含一个名为main.yml的文件，是该角色执行任务的基本元素</span><br><span class="line">        │   ├── templates //存放模板模块所需要用到的文件的路径</span><br><span class="line">        │   └── vars //存放该角色所需要的变量的文件，至少包含一个main.yml文件</span><br><span class="line">调用角色方法</span><br><span class="line">    1. roles:</span><br><span class="line">          - role: mysql</span><br><span class="line">          - role: nginx</span><br><span class="line">    2. roles:</span><br><span class="line">          - role: mysql </span><br><span class="line">          - &#123; role: nginx, username: nginx &#125;</span><br><span class="line">    3. roles:</span><br><span class="line">          - &#123; role: nginx, username: nginx, when: ansible_distribution_major_version == &apos;7&apos;&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/24/自动化系统安装/" rel="next" title="自动化系统安装">
+                <i class="fa fa-chevron-left"></i> 自动化系统安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ansible特性"><span class="nav-number">1.</span> <span class="nav-text">Ansible特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ansible主要组成部分"><span class="nav-number">2.</span> <span class="nav-text">Ansible主要组成部分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ansible安装配置"><span class="nav-number">3.</span> <span class="nav-text">Ansible安装配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ansible常用命令"><span class="nav-number">4.</span> <span class="nav-text">Ansible常用命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ansible的Host-pattern"><span class="nav-number">5.</span> <span class="nav-text">ansible的Host-pattern</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ansible的常用模块"><span class="nav-number">6.</span> <span class="nav-text">ansible的常用模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ping"><span class="nav-number">6.1.</span> <span class="nav-text">ping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#command"><span class="nav-number">6.2.</span> <span class="nav-text">command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell"><span class="nav-number">6.3.</span> <span class="nav-text">shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#script"><span class="nav-number">6.4.</span> <span class="nav-text">script</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#copy"><span class="nav-number">6.5.</span> <span class="nav-text">copy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fetch"><span class="nav-number">6.6.</span> <span class="nav-text">fetch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#file"><span class="nav-number">6.7.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hostname"><span class="nav-number">6.8.</span> <span class="nav-text">hostname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cron"><span class="nav-number">6.9.</span> <span class="nav-text">cron</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum"><span class="nav-number">6.10.</span> <span class="nav-text">yum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service"><span class="nav-number">6.11.</span> <span class="nav-text">service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#user"><span class="nav-number">6.12.</span> <span class="nav-text">user</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#group"><span class="nav-number">6.13.</span> <span class="nav-text">group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unarchive"><span class="nav-number">6.14.</span> <span class="nav-text">unarchive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql-db"><span class="nav-number">6.15.</span> <span class="nav-text">mysql_db</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql-user"><span class="nav-number">6.16.</span> <span class="nav-text">mysql_user</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ansible-playbook"><span class="nav-number">7.</span> <span class="nav-text">ansible playbook</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#playbook语法"><span class="nav-number">7.1.</span> <span class="nav-text">playbook语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#playbook中的变量"><span class="nav-number">7.2.</span> <span class="nav-text">playbook中的变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ansiable-template"><span class="nav-number">8.</span> <span class="nav-text">ansiable template</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ansible-roles"><span class="nav-number">9.</span> <span class="nav-text">ansible roles</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
