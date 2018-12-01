@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="bind简介dns服务程序包:bind，unbound 程序名：named，unbound 程序包：yum list all bind* bind：服务器 bind-libs：相关库 bind-utils：客户端 bind-chroot：/var/named/chroot/ bind服务器12345678910111213141516171819服务脚本和名称：/etc/rc.d/init.d/n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BIND安装配置">
+<meta property="og:url" content="http://yoursite.com/2018/11/29/BIND安装配置/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="bind简介dns服务程序包:bind，unbound 程序名：named，unbound 程序包：yum list all bind* bind：服务器 bind-libs：相关库 bind-utils：客户端 bind-chroot：/var/named/chroot/ bind服务器12345678910111213141516171819服务脚本和名称：/etc/rc.d/init.d/n">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-01T01:33:08.647Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BIND安装配置">
+<meta name="twitter:description" content="bind简介dns服务程序包:bind，unbound 程序名：named，unbound 程序包：yum list all bind* bind：服务器 bind-libs：相关库 bind-utils：客户端 bind-chroot：/var/named/chroot/ bind服务器12345678910111213141516171819服务脚本和名称：/etc/rc.d/init.d/n">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/29/BIND安装配置/"/>
+
+
+
+
+
+  <title>BIND安装配置 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/29/BIND安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BIND安装配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-29T21:15:13+08:00">
+                2018-11-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/BIND安装配置/" itemprop="url" rel="index">
+                    <span itemprop="name">BIND安装配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="bind简介"><a href="#bind简介" class="headerlink" title="bind简介"></a>bind简介</h1><p>dns服务程序包:bind，unbound</p>
+<p>程序名：named，unbound</p>
+<p>程序包：yum list all bind*</p>
+<p>bind：服务器</p>
+<p>bind-libs：相关库</p>
+<p>bind-utils：客户端</p>
+<p>bind-chroot：/var/named/chroot/</p>
+<h1 id="bind服务器"><a href="#bind服务器" class="headerlink" title="bind服务器"></a>bind服务器</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">服务脚本和名称：</span><br><span class="line">/etc/rc.d/init.d/named</span><br><span class="line">/usr/lib/systemd/system/named.service</span><br><span class="line">主配置文件：</span><br><span class="line">/etc/named.conf</span><br><span class="line">/etc/named.rfc1912.zones</span><br><span class="line">/etc/rndc.key</span><br><span class="line">解析库文件：</span><br><span class="line">/var/named/ZONE_NAME.ZONE</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">(1) 一台物理服务器可同时为多个区域提供解析</span><br><span class="line">(2) 必须要有根区域文件；named.ca</span><br><span class="line">(3) 应该有两个（如果包括ipv6的，应该更多）实现localhost和本地回环地址的解</span><br><span class="line">析库</span><br><span class="line"></span><br><span class="line">rndc：remote name domain controller，</span><br><span class="line">默认与bind安装在同一主机，且只能通过127.0.0.1连接named进程</span><br><span class="line">提供辅助性的管理功能；953/tcp</span><br></pre></td></tr></table></figure>
+<h2 id="主配置文件："><a href="#主配置文件：" class="headerlink" title="主配置文件："></a>主配置文件：</h2><p>全局配置：options {};</p>
+<p>日志子系统配置：logging {};</p>
+<p>区域定义：本机能够为哪些zone进行解析，就要定义哪些zone</p>
+<p>zone “ZONE_NAME” IN {};</p>
+<p>注意：任何服务程序如果期望其能够通过网络被其它主机访问，至少应该监听在一个能与外部主机通信的IP地址上</p>
+<p>缓存名称服务器的配置:</p>
+<p>监听外部地址即可,dnssec: 建议关闭dnssec，设为no</p>
+<h2 id="配置主DNS服务器"><a href="#配置主DNS服务器" class="headerlink" title="配置主DNS服务器"></a>配置主DNS服务器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">## 监听端口</span><br><span class="line">## /etc/named.conf</span><br><span class="line">option &#123;</span><br><span class="line">	linsten-on port 53 &#123; localhost; &#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">## 允许查询</span><br><span class="line">## /etc/named.conf</span><br><span class="line"></span><br><span class="line">allow-query  &#123; localhost;any &#125;;</span><br><span class="line">或者</span><br><span class="line"># allow-query  &#123; localhost;any &#125;;</span><br></pre></td></tr></table></figure>
+<p>在主配置文件中定义区域<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">## /etc/named.ref1912.zones</span><br><span class="line"></span><br><span class="line">zone &quot;ZONE_NAME&quot; IN &#123;</span><br><span class="line">    type &#123;master|slave|hint|forward&#125;;</span><br><span class="line">    file &quot;ZONE_NAME.zone&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>定义区域解析库文件:<br>        出现的内容<br>        宏定义<br>        资源记录</p>
+<p>主配置文件语法检查：named-checkconf </p>
+<p>解析库文件语法检查：<br>named-checkzone “magedu.com” /var/named/magedu.com.zone</p>
+<p>重载配置文件：rndc status|reload ;service named reload</p>
+<h3 id="正向区域："><a href="#正向区域：" class="headerlink" title="正向区域："></a>正向区域：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">注意：文件属性，需要named可读</span><br><span class="line">## 拷贝模板</span><br><span class="line">cd /var/named/</span><br><span class="line">cp -p named.localhost magedu.com.zone</span><br><span class="line">## 或者 -a</span><br></pre></td></tr></table></figure>
+<h3 id="主区域示例"><a href="#主区域示例" class="headerlink" title="主区域示例"></a>主区域示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$TTL 86400</span><br><span class="line">$ORIGIN magedu.com.</span><br><span class="line">        @ IN SOA ns1.magedu.com. admin.magedu.com (</span><br><span class="line">        2015042201</span><br><span class="line">        1H</span><br><span class="line">        5M</span><br><span class="line">        7D</span><br><span class="line">        1D )</span><br><span class="line">        IN NS ns1</span><br><span class="line">        IN NS ns2</span><br><span class="line">        IN MX 10 mx1</span><br><span class="line">        IN MX 20 mx2</span><br><span class="line">        ns1 IN A 172.16.100.11</span><br><span class="line">        ns2 IN A 172.16.100.12</span><br><span class="line">        mx1 IN A 172.16.100.13</span><br><span class="line">        mx2 IN A 172.16.100.14</span><br><span class="line">        websrv IN A 172.16.100.11</span><br><span class="line">        websrv IN A 172.16.100.12</span><br><span class="line">        www IN CNAME websrv</span><br></pre></td></tr></table></figure>
+<h3 id="反向区域"><a href="#反向区域" class="headerlink" title="反向区域"></a>反向区域</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">反向区域</span><br><span class="line">反向区域：</span><br><span class="line">区域名称：网络地址反写.in-addr.arpa.</span><br><span class="line">172.16.100. --&gt; 100.16.172.in-addr.arpa.</span><br></pre></td></tr></table></figure>
+<p>定义区域<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">zone &quot;ZONE_NAME&quot; IN &#123;</span><br><span class="line">    type &#123;master|slave|forward&#125;；</span><br><span class="line">    file &quot;网络地址.zone&quot;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">## /etc/named.rfc1912.zones</span><br><span class="line"></span><br><span class="line">zone &quot;34.168.192.in-addr.arpa&quot; &#123;</span><br><span class="line">		type master;</span><br><span class="line">		file &quot;192.168.34.zone&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="反向区域示例"><a href="#反向区域示例" class="headerlink" title="反向区域示例"></a>反向区域示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">## /var/named/172.16.100.zone</span><br><span class="line"></span><br><span class="line">$TTL 86400</span><br><span class="line">$ORIGIN 100.16.172.in-addr.arpa.</span><br><span class="line">@   IN  SOA ns1.magedu.com. admin.magedu.com.   (</span><br><span class="line">                                                2015042201</span><br><span class="line">                                                1H</span><br><span class="line">                                                5M</span><br><span class="line">                                                7D</span><br><span class="line">                                                1D )</span><br><span class="line">    IN  NS  ns1.magedu.com.</span><br><span class="line">    IN  NS  ns2.magedu.com.</span><br><span class="line">11  IN  PTR ns1.magedu.com.</span><br><span class="line">11  IN  PTR www.magedu.com.</span><br><span class="line">12  IN  PTR mx1.magedu.com.</span><br><span class="line">12  IN  PTR www.magedu.com.</span><br><span class="line">13  IN  PTR mx2.magedu.com.</span><br></pre></td></tr></table></figure>
+<h3 id="允许动态更新"><a href="#允许动态更新" class="headerlink" title="允许动态更新"></a>允许动态更新</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## /etc/named.rfc1912.zones</span><br><span class="line">## 或者 /etc/named.conf</span><br><span class="line">## 等文件中的zone语块中</span><br><span class="line"></span><br><span class="line">Allow-update &#123;any;&#125;;</span><br></pre></td></tr></table></figure>
+<p>chmod 770 /var/named<br>setsebool -P named_write_master_zones on</p>
+<p>nsupdate<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nsupdate</span><br><span class="line"> &gt;server 127.0.0.1</span><br><span class="line"> &gt;zone magedu.com</span><br><span class="line"> &gt;update add ftp.magedu.com 88888 IN A 8.8.8.8</span><br><span class="line"> &gt;send</span><br><span class="line"> &gt;update delete www.magedu.com A</span><br><span class="line"> &gt;send</span><br></pre></td></tr></table></figure></p>
+<p>测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dig ftp.magedu.com @127.0.0.1</span><br><span class="line">ll /var/named/magedu.com.zone.jnl</span><br><span class="line">cat /var/named/magedu.com.zone</span><br></pre></td></tr></table></figure></p>
+<h1 id="测试命令dig"><a href="#测试命令dig" class="headerlink" title="测试命令dig"></a>测试命令dig</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">dig [-t type] name [@SERVER] [query options]</span><br><span class="line">dig只用于测试dns系统，不会查询hosts文件进行解析</span><br><span class="line"></span><br><span class="line">查询选项：</span><br><span class="line">    +[no]trace：跟踪解析过程 : dig +trace magedu.com</span><br><span class="line">    +[no]recurse：进行递归解析</span><br><span class="line">    测试反向解析：</span><br><span class="line">    dig -x IP = dig –t ptr reverseip.in-addr.arpa</span><br><span class="line">    模拟区域传送：</span><br><span class="line">    dig -t axfr ZONE_NAME @SERVER</span><br><span class="line">    dig -t axfr magedu.com @10.10.10.11</span><br><span class="line">    dig –t axfr 100.1.10.in-addr.arpa @172.16.1.1</span><br><span class="line">    dig -t NS . @114.114.114.114</span><br><span class="line">    dig -t NS . @a.root-servers.net</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">host [-t type] name [SERVER]</span><br><span class="line">host –t NS magedu.com 172.16.0.1</span><br><span class="line">host –t soa magedu.com</span><br><span class="line">host –t mx magedu.com</span><br><span class="line">host –t axfr magedu.com</span><br><span class="line">host 1.2.3.4</span><br><span class="line"></span><br><span class="line">nslookup命令： nslookup [-option] [name | -] [server]</span><br><span class="line">交互式模式：</span><br><span class="line">    nslookup&gt;</span><br><span class="line">    server IP: 指明使用哪个DNS server进行查询</span><br><span class="line">    set q=RR_TYPE: 指明查询的资源记录类型</span><br><span class="line">    NAME: 要查询的名称</span><br></pre></td></tr></table></figure>
+<h2 id="配置从服务器"><a href="#配置从服务器" class="headerlink" title="配置从服务器"></a>配置从服务器</h2><p>应该为一台独立的名称服务器</p>
+<p>主服务器的区域解析库文件中必须有一条NS记录指向从服务器</p>
+<p>从服务器只需要定义区域，而无须提供解析库文件；解析库文件应该放置于/var/named/slaves/ 目录中</p>
+<p>主服务器得允许从服务器作区域传送</p>
+<p>主从服务器时间应该同步，可通过ntp进行；<br>b<br>ind程序的版本应该保持一致；否则，应该从高，主低</p>
+<h2 id="定义从区域"><a href="#定义从区域" class="headerlink" title="定义从区域"></a>定义从区域</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zone &quot;ZONE_NAME&quot; IN &#123;</span><br><span class="line">    type slave;</span><br><span class="line">    masters &#123; MASTER_IP; &#125;;</span><br><span class="line">    file &quot;slaves/ZONE_NAME.zone&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">## /etc/named.rfc1912.zones</span><br><span class="line"></span><br><span class="line">zone &quot;magedu.com&quot;&#123;</span><br><span class="line">    type slave;</span><br><span class="line">    masters &#123;192.168.34.7;&#125;</span><br><span class="line">    file &quot;slaves/magedu.com.znoe.slave&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>同步:修改主服务器zone文件中的serial的值</p>
+<h1 id="子域"><a href="#子域" class="headerlink" title="子域"></a>子域</h1><p>子域授权：分布式数据库</p>
+<p>子域是个相对的</p>
+<p>需要在父域NS服务器上添加子域的NS记录</p>
+<h2 id="定义一个子区域"><a href="#定义一个子区域" class="headerlink" title="定义一个子区域"></a>定义一个子区域</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">## 父域zone文件</span><br><span class="line">... ...</span><br><span class="line">ops.magedu.com.     IN NS   ns1.ops.magedu.com.</span><br><span class="line">ops.magedu.com.     IN NS   ns2.ops.magedu.com.</span><br><span class="line">ns1.ops.magedu.com. IN A    1.1.1.1</span><br><span class="line">ns2.ops.magedu.com. IN A    1.1.1.2</span><br><span class="line"></span><br><span class="line">fin.magedu.com.     IN NS   ns1.fin.magedu.com.</span><br><span class="line">fin.magedu.com.     IN NS   ns2.fin.magedu.com.</span><br><span class="line">ns1.fin.magedu.com. IN A    3.1.1.1</span><br><span class="line">ns2.fin.magedu.com. IN A    3.1.1.2</span><br><span class="line"></span><br><span class="line">## 子域zone文件</span><br><span class="line">## 正向区域、反相区域... ...</span><br><span class="line">## /etc/named.rfc1912.zones</span><br><span class="line"></span><br><span class="line">zone &quot;beijing.magedu.com&quot; &#123;</span><br><span class="line">		type master;</span><br><span class="line">		file &quot;beijing.magedu.com.zone&quot;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">关闭dnssec功能</span><br><span class="line">dnssec-enable no;</span><br><span class="line">dnssec-validation no;</span><br></pre></td></tr></table></figure>
+<h1 id="转发服务器"><a href="#转发服务器" class="headerlink" title="转发服务器"></a>转发服务器</h1><p>被转发的服务器需要能够为请求者做递归，否则转发请求不予进行</p>
+<h2 id="全局转发"><a href="#全局转发" class="headerlink" title="全局转发"></a>全局转发</h2><p>对非本机所负责解析区域的请求，全转发给指定的服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Options &#123;</span><br><span class="line">    forward first|only;</span><br><span class="line">    forwarders &#123; ip;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="特定区域转发"><a href="#特定区域转发" class="headerlink" title="特定区域转发"></a>特定区域转发</h2><p>仅转发对特定的区域的请求，比全局转发优先级高<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">zone &quot;ZONE_NAME&quot; IN &#123;</span><br><span class="line">    type forward;</span><br><span class="line">    forward first|only;</span><br><span class="line">    forwarders &#123; ip;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">关闭dnssec功能</span><br><span class="line">dnssec-enable no;</span><br><span class="line">dnssec-validation no;</span><br></pre></td></tr></table></figure></p>
+<h2 id="first-与-only-区别"><a href="#first-与-only-区别" class="headerlink" title="first 与 only 区别"></a>first 与 only 区别</h2><p>first：转发器不能解析，被请求的dns服务器自己去查询</p>
+<p>only：转发器不能解析，就放弃</p>
+<h1 id="bind中ACL"><a href="#bind中ACL" class="headerlink" title="bind中ACL"></a>bind中ACL</h1><p>bind中基础的安全相关的配置：</p>
+<p>acl: 把一个或多个地址归并为一个集合，并通过一个统一的名称调用</p>
+<p>格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">acl acl_name &#123;</span><br><span class="line">    ip;</span><br><span class="line">    net/prelen;</span><br><span class="line">……</span><br><span class="line">&#125;;</span><br><span class="line">例：</span><br><span class="line">acl mynet &#123;</span><br><span class="line">    172.16.0.0/16;</span><br><span class="line">    10.10.10.10;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="bind有四个内置的acl"><a href="#bind有四个内置的acl" class="headerlink" title="bind有四个内置的acl:"></a>bind有四个内置的acl:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">内置的ACL	描述</span><br><span class="line">none	没有一个主机</span><br><span class="line">any	任意主机</span><br><span class="line">localhost	本机</span><br><span class="line">localnet	本机的IP同掩码运算后得到的网络地址</span><br><span class="line">注意：只能先定义后使用；因此一般定义在配置文件中，处于options的前面</span><br></pre></td></tr></table></figure>
+<h2 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">allow-query &#123;&#125;	允许查询的主机；白名单</span><br><span class="line">allow-transfer &#123;&#125;	允许区域传送的主机；白名单</span><br><span class="line">allow-recursion &#123;&#125;	允许递归的主机，建议全局使用</span><br><span class="line">allow-update &#123;&#125;	允许更新区域数据库中的内容</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">例:</span><br><span class="line">## /etc/named.conf</span><br><span class="line"></span><br><span class="line">## 区域传输，主dns服务器</span><br><span class="line">allow-transfer &#123;192.168.34.17;&#125;;  </span><br><span class="line">## 区域传输，从dns服务器</span><br><span class="line">allow-transfer &#123;none;&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="bind-view"><a href="#bind-view" class="headerlink" title="bind view"></a>bind view</h1><p>DN: Content Delivery Network内容分发网络<br>服务商：蓝汛，网宿，帝联等</p>
+<p>智能DNS:<br>    dnspod<br>    dns.la</p>
+<h2 id="view-视图：实现智能DNS"><a href="#view-视图：实现智能DNS" class="headerlink" title="view:视图：实现智能DNS"></a>view:视图：实现智能DNS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">一个bind服务器可定义多个view，每个view中可定义一个或多个zone</span><br><span class="line">每个view用来匹配一组客户端</span><br><span class="line">多个view内可能需要对同一个区域进行解析，但使用不同的区域解析库文件bind view</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">一旦启用了view，所有的zone都只能定义在view中</span><br><span class="line">仅在允许递归请求的客户端所在view中定义根区域</span><br><span class="line">客户端请求到达时，是自上而下检查每个view所服务的客户端列表</span><br></pre></td></tr></table></figure>
+<p>格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">view VIEW_NAME &#123;</span><br><span class="line">    match-clients &#123; testacl; &#125;;</span><br><span class="line">    zone &quot;magedu.com&quot; &#123;</span><br><span class="line">        type master;</span><br><span class="line">        file &quot;magedu.com.zone&quot;; </span><br><span class="line">    &#125;;</span><br><span class="line">    include &quot;/etc/named.rfc1912.zones&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="示例：智能DNS"><a href="#示例：智能DNS" class="headerlink" title="示例：智能DNS"></a>示例：智能DNS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">## 按区域创建多个zone文件</span><br><span class="line">magedu.com.zone.bj</span><br><span class="line">magedu.com.zone.sh</span><br><span class="line">magedu.com.zone.sz</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 自定义acl</span><br><span class="line"></span><br><span class="line">vim /etc/named.conf</span><br><span class="line">acl beijingnet&#123;</span><br><span class="line">	192.168.34.0./24;</span><br><span class="line">&#125;;</span><br><span class="line">acl shanghainet&#123;</span><br><span class="line">	172.18.0.0./24;</span><br><span class="line">&#125;;</span><br><span class="line">acl shenzhnnet&#123;</span><br><span class="line">	any;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">option ...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## view</span><br><span class="line">## 使用view，所有的zone都要纳入到view管理</span><br><span class="line">## 包括根“.”</span><br><span class="line">## 把zone &quot;.&quot; &#123;&#125;;放到/etc/named.rfc1912.zones.*文件中</span><br><span class="line"></span><br><span class="line">view viewbeijing &#123;</span><br><span class="line">	match-clients &#123; beijingnet; &#125;;</span><br><span class="line">	include &quot;/etc/named.rfc1912.zones.bj&quot;</span><br><span class="line">&#125;;</span><br><span class="line">view viewshanghai &#123;</span><br><span class="line">	match-clients &#123; shanghainet; &#125;;</span><br><span class="line">	include &quot;/etc/named.rfc1912.zones.sh&quot;</span><br><span class="line">&#125;;</span><br><span class="line">view viewshenzhen &#123;</span><br><span class="line">	match-clients &#123; shenzhennet; &#125;;</span><br><span class="line">	include &quot;/etc/named.rfc1912.zones.sz&quot;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## /etc/named.rfc1912.zones.bj</span><br><span class="line">zone &quot;.&quot; IN &#123;</span><br><span class="line">	type hint;</span><br><span class="line">	file &quot;named.ca&quot;</span><br><span class="line">&#125;;</span><br><span class="line">zone &quot;magedu.com&quot; IN &#123;</span><br><span class="line">		type master;</span><br><span class="line">		file &quot;magedu.com.zone.bj&quot;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">## /etc/named.rfc1912.zones.sh</span><br><span class="line">zone &quot;.&quot; IN &#123;</span><br><span class="line">	type hint;</span><br><span class="line">	file &quot;named.ca&quot;</span><br><span class="line">&#125;;</span><br><span class="line">zone &quot;magedu.com&quot; IN &#123;</span><br><span class="line">		type master;</span><br><span class="line">		file &quot;magedu.com.zone.sh&quot;;</span><br><span class="line">&#125;;</span><br><span class="line">## /etc/named.rfc1912.zones.sz</span><br><span class="line">zone &quot;.&quot; IN &#123;</span><br><span class="line">	type hint;</span><br><span class="line">	file &quot;named.ca&quot;</span><br><span class="line">&#125;;</span><br><span class="line">zone &quot;magedu.com&quot; IN &#123;</span><br><span class="line">		type master;</span><br><span class="line">		file &quot;magedu.com.zone.sz&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="DNS排错"><a href="#DNS排错" class="headerlink" title="DNS排错"></a>DNS排错</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#dig A example.com</span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-14.el7 &lt;&lt;&gt;&gt; A example.com</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 30523</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">SERVFAIL:The nameserver encountered a problem while processing the query.</span><br><span class="line">可使用dig +trace排错，可能是网络和防火墙导致</span><br><span class="line"></span><br><span class="line">NXDOMAIN：The queried name does not exist in the zone.</span><br><span class="line">可能是CNAME对应的A记录不存在导致</span><br><span class="line"></span><br><span class="line">REFUSED：The nameserver refused the client&apos;s DNS request due to policy restrictions.</span><br><span class="line">可能是DNS策略导致</span><br><span class="line"></span><br><span class="line">NOERROR不代表没有问题，也可以是过时的记录</span><br><span class="line">查看是否为权威记录，flags:aa标记判断</span><br><span class="line">被删除的记录仍能返回结果，可能是因为*记录存在</span><br><span class="line">如：*.example.com． IN A 172.25.254.254</span><br><span class="line">注意“.”的使用</span><br><span class="line">避免CNAME指向CNAME记录，可能产生回环</span><br><span class="line">test.example.com. IN CNAME lab.example.com.</span><br><span class="line">lab.example.com. IN CNAME test.example.com.</span><br><span class="line">正确配置PTR记录，许多服务依赖PTR，如sshd,MTA</span><br><span class="line">正确配置轮询round-robin记录</span><br></pre></td></tr></table></figure>
+<h1 id="rndc命令"><a href="#rndc命令" class="headerlink" title="rndc命令"></a>rndc命令</h1><p>rndc：remote name domain controller，默认与bind安装在同一主机，且只能通过127.0.0.1连接named进程。提供辅助性的管理功能；端口953/tcp。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">rndc:</span><br><span class="line">    reload	重载主配置文件和区域解析库文件</span><br><span class="line">    reload zonename	重载区域解析库文件</span><br><span class="line">    retransfer zonename	手动启动区域传送，而不管序列号是否增加</span><br><span class="line">    notify zonename	重新对区域传送发通知</span><br><span class="line">    reconfig	重载主配置文件</span><br><span class="line">    querylog	开启或关闭查询日志文件 /var/log/message</span><br><span class="line">    trace	递增 debug 一个级别</span><br><span class="line">    trace LEVEL	指定使用的级别</span><br><span class="line">    notrace	将调试级别设置为 0</span><br><span class="line">    flush	清空DNS服务器的所有缓存记录</span><br></pre></td></tr></table></figure>
+<h1 id="nslookup命令"><a href="#nslookup命令" class="headerlink" title="nslookup命令"></a>nslookup命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nslookup [-option] [name | -] [server]</span><br><span class="line"></span><br><span class="line">交互式模式：</span><br><span class="line">nslookup&gt;</span><br><span class="line">server IP: 指明使用哪个DNS server进行查询</span><br><span class="line">set q=RR_TYPE: 指明查询的资源记录类型</span><br><span class="line">NAME: 要查询的名称</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/28/DNS服务/" rel="next" title="DNS服务">
+                <i class="fa fa-chevron-left"></i> DNS服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bind简介"><span class="nav-number">1.</span> <span class="nav-text">bind简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bind服务器"><span class="nav-number">2.</span> <span class="nav-text">bind服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主配置文件："><span class="nav-number">2.1.</span> <span class="nav-text">主配置文件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置主DNS服务器"><span class="nav-number">2.2.</span> <span class="nav-text">配置主DNS服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正向区域："><span class="nav-number">2.2.1.</span> <span class="nav-text">正向区域：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主区域示例"><span class="nav-number">2.2.2.</span> <span class="nav-text">主区域示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向区域"><span class="nav-number">2.2.3.</span> <span class="nav-text">反向区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向区域示例"><span class="nav-number">2.2.4.</span> <span class="nav-text">反向区域示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#允许动态更新"><span class="nav-number">2.2.5.</span> <span class="nav-text">允许动态更新</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试命令dig"><span class="nav-number">3.</span> <span class="nav-text">测试命令dig</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置从服务器"><span class="nav-number">3.1.</span> <span class="nav-text">配置从服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义从区域"><span class="nav-number">3.2.</span> <span class="nav-text">定义从区域</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子域"><span class="nav-number">4.</span> <span class="nav-text">子域</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义一个子区域"><span class="nav-number">4.1.</span> <span class="nav-text">定义一个子区域</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转发服务器"><span class="nav-number">5.</span> <span class="nav-text">转发服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全局转发"><span class="nav-number">5.1.</span> <span class="nav-text">全局转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特定区域转发"><span class="nav-number">5.2.</span> <span class="nav-text">特定区域转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#first-与-only-区别"><span class="nav-number">5.3.</span> <span class="nav-text">first 与 only 区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bind中ACL"><span class="nav-number">6.</span> <span class="nav-text">bind中ACL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bind有四个内置的acl"><span class="nav-number">6.1.</span> <span class="nav-text">bind有四个内置的acl:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问控制"><span class="nav-number">6.2.</span> <span class="nav-text">访问控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bind-view"><span class="nav-number">7.</span> <span class="nav-text">bind view</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#view-视图：实现智能DNS"><span class="nav-number">7.1.</span> <span class="nav-text">view:视图：实现智能DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例：智能DNS"><span class="nav-number">7.2.</span> <span class="nav-text">示例：智能DNS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS排错"><span class="nav-number">8.</span> <span class="nav-text">DNS排错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rndc命令"><span class="nav-number">9.</span> <span class="nav-text">rndc命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nslookup命令"><span class="nav-number">10.</span> <span class="nav-text">nslookup命令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="DNS功能名字解析介绍 DNS服务工作原理 实现主服务器 实现反向解析区域 实现从服务器 实现子域 实现转发 实现智能DNS DNS服务1234567891011DNS:Domain Name Service 应用层协议C/S，53/udp，53/tcptcp53：主从复制udp53：记录查询BIND：Bekerley Internat Name DomainISC （www.isc.org）本地">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS服务">
+<meta property="og:url" content="http://yoursite.com/2018/11/28/DNS服务/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="DNS功能名字解析介绍 DNS服务工作原理 实现主服务器 实现反向解析区域 实现从服务器 实现子域 实现转发 实现智能DNS DNS服务1234567891011DNS:Domain Name Service 应用层协议C/S，53/udp，53/tcptcp53：主从复制udp53：记录查询BIND：Bekerley Internat Name DomainISC （www.isc.org）本地">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/dns1.png">
+<meta property="og:updated_time" content="2018-12-01T01:35:01.682Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DNS服务">
+<meta name="twitter:description" content="DNS功能名字解析介绍 DNS服务工作原理 实现主服务器 实现反向解析区域 实现从服务器 实现子域 实现转发 实现智能DNS DNS服务1234567891011DNS:Domain Name Service 应用层协议C/S，53/udp，53/tcptcp53：主从复制udp53：记录查询BIND：Bekerley Internat Name DomainISC （www.isc.org）本地">
+<meta name="twitter:image" content="http://yoursite.com/images/dns1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/28/DNS服务/"/>
+
+
+
+
+
+  <title>DNS服务 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/28/DNS服务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DNS服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-28T22:09:31+08:00">
+                2018-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/DNS服务/" itemprop="url" rel="index">
+                    <span itemprop="name">DNS服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="DNS功能"><a href="#DNS功能" class="headerlink" title="DNS功能"></a>DNS功能</h1><p>名字解析介绍</p>
+<p>DNS服务工作原理</p>
+<p>实现主服务器</p>
+<p>实现反向解析区域</p>
+<p>实现从服务器</p>
+<p>实现子域</p>
+<p>实现转发</p>
+<p>实现智能DNS</p>
+<h1 id="DNS服务"><a href="#DNS服务" class="headerlink" title="DNS服务"></a>DNS服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DNS:Domain Name Service 应用层协议</span><br><span class="line">C/S，53/udp，53/tcp</span><br><span class="line">tcp53：主从复制</span><br><span class="line">udp53：记录查询</span><br><span class="line">BIND：Bekerley Internat Name Domain</span><br><span class="line">ISC （www.isc.org）</span><br><span class="line">本地名称解析配置文件：hosts</span><br><span class="line">/etc/hosts</span><br><span class="line">%WINDIR%/system32/drivers/etc/hosts</span><br><span class="line">122.10.117.2 www.magedu.com</span><br><span class="line">93.46.8.89 www.google.com</span><br></pre></td></tr></table></figure>
+<h2 id="DNS域名"><a href="#DNS域名" class="headerlink" title="DNS域名"></a>DNS域名</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">根域</span><br><span class="line">一级域名：Top Level Domain: tld</span><br><span class="line">com, edu, mil, gov, net, org, int,arpa</span><br><span class="line">三类：组织域、国家域(.cn, .ca, .hk, .tw)、 反向域</span><br><span class="line">二级域名</span><br><span class="line">三级域名</span><br><span class="line"></span><br><span class="line">最多127级域名</span><br></pre></td></tr></table></figure>
+<p>ICANN（The Internet Corporation for Assigned Names and Numbers）</p>
+<p>互联网名称与数字地址分配机构，负责在全球范围内对互联网通用顶级域名（gTLD）以及国家和地区顶级域名（ccTLD）系统的管理、以及根服务器系统的管理</p>
+<h2 id="DNS域名结构"><a href="#DNS域名结构" class="headerlink" title="DNS域名结构"></a>DNS域名结构</h2><p><img src="/images/dns1.png" alt="Alt text"></p>
+<h2 id="名称服务器"><a href="#名称服务器" class="headerlink" title="名称服务器"></a>名称服务器</h2><p>域内负责解析本域内的名称的主机<br>根服务器：13组服务器，ipv6为25组主服务器</p>
+<h3 id="DNS服务器的类型"><a href="#DNS服务器的类型" class="headerlink" title="DNS服务器的类型"></a>DNS服务器的类型</h3><p>主DNS服务器</p>
+<p>从DNS服务器</p>
+<p>缓存DNS服务器（转发器）</p>
+<h3 id="主DNS服务器"><a href="#主DNS服务器" class="headerlink" title="主DNS服务器"></a>主DNS服务器</h3><p>管理和维护所负责解析的域内解析库的服务器</p>
+<h3 id="从DNS服务器"><a href="#从DNS服务器" class="headerlink" title="从DNS服务器"></a>从DNS服务器</h3><p>从主服务器或从服务器“复制”（区域传输）解析库副本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">序列号：解析库版本号，主服务器解析库变化时，其序列递增</span><br><span class="line"></span><br><span class="line">刷新时间间隔：从服务器从主服务器请求同步解析的时间间隔</span><br><span class="line"></span><br><span class="line">重试时间间隔：从服务器请求同步失败时，再次尝试时间间隔</span><br><span class="line"></span><br><span class="line">过期时长：从服务器联系不到主服务器时，多久后停止服务</span><br></pre></td></tr></table></figure></p>
+<h3 id="“通知”-机制"><a href="#“通知”-机制" class="headerlink" title="“通知” 机制"></a>“通知” 机制</h3><p>主服务器解析库发生变化时，会主动通知从服务器区域传输</p>
+<h3 id="区域传输"><a href="#区域传输" class="headerlink" title="区域传输"></a>区域传输</h3><p>完全传输：传送整个解析库</p>
+<p>增量传输：传递解析库变化的那部分内容</p>
+<h2 id="DNS解析"><a href="#DNS解析" class="headerlink" title="DNS解析"></a>DNS解析</h2><h3 id="解析类型"><a href="#解析类型" class="headerlink" title="解析类型"></a>解析类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FQDN: Fully Qualified Domain Name</span><br><span class="line"></span><br><span class="line">正向：FQDN --&gt; IP</span><br><span class="line">反向: IP --&gt; FQDN</span><br></pre></td></tr></table></figure>
+<h3 id="负责本地域名的正向和反向解析库"><a href="#负责本地域名的正向和反向解析库" class="headerlink" title="负责本地域名的正向和反向解析库"></a>负责本地域名的正向和反向解析库</h3><p>正向区域</p>
+<p>反向区域</p>
+<p>注意：正反向解析是两个不同的名称空间，是两棵不同的解析树</p>
+<p> 一次完整的查询请求经过的流程：<br> Client –&gt; hosts文件 –&gt; DNS Service Local Cache –&gt; DNS Server (recursion，递归) –&gt; Server Cache –&gt; iteration(迭代) –&gt; 根 –&gt; 顶级域名DNS –&gt; 二级域名DNS…</p>
+<h2 id="资源记录"><a href="#资源记录" class="headerlink" title="资源记录"></a>资源记录</h2><h3 id="区域解析库：由众多RR组成"><a href="#区域解析库：由众多RR组成" class="headerlink" title="区域解析库：由众多RR组成"></a>区域解析库：由众多RR组成</h3><p>资源记录：Resource Record, RR<br>记录类型：A, AAAA, PTR, SOA, NS, CNAME, MX<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">记录类型	描述</span><br><span class="line">SOA	        Start Of Authority，起始授权记录；一个区域解析库有且仅能有一个SOA记录，必须位于解析库的第一条记录</span><br><span class="line">A	        internet Address，作用，FQDN --&gt; IP</span><br><span class="line">AAAA	        FQDN --&gt; IPv6</span><br><span class="line">PTR	        PoinTeR，IP --&gt; FQDN</span><br><span class="line">NS	        Name Server，专用于标明当前区域的DNS服务器</span><br><span class="line">CNAME	        Canonical Name，别名记录</span><br><span class="line">MX	        Mail eXchanger，邮件交换器</span><br><span class="line">TXT	        对域名进行标识和说明的一种方式，一般做验证记录时会使用此项，如：SPF（反垃圾邮件）记录，https验证等。</span><br></pre></td></tr></table></figure></p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">name [TTL] IN rr_type value</span><br></pre></td></tr></table></figure>
+<p>TTL可从全局继承</p>
+<p>@可用于引用当前区域的名字</p>
+<p>同一个名字可以通过多条记录定义多个不同的值；此时DNS服务器会以轮询方式响应</p>
+<p>同一个值也可能有多个不同的定义名字；通过多个不同的名字指向同一个值进行定义；此仅表示通过多个不同的名字可以找到同一个主机</p>
+<h3 id="SOA记录"><a href="#SOA记录" class="headerlink" title="SOA记录"></a>SOA记录</h3><p>name: 当前区域的名字，例如“magedu.com.”</p>
+<p>value: 有多部分组成</p>
+<p>(1) 当前区域的主DNS服务器的FQDN，也可以使用当前区域的名字；</p>
+<p>(2) 当前区域管理员的邮箱地址；但地址中不能使用@符号，一般用.替换。例如：admin.magedu.com</p>
+<p>(3) 主从服务区域传输相关定义以及否定的答案的统一的TTL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">agedu.com. 86400 IN SOA ns.magedu.com. nsadmin.magedu.com. (</span><br><span class="line">                                                            2015042201 ;序列号</span><br><span class="line">                                                            2H ;刷新时间</span><br><span class="line">                                                            10M ;重试时间</span><br><span class="line">                                                            1W ;过期时间</span><br><span class="line">                                                            1D ;否定答案的TTL值</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h3 id="NS记录"><a href="#NS记录" class="headerlink" title="NS记录"></a>NS记录</h3><p>name: 当前区域的名字</p>
+<p>value: 当前区域的某DNS服务器的名字，例如ns.magedu.com.</p>
+<p>注意：<br>一个区域可以有多个NS记录<br>相邻的两个资源记录的name相同时，后续的可省略<br>对NS记录而言，任何一个ns记录后面的服务器名字，都应该在后续有一个A记录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">magedu.com. IN NS ns1.magedu.com.</span><br><span class="line">magedu.com. IN NS ns2.magedu.com.</span><br></pre></td></tr></table></figure></p>
+<h3 id="MX记录"><a href="#MX记录" class="headerlink" title="MX记录"></a>MX记录</h3><p>name: 当前区域的名字</p>
+<p>value: 当前区域的某邮件服务器(smtp服务器)的主机名<br>一个区域内，MX记录可有多个；但每个记录的value之前应该有一个数字(0-99)，表示此服务器的优先级；数字越小优先级越高<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例:</span><br><span class="line">magedu.com. IN MX 10 mx1.magedu.com.</span><br><span class="line">            IN MX 20 mx2.magedu.com.</span><br></pre></td></tr></table></figure></p>
+<h3 id="A记录"><a href="#A记录" class="headerlink" title="A记录"></a>A记录</h3><p>name: 某主机的FQDN，例如<a href="http://www.magedu.com" target="_blank" rel="noopener">www.magedu.com</a>.</p>
+<p>*（星号）：泛域名</p>
+<p>value: 主机名对应主机的IP地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">www.magedu.com. IN A 1.1.1.1</span><br><span class="line">www.magedu.com. IN A 2.2.2.2</span><br><span class="line">mx1.magedu.com. IN A3.3.3.3</span><br><span class="line">mx2.magedu.com. IN A 4.4.4.4</span><br><span class="line">$GENERATE 1-254 HOST$ A 1.2.3.$</span><br><span class="line">*.magedu.com.   IN A 5.5.5.5</span><br><span class="line">magedu.com.     IN A 6.6.6.6</span><br></pre></td></tr></table></figure></p>
+<p>用户写错域名时，可通过泛域名解析进行解析至某特定地址。</p>
+<p>AAAA:<br>name: FQDN<br>value: IPv6</p>
+<h3 id="PTR"><a href="#PTR" class="headerlink" title="PTR"></a>PTR</h3><p>name: IP，有特定格式，把IP地址反过来写，1.2.3.4，要写作4.3.2.1；而有特定后缀：in-addr.arpa.，所以完整写法为：4.3.2.1.in-addr.arpa.<br>value: FQDN<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">1.50.168.192.in-addr.arpa. IN PTR www.magedu.com.</span><br><span class="line"></span><br><span class="line">简写，如果192.168.50为网络地址</span><br><span class="line">6 IN PTR www.magedu.com.</span><br><span class="line"></span><br><span class="line">注意：网络地址及后缀可省略；主机地址依然需要反着写</span><br></pre></td></tr></table></figure></p>
+<h3 id="CNAME：别名记录"><a href="#CNAME：别名记录" class="headerlink" title="CNAME：别名记录"></a>CNAME：别名记录</h3><p>name: 别名的FQDN</p>
+<p>value: 真正名字的FQDN<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">www.magedu.com. IN CNAME websrv.magedu.com.</span><br></pre></td></tr></table></figure></p>
+<h2 id="子域"><a href="#子域" class="headerlink" title="子域"></a>子域</h2><p>子域授权：每个域的名称服务器，都是通过其上级名称服务器在解析库进行授权<br>类似根域授权tld：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.com. IN NS ns1.com.</span><br><span class="line">.com. IN NS ns2.com.</span><br><span class="line"></span><br><span class="line">ns1.com. IN A 2.2.2.1</span><br><span class="line">ns2.com. IN A 2.2.2.2</span><br></pre></td></tr></table></figure></p>
+<p>例：magedu.com. 在.com的名称服务器上，解析库中添加资源记录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># .com 名称服务器上的资源记录</span><br><span class="line">magedu.com. IN NS ns1.magedu.com.</span><br><span class="line">magedu.com. IN NS ns2.magedu.com.</span><br><span class="line">magedu.com. IN NS ns3.magedu.com.</span><br><span class="line">ns1.magedu.com. IN A 3.3.3.1</span><br><span class="line">ns2.magedu.com. IN A 3.3.3.2</span><br><span class="line">ns3.magedu.com. IN A 3.3.3.3</span><br><span class="line"></span><br><span class="line">glue record：粘合记录，父域授权子域的记录互联网域名</span><br></pre></td></tr></table></figure></p>
+<h1 id="域名注册："><a href="#域名注册：" class="headerlink" title="域名注册："></a>域名注册：</h1><p>代理商：万网, 新网, godaddy</p>
+<p>注册完成以后，想自己用专用服务来解析</p>
+<p>管理后台：把NS记录指向的服务器名称，和A记录指向的服务器地址</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/25/Ansible/" rel="next" title="Ansible">
+                <i class="fa fa-chevron-left"></i> Ansible
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/29/BIND安装配置/" rel="prev" title="BIND安装配置">
+                BIND安装配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS功能"><span class="nav-number">1.</span> <span class="nav-text">DNS功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS服务"><span class="nav-number">2.</span> <span class="nav-text">DNS服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS域名"><span class="nav-number">2.1.</span> <span class="nav-text">DNS域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS域名结构"><span class="nav-number">2.2.</span> <span class="nav-text">DNS域名结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名称服务器"><span class="nav-number">2.3.</span> <span class="nav-text">名称服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS服务器的类型"><span class="nav-number">2.3.1.</span> <span class="nav-text">DNS服务器的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主DNS服务器"><span class="nav-number">2.3.2.</span> <span class="nav-text">主DNS服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从DNS服务器"><span class="nav-number">2.3.3.</span> <span class="nav-text">从DNS服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“通知”-机制"><span class="nav-number">2.3.4.</span> <span class="nav-text">“通知” 机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区域传输"><span class="nav-number">2.3.5.</span> <span class="nav-text">区域传输</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS解析"><span class="nav-number">2.4.</span> <span class="nav-text">DNS解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解析类型"><span class="nav-number">2.4.1.</span> <span class="nav-text">解析类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负责本地域名的正向和反向解析库"><span class="nav-number">2.4.2.</span> <span class="nav-text">负责本地域名的正向和反向解析库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源记录"><span class="nav-number">2.5.</span> <span class="nav-text">资源记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#区域解析库：由众多RR组成"><span class="nav-number">2.5.1.</span> <span class="nav-text">区域解析库：由众多RR组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">2.5.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SOA记录"><span class="nav-number">2.5.3.</span> <span class="nav-text">SOA记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NS记录"><span class="nav-number">2.5.4.</span> <span class="nav-text">NS记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MX记录"><span class="nav-number">2.5.5.</span> <span class="nav-text">MX记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A记录"><span class="nav-number">2.5.6.</span> <span class="nav-text">A记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PTR"><span class="nav-number">2.5.7.</span> <span class="nav-text">PTR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CNAME：别名记录"><span class="nav-number">2.5.8.</span> <span class="nav-text">CNAME：别名记录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子域"><span class="nav-number">2.6.</span> <span class="nav-text">子域</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#域名注册："><span class="nav-number">3.</span> <span class="nav-text">域名注册：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
