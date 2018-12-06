@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="计算机网络计算机网络是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统。 基本网络拓扑结构1234567总线拓扑，所有设备均可接收信号星型拓扑，通过中心的传输，中心点容易发生故障扩展星型拓扑环拓扑，信号绕着环传输，容易发生单点故障双环拓扑，信号沿着相反反向传输全网网状拓扑，容错">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络协议和管理">
+<meta property="og:url" content="http://yoursite.com/2018/12/06/网络协议和管理/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="计算机网络计算机网络是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统。 基本网络拓扑结构1234567总线拓扑，所有设备均可接收信号星型拓扑，通过中心的传输，中心点容易发生故障扩展星型拓扑环拓扑，信号绕着环传输，容易发生单点故障双环拓扑，信号沿着相反反向传输全网网状拓扑，容错">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/ethernet1.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet2.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet3.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet4.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet5.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet6.png">
+<meta property="og:image" content="http://yoursite.com/images/ethernet7.png">
+<meta property="og:updated_time" content="2018-12-06T12:15:20.356Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络协议和管理">
+<meta name="twitter:description" content="计算机网络计算机网络是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统。 基本网络拓扑结构1234567总线拓扑，所有设备均可接收信号星型拓扑，通过中心的传输，中心点容易发生故障扩展星型拓扑环拓扑，信号绕着环传输，容易发生单点故障双环拓扑，信号沿着相反反向传输全网网状拓扑，容错">
+<meta name="twitter:image" content="http://yoursite.com/images/ethernet1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/06/网络协议和管理/"/>
+
+
+
+
+
+  <title>网络协议和管理 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/06/网络协议和管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">网络协议和管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-06T18:47:48+08:00">
+                2018-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/网络协议和管理/" itemprop="url" rel="index">
+                    <span itemprop="name">网络协议和管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><p>计算机网络是指将地理位置不同的具有独立功能的多台计算机及其外部设备，通过通信线路连接起来，在网络操作系统，网络管理软件及网络通信协议的管理和协调下，实现资源共享和信息传递的计算机系统。</p>
+<h1 id="基本网络拓扑结构"><a href="#基本网络拓扑结构" class="headerlink" title="基本网络拓扑结构"></a>基本网络拓扑结构</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">总线拓扑，所有设备均可接收信号</span><br><span class="line">星型拓扑，通过中心的传输，中心点容易发生故障</span><br><span class="line">扩展星型拓扑</span><br><span class="line">环拓扑，信号绕着环传输，容易发生单点故障</span><br><span class="line">双环拓扑，信号沿着相反反向传输</span><br><span class="line">全网网状拓扑，容错能力强</span><br><span class="line">部分网状拓扑</span><br></pre></td></tr></table></figure>
+<h1 id="OSI网络模型"><a href="#OSI网络模型" class="headerlink" title="OSI网络模型"></a>OSI网络模型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">物理层，比特位，二进制传输，定义了电气、机械、过程和功能规范</span><br><span class="line">数据链路层，frame(数据帧)，定义如何组织数据，如何控制网络的访问，通过物理地址传输(MAC)</span><br><span class="line">网络层，包(packet)</span><br><span class="line">传输层，segment(段)，确保数据传输的可靠性，定义如何检查数据的传输错误的检查</span><br><span class="line">会话层，主机间的通信的管理</span><br><span class="line">表示层，数据编码格式的管理，提供了加密等功能</span><br><span class="line">应用层，为网络进程提供了网络功能</span><br><span class="line">下层协议为上层提供服务</span><br></pre></td></tr></table></figure>
+<h1 id="网络通信的方式"><a href="#网络通信的方式" class="headerlink" title="网络通信的方式"></a>网络通信的方式</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">单播，unicast，目标是网络中的一个设备之间的通信</span><br><span class="line">广播，broadcast，目标是网络内的所有设备的通信</span><br><span class="line">组播，multicast，目标是网络内的一组设备间的通信</span><br></pre></td></tr></table></figure>
+<h2 id="网络的分类"><a href="#网络的分类" class="headerlink" title="网络的分类"></a>网络的分类</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LAN，局域网，以广播的方式进行通信</span><br><span class="line">WAN，广域网，以单播的方式进行通信</span><br></pre></td></tr></table></figure>
+<h1 id="Ethernet，以太网"><a href="#Ethernet，以太网" class="headerlink" title="Ethernet，以太网"></a>Ethernet，以太网</h1><p>Ethernet Frame，包含前导数据帧，目标MAC地址，源MAC地址，类型，数据和循环校验位</p>
+<p><img src="/images/ethernet1.png" alt="Alt text"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MAC地址：</span><br><span class="line">    用来表示互联网上每一个站点的标识符，采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由IEEE的注册管理机构RA负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”（Organizationally Unique Identifier），后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/ethernet2.png" alt="Alt text"></p>
+<p><img src="/images/ethernet3.png" alt="Alt text"><br>CSMA/CD，冲突检测载波侦听多路访问</p>
+<h1 id="网络设备"><a href="#网络设备" class="headerlink" title="网络设备"></a>网络设备</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Hub集线器，多端口的中继器，以广播的方式发送报文，Hub的特点：共享带宽，半双工，并不隔离广播域与冲突域</span><br><span class="line">    广播域：一个主机发送广播报文，另一个主机也收到，两个主机就在一广播域</span><br><span class="line">    冲突域：一个主机发送单播报文，另一个主机也发送报文，产生冲突，两个主机就在一冲突域</span><br><span class="line">Switch交换机，通过学习建立mac和接口建立关系，生成一个对应的表，Switch的特点，每个端口独占带宽，全双工，隔离冲突域，但并不隔离广播域</span><br><span class="line">Router路由器，可以隔离广播域，通过选择路由表中到达目标最佳的路径，是连接广域网的基本设备</span><br></pre></td></tr></table></figure>
+<h1 id="VLAN，虚拟局域网"><a href="#VLAN，虚拟局域网" class="headerlink" title="VLAN，虚拟局域网"></a>VLAN，虚拟局域网</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以根据功能、部门及应用等因素将它们组织起来，通常可以按端口、按MAC地址、按网络层划分、按用户等方式划分出多个VLAN。多个vlan之间的通信需通过路由器连接多个vlan接口，实现通信，但也可以通过单臂路由实现多个vlan之间的通信。</span><br></pre></td></tr></table></figure>
+<p><img src="/images/ethernet4.png" alt="Alt text"></p>
+<p>VPN   虚拟专用网络</p>
+<h1 id="TCP-IP协议"><a href="#TCP-IP协议" class="headerlink" title="TCP/IP协议"></a>TCP/IP协议</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">面向连接：通信双方在发送数据之前需要事先建立连接</span><br><span class="line">面向无连接：通信双发在发送数据之前无需事先建立连接</span><br><span class="line">TCP报文头部：固定的20字节包含有2个字节的源端口(应用层的应用的惟一标识)、2个字节的目标端口、4个字节序号、4个字节的确认号，(数据偏移，保留，URG,ACK,PSH,SYN,RST,FIN)共2个字节，2个字节窗口，2个字节的检验和，2个字节的紧急指针</span><br><span class="line">    端口范围：0-65535</span><br><span class="line">        0-1023，由IANA规定(仅管理员才能启用)，固定分配各众所周知的应用程序</span><br><span class="line">        kerberos 88/tcp telnet 23/tcp smtp 25/tcp ntp 123/tcp https 443/tcp pop3 110/tcp imap 143/tcp http 80/tcp ssh 22/tcp ftp 21/tcp dns 53/tcp|udp dhcp 67,68/tcp snmp 161/tcp samba 445/tcp</span><br><span class="line">        1024-41951，亦为注册端口，但要求不是很严格，mysql 3306/tcp  sql server 1433/tcp mgmtd 5560/tcp</span><br><span class="line">        41952-65535，客户端随机使用的端口  </span><br><span class="line">            cat /proc/sys/net/ipv4/ip_local_range</span><br><span class="line">    序列号：范围0-2^32，每个报文都有一个序列号，当序列号耗尽时，从0重新开始</span><br><span class="line">    确认号：确认上一次报文序列号的加1</span><br><span class="line">    数据偏移：报文头部的长度</span><br><span class="line">    URG：紧急指针位，指定报文中是否包含紧急数据</span><br><span class="line">    PSH：提示接收端立即把tcp接收缓冲区读走数据，如果为1，表示立即把数据提交给应用程序，而不缓存</span><br><span class="line">    RST：如收到RST=1，说明主机的连接出现严重故障，必须重新建立连接</span><br><span class="line">    SYN：同步位</span><br><span class="line">    ACK：连接建立后，ACK必须为1,带ACK标志的TCP报文段称为确认报文段</span><br><span class="line">    FIN：表示通知对方本端要关闭连接了，标记数据是否发送完毕</span><br></pre></td></tr></table></figure>
+<p><img src="/images/ethernet5.png" alt="Alt text"></p>
+<h2 id="TCP的三次握手"><a href="#TCP的三次握手" class="headerlink" title="TCP的三次握手"></a>TCP的三次握手</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">1. 客户端发送一个SYN=1，并生成一个seq=j给服务器端后，并将状态转换成SYN_SENT。表明请求连接已发送，等待服务器端确认</span><br><span class="line">    2. 服务器端在收到客户端的一个SYN=1后，服务器端将标志位SYN=1，ACK=1 ack=k+1并生成一个seq=m，将此数据包发送给客户端，以确认连接，并将状态转化成SYN_RCVD</span><br><span class="line">    3. 客户端在收到确认后，确认ack是否为k+1，ACK是否为1，如果都正确，则将标志位ACK=1 ack=m+1，发送给服务器端，服务端收到后，确认ack是否为k+1，ACK是否为1，如果都正确，此时建立彼此间的连接，客户端和服务器端的状态都置为ESTABLISHED     </span><br><span class="line">TCP的四次挥手：</span><br><span class="line">    1. 如此时，客户端主动发送一个FIN请求，用来关闭客户端和服务器端的连接，并将状态置为FIN_WAIT1，等待服务器端确认</span><br><span class="line">    2. 服务器端收到客户端的FIN请求，知道客户端要断开和服务器端的连接，此时服务器端发送一个ACK，确认的序号为收到的序号+1，服务器进入CLOSE_WAIT状态</span><br><span class="line">    3. 与此同时服务器端发送FIN请求，用来关闭服务器端和客户端的连接，此时服务器并不知道客户端的数据是否还在接收或者还是需要建立连接等情况，服务器端进入LAST_ACK状态</span><br><span class="line">    4. 客户端在收到服务器发送的FIN请求后，客户端进入TIME_WAIT状态，接着发送ACK，确认序列号为收到的序号+1给服务器端，服务器端进入CLOSED状态，此时，客户端在等待2MSL后断开服务已经建立的连接。</span><br><span class="line"></span><br><span class="line">为什么建立连接是三次握手，而关闭连接却是四次挥手呢？</span><br><span class="line">    这是因为服务端在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。而关闭连接时，当收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，己方也未必全部数据都发送给对方了，所以己方可以立即close，也可以发送一些数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接，因此，己方ACK和FIN一般都会分开发送</span><br><span class="line"></span><br><span class="line">sync半连接和accept全连接队列</span><br><span class="line">    查看其长度：</span><br><span class="line">        cat /proc/sys/net/ipv4/tcp_max_syn_backlog  未完成的的半连接，建议其值为1024</span><br><span class="line">        cat /proc/sys/net/core/somaxconn</span><br><span class="line">            已完成的连接，建议其值为1024</span><br><span class="line">    MTU：最大传输单元，1500字节</span><br><span class="line">    MSS：最大报文段长度，通常为1460字节</span><br><span class="line">    窗口大小：数据报文达到多少值，需要ACK确认才继续发送数据，早期由于窗口大小太小，所以现在传输报文时，需要在第一次请求连接时确认Windows size scaling factor的大小</span><br><span class="line"></span><br><span class="line">udp报头：16位源地址，16位目标地址，16位长度，16位校验和，32位数据</span><br></pre></td></tr></table></figure>
+<p><img src="/images/ethernet6.png" alt="Alt text"></p>
+<h2 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ICMP：</span><br><span class="line">    /proc/sys/net/ipv4/icmp_echo_ignore_all，设为1为禁止ping回应请求</span><br><span class="line">        ping </span><br><span class="line">            -c，请求的数目 </span><br><span class="line">            -s，报头的大小</span><br><span class="line">            -w，超时时长</span><br><span class="line">            -f，flood ping</span><br><span class="line">ARP：两个主机通信前先通过ARP广播，生成一个MAC与IP的对应关系</span><br><span class="line">显示arp表</span><br><span class="line">    ip neigh</span><br><span class="line">    arp -n</span><br></pre></td></tr></table></figure>
+<h2 id="IP报头"><a href="#IP报头" class="headerlink" title="IP报头"></a>IP报头</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">IP报头：包含4位的版本，4位的首部长度，8位的区分服务，16位总长度，16位的标识，3位标志，13位片偏移，8位生存时间，8位协议，16位首部校验和，32位的源地址，32位目的地址共20字节</span><br><span class="line">    版本：ipv4，ipv6</span><br><span class="line">    首部长度：表明该数据包最大的首部大小</span><br><span class="line">    区分服务：一般情况不使用</span><br><span class="line">    总长度：表明首部和数据之和的长度</span><br><span class="line">    标识：计数器，每发送一个报文，该值加1，如在同一数据包分片中，该值是相同</span><br><span class="line">    标志：只有后2位有用，分别为DF和MF，DF=0，才允许分片，MF=1，表示还有分片，MF=0，表示为最后一个分片</span><br><span class="line">    片偏移：较长的分组在分片后，该分片在原分组中的相对位置，以8个字节为偏移单位</span><br><span class="line">    TTL：生存周期</span><br><span class="line">    协议：上层协议的类型</span><br></pre></td></tr></table></figure>
+<p><img src="/images/ethernet7.png" alt="Alt text"></p>
+<h3 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">网络ID：</span><br><span class="line">    标识网络，且每个网段分配一个网络ID</span><br><span class="line">主机ID：</span><br><span class="line">    标识单一主机，由组织分配</span><br><span class="line">IP地址分类</span><br><span class="line">    A类：</span><br><span class="line">        网络ID为高8位，主机ID位为24位</span><br><span class="line">        1-126.x.y.z</span><br><span class="line">        最大主机数=2^(32-8)-2</span><br><span class="line">        网络数=2^可变网络ID位=2^7</span><br><span class="line">    B类：网络为高16位，主机ID为16位</span><br><span class="line">        最大主机数=2^(32-16)-2</span><br><span class="line">        网络数=2^可变网络ID位=2^14</span><br><span class="line">        128-191.x.y.z</span><br><span class="line">    C类：网络为高24位，主机ID为8位</span><br><span class="line">        最大主机数=2^(32-24)-2</span><br><span class="line">        网络数=2^可变网络ID位=2^21</span><br><span class="line">        192-223.x.y.z</span><br><span class="line">    D类：多播地址</span><br><span class="line">        224-239.x.y.z</span><br><span class="line">    E类：</span><br><span class="line">        240-254.x.y.z</span><br><span class="line"></span><br><span class="line">    00000000    0</span><br><span class="line">    10000000    128</span><br><span class="line">    11000000    192</span><br><span class="line">    11100000    224</span><br><span class="line">    11110000    240</span><br><span class="line">    11111000    248</span><br><span class="line">    11111100    252</span><br><span class="line">    11111110    254</span><br><span class="line">    11111111    255</span><br></pre></td></tr></table></figure>
+<h3 id="子网划分，一个大网划分多个小网"><a href="#子网划分，一个大网划分多个小网" class="headerlink" title="子网划分，一个大网划分多个小网"></a>子网划分，一个大网划分多个小网</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1.一个网络中主机最大数=2^主机ID位数(32-网络ID位数)-2=2^(32-网络ID位数)-2</span><br><span class="line">2.网络数=2^可变网络ID位</span><br><span class="line">3.CIDR表示法：IP/网络ID位数</span><br><span class="line">4.网络ID值=IP与子网掩码</span><br><span class="line">5.划分子网：一个大网划分成多个小网，网络ID位变多，主机ID位才变少，网络ID向主机ID借位N,分成2^N个小网</span><br><span class="line">10.0.0.0/8 给32省份划分各自子网</span><br><span class="line">借5位</span><br><span class="line">    1.子网子网掩码2^N&gt;=32 N=5</span><br><span class="line">        8+5=13</span><br><span class="line">        255.11111000.0.0</span><br><span class="line">        255.248.0.0</span><br><span class="line">    2.最小子网，最大子网ID</span><br><span class="line">        10.00000 000.0.0 </span><br><span class="line">            10.0.0.0/13</span><br><span class="line">        10.11111 000.0.0</span><br><span class="line">            10.248.0.0/13</span><br><span class="line">    3.每个子网主机数 </span><br><span class="line">            2^19-2</span><br><span class="line">    4.第20个子网分给河南使用，最大ip，最小ip</span><br></pre></td></tr></table></figure>
+<p>超网划分,多个小网合并成一个大网，主机ID向网络ID借位</p>
+<h1 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">主机路由，精确到达某一主机，默认越精确，优先级越高</span><br><span class="line">网络路由，表明到达某一网段所要经过的路径</span><br><span class="line">默认路由，在网络的边缘，表明该网络或主机，发送不属于本机或本网段默认要经过那个接口转发出去</span><br></pre></td></tr></table></figure>
+<h1 id="动态主机配置协议DHCP"><a href="#动态主机配置协议DHCP" class="headerlink" title="动态主机配置协议DHCP"></a>动态主机配置协议DHCP</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端发送一个DHCP Discovery广播给服务器，服务器响应一个DHCP offer给客户端，确定一个没有使用的IP地址，客户端DHCP发送一个DHCP request确定使用这个IP，最后发送一个DHCP ACK确认连接后，发送网关等信息给客户端</span><br></pre></td></tr></table></figure>
+<h1 id="网卡的命名方式"><a href="#网卡的命名方式" class="headerlink" title="网卡的命名方式"></a>网卡的命名方式</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Centos6：</span><br><span class="line">    以太网：eth&#123;0，1，2，...&#125;</span><br><span class="line">    手动修改网卡的名称</span><br><span class="line">        /etc/udev/rules.d/70-persistent-net.rules</span><br><span class="line">    查看网卡驱动</span><br><span class="line">        dmesg | grep ETHERNET</span><br><span class="line">        ethtool -i ETHERNET</span><br><span class="line">    查看IP地址是否冲突</span><br><span class="line">        arping -I ETHERNET IP</span><br><span class="line">Centos7：</span><br><span class="line">    systemd对网络设备的命名方式</span><br><span class="line">        a、如果Firware或Bios为主板上集成的设备提供的索引信息可用，且可预测则根据此所以进行命名，例如eno1</span><br><span class="line">        b、如果Firware或Bios为主板PCI-E扩展槽所提供提供的索引信息可用，且可预测则根据此所以进行命名，例如ens1</span><br><span class="line">        c、如果硬件接口的物理位置信息可用，则根据此信息进行命名，例如enps2s0</span><br><span class="line">        d、如果用户显式启动，也可根据MAC地质进行命名，ex334ad23da</span><br><span class="line">        e、如上述均不可用，则使用传统命名机制</span><br><span class="line">网卡设备的命名过程： </span><br><span class="line">第一步：</span><br><span class="line">    udev，辅助工具/lib/udev/rename_device，/usr/lib/udev/rules.d/60-net.rules</span><br><span class="line">第二步：</span><br><span class="line">    biosdevname会根据/usr/lib/dev/rules.d/71-biosdevname.rules</span><br><span class="line">第三步：</span><br><span class="line">    通过检测网络接口设备，根据/usr/lib/dev/rules.d/75-net-description</span><br><span class="line">        ID_NET_NAME_ONBOARD，ID_NET_NAME_SLOT，ID_NET_NAME_PATH</span><br></pre></td></tr></table></figure>
+<h2 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ifconfig ETHERNET down，禁用接口</span><br><span class="line">    ifdown </span><br><span class="line"></span><br><span class="line">ifconfig ETHERNET up，启用接口</span><br><span class="line">    ifup</span><br><span class="line"></span><br><span class="line">ifup/ifdown ethX 和 ifconfig ehtX up/down的区别</span><br><span class="line">    1. ifconfig本身是命令，是设定网络参数的指令，而ifup/ifdwon是可执行脚本</span><br><span class="line">    2. ifconfig是手动修改网络接口的参数，而ifup/ifdwon是通过修改与网卡同名的配置文件(ifcfg-网卡名称)里的参数</span><br><span class="line">    3. 如果用了ifconfig 修改或设置网络接口参数，那么就无法用ifdown  ethX方式来关闭。这是因为ifdown会分析目前网络接口参数是否与文件ifcfg-ethX的配置参数是否一致，不一致的话，就会放弃操作。因此用ifconfig修改完后，需要用ifconfig  ethX  down才能关闭该接口。</span><br><span class="line"></span><br><span class="line">    ifconfig -a 显示所有的接口</span><br></pre></td></tr></table></figure>
+<h3 id="临时设置网卡的别名并配置IP"><a href="#临时设置网卡的别名并配置IP" class="headerlink" title="临时设置网卡的别名并配置IP"></a>临时设置网卡的别名并配置IP</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ifconfig ETHERNET:NUMS IP</span><br><span class="line"></span><br><span class="line">ifconfig ETHERNET IP 临时配置接口的IP地址</span><br></pre></td></tr></table></figure>
+<h1 id="route"><a href="#route" class="headerlink" title="route"></a>route</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">route add -host IP gw IP 添加主机路由</span><br><span class="line"></span><br><span class="line">route del -host IP 删除主机路由</span><br><span class="line"></span><br><span class="line">route add -net NET gw IP 添加网络路由</span><br><span class="line"></span><br><span class="line">route del -net IP 删除网络路由</span><br><span class="line"></span><br><span class="line">route add default gw [dev] [ETHERNET]</span><br><span class="line">    两个主机默认通信，不经过路由</span><br><span class="line">        主机1：</span><br><span class="line">            router add default gw dev ETHERNET</span><br><span class="line">        主机2：</span><br><span class="line">            router add default gw dev ETHERNET</span><br></pre></td></tr></table></figure>
+<h2 id="路由配置文件路径"><a href="#路由配置文件路径" class="headerlink" title="路由配置文件路径"></a>路由配置文件路径</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/etc/sysconfig/network-scripts/</span><br><span class="line">路由配置文件</span><br><span class="line">    以router-IFNAME</span><br><span class="line">        1. TARGET　via GW </span><br><span class="line">            示例 192.168.3.0 via 192.168.56.1</span><br><span class="line">        2. 每三行定义一条路由</span><br><span class="line">            ADDRESS#=TARGET</span><br><span class="line">            NETMASK#=MASK</span><br><span class="line">            GATEWAY#=GW</span><br></pre></td></tr></table></figure>
+<h3 id="网卡的配置文件路径"><a href="#网卡的配置文件路径" class="headerlink" title="网卡的配置文件路径"></a>网卡的配置文件路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">  /etc/sysconfig/network-scripts/</span><br><span class="line">网卡配置文件</span><br><span class="line">    以ifcfg-ETHERNET命名的文件</span><br><span class="line">    示例：ifcfg-eth0</span><br><span class="line">    NAME=eth0</span><br><span class="line">    DEVICE=eth0</span><br><span class="line">    TYPE=Ethernet</span><br><span class="line">    BOOTPROTO=static</span><br><span class="line">    IPADDR=192.168.56.22</span><br><span class="line">    NETMASK=255.255.255.0</span><br><span class="line">    DNS1=192.168.56.1</span><br><span class="line">    GATEWAY=192.168.56.1</span><br><span class="line">    ONBOOT=yes</span><br></pre></td></tr></table></figure>
+<p>traceroute 判断路由经过的路径</p>
+<p>mtr 网络诊断工具</p>
+<p>配置动态路由   安装quagga包</p>
+<h1 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">netstat [option] </span><br><span class="line">    [option]</span><br><span class="line">        -t，显示TCP协议相关</span><br><span class="line">        -n，以数字形式显示服务监听的IP</span><br><span class="line">        -u，显示UDP协议相关</span><br><span class="line">        -l，显示当前正在监听状态的服务</span><br><span class="line">        -p，显示当前监听服务所对应的程序</span><br><span class="line">        -a，显示所有</span><br><span class="line">网络端口状态统计</span><br><span class="line">netstat -tan | sed -nr &quot;/^tcp/s@.* ([[:alpha:]]+)@\1@p&quot; | sort | uniq -c </span><br><span class="line">netstat -tan | sed -nr &quot;/^tcp/s@.* ([^ ]+) ?@\1@p&quot; | sort | uniq -c</span><br><span class="line">ss -tan | sed -nr &apos;1!s@([^ ]+).*@\1@p&apos; | sort | uniq -c</span><br></pre></td></tr></table></figure>
+<h1 id="ss"><a href="#ss" class="headerlink" title="ss"></a>ss</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令选项同netstat，底层机制比netstat更加优化</span><br><span class="line">ss -o state established &apos;( dport = :6868 or sport = :6868 )&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="ip"><a href="#ip" class="headerlink" title="ip"></a>ip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">ip [ OPTIONS ] OBJECT &#123; COMMAND | help &#125;</span><br><span class="line">    OBJECT := &#123; link | address | netns | route &#125;</span><br><span class="line">        ip addr add IP/NETMASK dev ETHERNET</span><br><span class="line">            [label LABEL]：添加地址时指明网卡别名</span><br><span class="line">            [scope &#123;global|link|host&#125;]：作用域</span><br><span class="line">                global：全局</span><br><span class="line">                link：仅链接可用</span><br><span class="line">                host：仅本机可用</span><br><span class="line">            [broadcast ADDRESS]：指明广播地址</span><br><span class="line"></span><br><span class="line">ip addr del IP/NETMASK</span><br><span class="line"></span><br><span class="line">ip link show</span><br><span class="line">        [dev]：指定接口</span><br><span class="line">        up：只显示启用接口的信息</span><br><span class="line">ip link set</span><br><span class="line">        dev iface</span><br><span class="line">            up：启用指定接口</span><br><span class="line">            down：禁用指定接口</span><br><span class="line"></span><br><span class="line">ip route </span><br><span class="line">    ip route add</span><br><span class="line">        添加路由：ip route add TARGET via GW dev IFACE src SOURCE_IP</span><br><span class="line">            TARGET: </span><br><span class="line">                主机路由：IP</span><br><span class="line">                网络路由：IP/NETMASK</span><br><span class="line">            ip route add 192.168.1.2 via 192.168.56.2 dev eth0</span><br><span class="line">            添加默认网关：ip route add default via GW dev IFACE</span><br><span class="line"></span><br><span class="line">    ip route delete</span><br><span class="line">    删除路由：ip route delete TARGET </span><br><span class="line">        ip route delete 192.168.1.2</span><br><span class="line"></span><br><span class="line">    ip route flush</span><br><span class="line">    [dev IFACE]</span><br><span class="line">    [via PREFIX]</span><br><span class="line"></span><br><span class="line">    ip address flush</span><br><span class="line">    [dev IFACE]：清空指定接口地址</span><br><span class="line">    [label Pattern]：清空指定PATTERN的接口</span><br><span class="line">    [primary and secondary]：清空主要或者次要接口地址</span><br></pre></td></tr></table></figure>
+<h1 id="网卡bonding"><a href="#网卡bonding" class="headerlink" title="网卡bonding"></a>网卡bonding</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Bonding工作模式</span><br><span class="line">    1. Round-robin，轮询，mode=0</span><br><span class="line">    2. active-backup，主备，mode=1</span><br><span class="line">    3. broadcast，广播，mode=3</span><br><span class="line">1. 创建bonding设备配置文件</span><br><span class="line">    /etc/sysconfig/network-scripts/ifcfg-bond0</span><br><span class="line">    示例</span><br><span class="line">    DEVICE=bond0</span><br><span class="line">    BOOTPROTO=none</span><br><span class="line">    IPADDR=</span><br><span class="line">    NETMASK=</span><br><span class="line">    DNS1=</span><br><span class="line">    GATEWAY=</span><br><span class="line">    BONDING_OPTS=&quot;mode=1 miimon=100&quot;</span><br><span class="line"></span><br><span class="line">2. 修改物理网卡的配置文件</span><br><span class="line">    /etc/sysconfig/network-scripts/ifcfg-IFNAME</span><br><span class="line">    示例</span><br><span class="line">    DEVICE=</span><br><span class="line">    MASTER=bond0</span><br><span class="line">    SLAVE=yes</span><br><span class="line"></span><br><span class="line">查看bonding网卡的状态</span><br><span class="line">    cat /proc/net/bonding/bond0</span><br><span class="line"></span><br><span class="line">删除bonding</span><br><span class="line">    1. ifconfig bond0 down</span><br><span class="line">    2. modprobe -r bonding</span><br><span class="line">    3. 恢复原网卡的配置文件</span><br></pre></td></tr></table></figure>
+<h1 id="nmcli"><a href="#nmcli" class="headerlink" title="nmcli"></a>nmcli</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">nmcli [OPTIONS...] object [command | help]</span><br><span class="line">    object</span><br><span class="line">        connection：c</span><br><span class="line">            show [ifname]：查看接口详细信息</span><br><span class="line">            modify：修改接口相关配置</span><br><span class="line">            reload：重新加载配置</span><br><span class="line">        device：d</span><br><span class="line">            show [ifname]：查看接口的详细信息</span><br><span class="line"></span><br><span class="line">配置网络群组</span><br><span class="line">1. 首先添加一个群组连接</span><br><span class="line">示例：nmcli connection add type team con-name team0 ifname team0  </span><br><span class="line">team.config &apos;&#123;&quot;runner&quot;:&#123;&quot;name&quot;:&quot;loadbalance&quot;&#125;&#125;&apos;</span><br><span class="line">其中除了loadbalance，还有broadcast、activebackup、roundrobin和lacp</span><br><span class="line"></span><br><span class="line">2. 配置群组连接的ip,gateway,dns等</span><br><span class="line">示例：nmcli connection modify team0 ipv4.method manual ipv4.addresses 192.168.56.190/24 ipv4.dns 192.168.56.2 ipv4.gateway 192.168.56.2</span><br><span class="line"></span><br><span class="line">3. 添加网卡至群组连接中</span><br><span class="line">示例：</span><br><span class="line">    nmcli connection add type team-slave con-name team-ens33 ifname ens33 master team0  </span><br><span class="line">    nmcli connection add type team-slave con-name team-ens37 ifname ens37 master team0    </span><br><span class="line"></span><br><span class="line">4. 激活群组连接</span><br><span class="line">示例：</span><br><span class="line">    nmcli connection up team0</span><br><span class="line">    nmcli connection up team0-ens33</span><br><span class="line">    nmcli connection up team0-ens37</span><br><span class="line"></span><br><span class="line">5. 查看状态</span><br><span class="line">    示例：</span><br><span class="line">        teamdctl team0 state view</span><br><span class="line"></span><br><span class="line">删除team</span><br><span class="line">    nmcli connection down team0</span><br><span class="line">    nmcli connection delete team0</span><br><span class="line">    nmcli connection delete team-ens33</span><br><span class="line">    nmcli connection delete team0-ens37</span><br></pre></td></tr></table></figure>
+<h2 id="配置bridge"><a href="#配置bridge" class="headerlink" title="配置bridge"></a>配置bridge</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. 添加一个bridge接口</span><br><span class="line">    示例:</span><br><span class="line">        nmcli connection add type bridge con-name br0 ifname br0 ipv4.method manual ipv4.addresses 192.168.56.189/24 ipv4.dns 192.168.56.2 ipv4.gateway 192.168.56.2</span><br><span class="line">2. 给这个网桥创建从属接口</span><br><span class="line">    示例：</span><br><span class="line">        nmcli connection add type bridge-slave con-name br0-ens33 ifname ens33 master br0</span><br><span class="line">        nmcli connection add type bridge-slave con-name br0-ens37 ifname ens37 master br0 </span><br><span class="line">3. 启动br0</span><br><span class="line">    示例：</span><br><span class="line">        nmcli connection up br0</span><br><span class="line">        nmcli connection up br0-ens33</span><br><span class="line">        nmcli connection up br0-ens37</span><br><span class="line">4. 删除br0</span><br><span class="line">        nmcli connection down  br0</span><br><span class="line">        nmcli connection delete br0</span><br><span class="line">        nmcli conection delete br0-ens33</span><br><span class="line">        nmcli conection delete br0-ens37</span><br></pre></td></tr></table></figure>
+<h1 id="tcpdump"><a href="#tcpdump" class="headerlink" title="tcpdump"></a>tcpdump</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">tcpdump:</span><br><span class="line"></span><br><span class="line">-A 以ASCII格式打印出所有分组，并将链路层的头最小化。 </span><br><span class="line"></span><br><span class="line">-c 在收到指定的数量的分组后，tcpdump就会停止。 </span><br><span class="line"></span><br><span class="line">-C 在将一个原始分组写入文件之前，检查文件当前的大小是否超过了参数file_size 中指定的大小。如果超过了指定大小，则关闭当前文件，然后在打开一个新的文件。参数 file_size 的单位是兆字节（是1,000,000字节，而不是1,048,576字节）。 </span><br><span class="line"></span><br><span class="line">-d 将匹配信息包的代码以人们能够理解的汇编格式给出。 </span><br><span class="line"></span><br><span class="line">-dd 将匹配信息包的代码以C语言程序段的格式给出。 </span><br><span class="line"></span><br><span class="line">-ddd 将匹配信息包的代码以十进制的形式给出。 </span><br><span class="line"></span><br><span class="line">-D 打印出系统中所有可以用tcpdump截包的网络接口。 </span><br><span class="line"></span><br><span class="line">-e 在输出行打印出数据链路层的头部信息。 </span><br><span class="line"></span><br><span class="line">-E 用spi@ipaddr algo:secret解密那些以addr作为地址，并且包含了安全参数索引值spi的IPsec ESP分组。 </span><br><span class="line"></span><br><span class="line">-f 将外部的Internet地址以数字的形式打印出来。 </span><br><span class="line"></span><br><span class="line">-F 从指定的文件中读取表达式，忽略命令行中给出的表达式。 </span><br><span class="line"></span><br><span class="line">-i 指定监听的网络接口。 </span><br><span class="line"></span><br><span class="line">-l 使标准输出变为缓冲行形式，可以把数据导出到文件。 </span><br><span class="line"></span><br><span class="line">-L 列出网络接口的已知数据链路。 </span><br><span class="line"></span><br><span class="line">-m 从文件module中导入SMI MIB模块定义。该参数可以被使用多次，以导入多个MIB模块。 </span><br><span class="line"></span><br><span class="line">-M 如果tcp报文中存在TCP-MD5选项，则需要用secret作为共享的验证码用于验证TCP-MD5选选项摘要（详情可参考RFC 2385）。 </span><br><span class="line"></span><br><span class="line">-b 在数据-链路层上选择协议，包括ip、arp、rarp、ipx都是这一层的。 </span><br><span class="line"></span><br><span class="line">-n 不把网络地址转换成名字。 </span><br><span class="line"></span><br><span class="line">-nn 不进行端口名称的转换。 </span><br><span class="line"></span><br><span class="line">-N 不输出主机名中的域名部分。例如，‘nic.ddn.mil‘只输出’nic‘。 </span><br><span class="line"></span><br><span class="line">-t 在输出的每一行不打印时间戳。 </span><br><span class="line"></span><br><span class="line">-O 不运行分组分组匹配（packet-matching）代码优化程序。 </span><br><span class="line"></span><br><span class="line">-P 不将网络接口设置成混杂模式。 </span><br><span class="line"></span><br><span class="line">-q 快速输出。只输出较少的协议信息。 </span><br><span class="line"></span><br><span class="line">-r 从指定的文件中读取包(这些包一般通过-w选项产生)。 </span><br><span class="line"></span><br><span class="line">-S 将tcp的序列号以绝对值形式输出，而不是相对值。 </span><br><span class="line"></span><br><span class="line">-s 从每个分组中读取最开始的snaplen个字节，而不是默认的68个字节。 </span><br><span class="line"></span><br><span class="line">-T 将监听到的包直接解释为指定的类型的报文，常见的类型有rpc远程过程调用）和snmp（简单网络管理协议；）。 </span><br><span class="line"></span><br><span class="line">-t 不在每一行中输出时间戳。 </span><br><span class="line"></span><br><span class="line">-tt 在每一行中输出非格式化的时间戳。 </span><br><span class="line"></span><br><span class="line">-ttt 输出本行和前面一行之间的时间差。 </span><br><span class="line"></span><br><span class="line">-tttt 在每一行中输出由date处理的默认格式的时间戳。 </span><br><span class="line"></span><br><span class="line">-u 输出未解码的NFS句柄。 </span><br><span class="line"></span><br><span class="line">-v 输出一个稍微详细的信息，例如在ip包中可以包括ttl和服务类型的信息。 </span><br><span class="line"></span><br><span class="line">-vv 输出详细的报文信息。 </span><br><span class="line"></span><br><span class="line">-w 直接将分组写入文件中，而不是不分析并打印出来。</span><br></pre></td></tr></table></figure>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">1、默认启动</span><br><span class="line">tcpdump -vv</span><br><span class="line">普通情况下，直接启动tcpdump将监视第一个网络接口上所有流过的数据包。</span><br><span class="line"></span><br><span class="line">2、过滤主机</span><br><span class="line">tcpdump -i eth1 host 192.168.1.1</span><br><span class="line">tcpdump -i eth1 src host 192.168.1.1</span><br><span class="line">tcpdump -i eth1 dst host 192.168.1.1</span><br><span class="line">抓取所有经过eth1，目的或源地址是192.168.1.1的网络数据</span><br><span class="line">指定源地址，192.168.1.1</span><br><span class="line">指定目的地址，192.168.1.1</span><br><span class="line"></span><br><span class="line">3、过滤端口</span><br><span class="line">tcpdump -i eth1 port 25</span><br><span class="line">tcpdump -i eth1 src port 25</span><br><span class="line">tcpdump -i eth1 dst port 25</span><br><span class="line">抓取所有经过eth1，目的或源端口是25的网络数据</span><br><span class="line">指定源端口</span><br><span class="line">指定目的端口</span><br><span class="line"></span><br><span class="line">4、网络过滤</span><br><span class="line">tcpdump -i eth1 net 192.168</span><br><span class="line">tcpdump -i eth1 src net 192.168</span><br><span class="line">tcpdump -i eth1 dst net 192.168</span><br><span class="line"></span><br><span class="line">5、协议过滤</span><br><span class="line">tcpdump -i eth1 arp</span><br><span class="line">tcpdump -i eth1 ip</span><br><span class="line">tcpdump -i eth1 tcp</span><br><span class="line">tcpdump -i eth1 udp</span><br><span class="line">tcpdump -i eth1 icmp</span><br><span class="line"></span><br><span class="line">6、常用表达式</span><br><span class="line">非 : ! or &quot;not&quot; (去掉双引号) </span><br><span class="line">且 : &amp;&amp; or &quot;and&quot; </span><br><span class="line">或 : || or &quot;or&quot;</span><br><span class="line"></span><br><span class="line">抓取所有经过eth1，目的地址是192.168.1.254或192.168.1.200端口是80的TCP数</span><br><span class="line"></span><br><span class="line">tcpdump -i eth1 &apos;((tcp) and (port 80) and ((dst host 192.168.1.254) or (dst host 192.168.1.200)))&apos;</span><br><span class="line"></span><br><span class="line">抓取所有经过eth1，目标MAC地址是00:01:02:03:04:05的ICMP数据</span><br><span class="line"></span><br><span class="line">tcpdump -i eth1 &apos;((icmp) and ((ether dst host 00:01:02:03:04:05)))&apos;</span><br><span class="line"></span><br><span class="line">抓取所有经过eth1，目的网络是192.168，但目的主机不是192.168.1.200的TCP数据</span><br><span class="line"></span><br><span class="line">tcpdump -i eth1 &apos;((tcp) and ((dst net 192.168) and (not dst host 192.168.1.200)))&apos;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/05/Mysql安装/" rel="next" title="Mysql安装">
+                <i class="fa fa-chevron-left"></i> Mysql安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#计算机网络"><span class="nav-number">1.</span> <span class="nav-text">计算机网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本网络拓扑结构"><span class="nav-number">2.</span> <span class="nav-text">基本网络拓扑结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OSI网络模型"><span class="nav-number">3.</span> <span class="nav-text">OSI网络模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络通信的方式"><span class="nav-number">4.</span> <span class="nav-text">网络通信的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络的分类"><span class="nav-number">4.1.</span> <span class="nav-text">网络的分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ethernet，以太网"><span class="nav-number">5.</span> <span class="nav-text">Ethernet，以太网</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络设备"><span class="nav-number">6.</span> <span class="nav-text">网络设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VLAN，虚拟局域网"><span class="nav-number">7.</span> <span class="nav-text">VLAN，虚拟局域网</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-IP协议"><span class="nav-number">8.</span> <span class="nav-text">TCP/IP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP的三次握手"><span class="nav-number">8.1.</span> <span class="nav-text">TCP的三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMP"><span class="nav-number">8.2.</span> <span class="nav-text">ICMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP报头"><span class="nav-number">8.3.</span> <span class="nav-text">IP报头</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IP地址"><span class="nav-number">8.3.1.</span> <span class="nav-text">IP地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子网划分，一个大网划分多个小网"><span class="nav-number">8.3.2.</span> <span class="nav-text">子网划分，一个大网划分多个小网</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#路由"><span class="nav-number">9.</span> <span class="nav-text">路由</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态主机配置协议DHCP"><span class="nav-number">10.</span> <span class="nav-text">动态主机配置协议DHCP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网卡的命名方式"><span class="nav-number">11.</span> <span class="nav-text">网卡的命名方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ifconfig"><span class="nav-number">11.1.</span> <span class="nav-text">ifconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#临时设置网卡的别名并配置IP"><span class="nav-number">11.1.1.</span> <span class="nav-text">临时设置网卡的别名并配置IP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#route"><span class="nav-number">12.</span> <span class="nav-text">route</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#路由配置文件路径"><span class="nav-number">12.1.</span> <span class="nav-text">路由配置文件路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网卡的配置文件路径"><span class="nav-number">12.1.1.</span> <span class="nav-text">网卡的配置文件路径</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#netstat"><span class="nav-number">13.</span> <span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ss"><span class="nav-number">14.</span> <span class="nav-text">ss</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ip"><span class="nav-number">15.</span> <span class="nav-text">ip</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网卡bonding"><span class="nav-number">16.</span> <span class="nav-text">网卡bonding</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nmcli"><span class="nav-number">17.</span> <span class="nav-text">nmcli</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置bridge"><span class="nav-number">17.1.</span> <span class="nav-text">配置bridge</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcpdump"><span class="nav-number">18.</span> <span class="nav-text">tcpdump</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">18.1.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
