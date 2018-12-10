@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="备份和恢复为什么要备份1灾难恢复：硬件故障、软件故障、自然灾害、黑客攻击、误操作测试等数据丢失场景 备份注意要点123能容忍最多丢失多少数据恢复数据需要在多长时间内完成需要恢复哪些数据 还原要点12做还原测试，用于测试备份的可用性还原演练 备份类型12345678完全备份，部分备份    完全备份：整个数据集    部分备份：只备份数据子集，如部分库或表完全备份、增量备份、差异备份    增量备份">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql备份及还原">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/Mysql备份及还原/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="备份和恢复为什么要备份1灾难恢复：硬件故障、软件故障、自然灾害、黑客攻击、误操作测试等数据丢失场景 备份注意要点123能容忍最多丢失多少数据恢复数据需要在多长时间内完成需要恢复哪些数据 还原要点12做还原测试，用于测试备份的可用性还原演练 备份类型12345678完全备份，部分备份    完全备份：整个数据集    部分备份：只备份数据子集，如部分库或表完全备份、增量备份、差异备份    增量备份">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/mysqlbeifen1.png">
+<meta property="og:updated_time" content="2018-12-09T14:07:31.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql备份及还原">
+<meta name="twitter:description" content="备份和恢复为什么要备份1灾难恢复：硬件故障、软件故障、自然灾害、黑客攻击、误操作测试等数据丢失场景 备份注意要点123能容忍最多丢失多少数据恢复数据需要在多长时间内完成需要恢复哪些数据 还原要点12做还原测试，用于测试备份的可用性还原演练 备份类型12345678完全备份，部分备份    完全备份：整个数据集    部分备份：只备份数据子集，如部分库或表完全备份、增量备份、差异备份    增量备份">
+<meta name="twitter:image" content="http://yoursite.com/images/mysqlbeifen1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/05/Mysql备份及还原/"/>
+
+
+
+
+
+  <title>Mysql备份及还原 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/Mysql备份及还原/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql备份及还原</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T20:56:06+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Mysql备份及还原/" itemprop="url" rel="index">
+                    <span itemprop="name">Mysql备份及还原</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="备份和恢复"><a href="#备份和恢复" class="headerlink" title="备份和恢复"></a>备份和恢复</h1><p>为什么要备份<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">灾难恢复：硬件故障、软件故障、自然灾害、黑客攻击、误操作测试等数据丢失场景</span><br></pre></td></tr></table></figure></p>
+<p>备份注意要点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">能容忍最多丢失多少数据</span><br><span class="line">恢复数据需要在多长时间内完成</span><br><span class="line">需要恢复哪些数据</span><br></pre></td></tr></table></figure></p>
+<p>还原要点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">做还原测试，用于测试备份的可用性</span><br><span class="line">还原演练</span><br></pre></td></tr></table></figure></p>
+<p>备份类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">完全备份，部分备份</span><br><span class="line">    完全备份：整个数据集</span><br><span class="line">    部分备份：只备份数据子集，如部分库或表</span><br><span class="line">完全备份、增量备份、差异备份</span><br><span class="line">    增量备份：仅备份最近一次完全备份或增量备份（如果存在增量）以来变化的数据，备份较快，还原复杂</span><br><span class="line">    差异备份：仅备份最近一次完全备份以来变化的数据，备份较慢，还原简单</span><br><span class="line"></span><br><span class="line">注意：二进制日志文件不应该与数据文件放在同一磁盘</span><br></pre></td></tr></table></figure></p>
+<p>冷、温、热备份<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">冷备：读写操作均不可进行</span><br><span class="line">温备：读操作可执行；但写操作不可执行</span><br><span class="line">热备：读写操作均可执行</span><br><span class="line"></span><br><span class="line">MyISAM：温备，不支持热备</span><br><span class="line">InnoDB：都支持</span><br></pre></td></tr></table></figure></p>
+<p>物理和逻辑备份<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">物理备份：直接复制数据文件进行备份，与存储引擎有关，占用较多的空间，速度快</span><br><span class="line"></span><br><span class="line">逻辑备份：从数据库中“导出”数据另存而进行的备份，与存储引擎无关，占用空间少，速度慢，可能丢失精度</span><br></pre></td></tr></table></figure></p>
+<p>备份时需要考虑的因素<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">温备的持锁多久</span><br><span class="line">备份产生的负载</span><br><span class="line">备份过程的时长</span><br><span class="line">恢复过程的时长</span><br></pre></td></tr></table></figure></p>
+<p>备份什么???</p>
+<p>(一定要记住，否则删了库，准备跑吧)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">数据</span><br><span class="line"></span><br><span class="line">二进制日志、InnoDB的事务日志</span><br><span class="line"></span><br><span class="line">程序代码（存储过程、函数、触发器、事件调度器）</span><br><span class="line"></span><br><span class="line">服务器的配置文件</span><br></pre></td></tr></table></figure></p>
+<h1 id="备份工具"><a href="#备份工具" class="headerlink" title="备份工具"></a>备份工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cp, tar等复制归档工具：物理备份工具，适用所有存储引擎；只支持冷备；完全和部分备份</span><br><span class="line"></span><br><span class="line">LVM的快照：先加锁，做快照后解锁，几乎热备；借助文件系统工具进行备份</span><br><span class="line"></span><br><span class="line">mysqldump：逻辑备份工具，适用所有存储引擎，温备；支持完全或部分备份；对InnoDB存储引擎支持热备，结合binlog的增量备份</span><br><span class="line"></span><br><span class="line">xtrabackup：由Percona提供支持对InnoDB做热备(物理备份)的工具，支持完全备份、增量备份</span><br><span class="line"></span><br><span class="line">MariaDB Backup： 从MariaDB 10.1.26开始集成，基于Percona XtraBackup 2.3.8实现</span><br><span class="line"></span><br><span class="line">mysqlbackup：热备份， MySQL Enterprise Edition组件</span><br><span class="line"></span><br><span class="line">mysqlhotcopy：PERL 语言实现，几乎冷备，仅适用于MyISAM存储引擎，使用LOCK TABLES、FLUSH TABLES和cp或scp来快速备份数据库</span><br></pre></td></tr></table></figure>
+<h2 id="基于LVM的备份"><a href="#基于LVM的备份" class="headerlink" title="基于LVM的备份"></a>基于LVM的备份</h2><p>(1) 请求锁定所有表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; FLUSH TABLES WITH READ LOCK;</span><br></pre></td></tr></table></figure></p>
+<p>(2) 记录二进制日志文件及事件位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; FLUSH LOGS;</span><br><span class="line">mysql&gt; SHOW MASTER STATUS;</span><br><span class="line">mysql -e &apos;SHOW MASTER STATUS&apos; &gt; /PATH/TO/SOMEFILE</span><br></pre></td></tr></table></figure></p>
+<p>(3) 创建快照<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvcreate -L # -s -p r -n NAME /DEV/VG_NAME/LV_NAME</span><br></pre></td></tr></table></figure></p>
+<p>(4) 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; UNLOCK TABLES;</span><br></pre></td></tr></table></figure></p>
+<p>(5) 挂载快照卷，执行数据备份</p>
+<p>(6) 备份完成后，删除快照卷</p>
+<p>(7) 制定好策略，通过原卷备份二进制日志</p>
+<h2 id="mysqldump"><a href="#mysqldump" class="headerlink" title="mysqldump"></a>mysqldump</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">mysqldump常见选项：</span><br><span class="line">    -A， --all-databases 备份所有数据库，含create database</span><br><span class="line">    -B , --databases db_name… 指定备份的数据库，包括create database语句</span><br><span class="line">    -E, --events：备份相关的所有event scheduler</span><br><span class="line">    -R, --routines：备份所有存储过程和自定义函数</span><br><span class="line">    --triggers：备份表相关触发器，默认启用,用--skip-triggers，不备份触发器</span><br><span class="line">    --default-character-set=utf8 指定字符集</span><br><span class="line">    --master-data[=#]： 此选项须启用二进制日志</span><br><span class="line"></span><br><span class="line">1：所备份的数据之前加一条记录为CHANGE MASTER TO语句，非注释，不指定#，默认为1</span><br><span class="line"></span><br><span class="line">2：记录为注释的CHANGE MASTER TO语句</span><br><span class="line">此选项会自动关闭--lock-tables功能，自动打开-x | --lock-all-tables功能（除非开启--single-transaction）</span><br><span class="line"></span><br><span class="line">-F, --flush-logs ：备份前滚动日志，锁定表完成后，执行flush logs命令,生成新的二进制日志文件，配合-A 或 -B 选项时，会导致刷新多次数据库。建议在同一时刻执行转储和日志刷新，可通过和--single-transaction或-x,--master-data 一起使用实现，此时只刷新一次日志</span><br><span class="line"></span><br><span class="line">--compact 去掉注释，适合调试，生产不使用</span><br><span class="line"></span><br><span class="line">-d, --no-data 只备份表结构</span><br><span class="line"></span><br><span class="line">-t, --no-create-info 只备份数据,不备份create table </span><br><span class="line"></span><br><span class="line">n,--no-create-db 不备份create database，可被-A或-B覆盖</span><br><span class="line"></span><br><span class="line">--flush-privileges 备份mysql或相关时需要使用</span><br><span class="line"></span><br><span class="line">-f, --force 忽略SQL错误，继续执行</span><br><span class="line"></span><br><span class="line">--hex-blob 使用十六进制符号转储二进制列，当有包括BINARY，VARBINARY，BLOB，BIT的数据类型的列时使用，避免乱码</span><br><span class="line"></span><br><span class="line">-q, --quick 不缓存查询，直接输出，加快备份速度</span><br></pre></td></tr></table></figure>
+<p>MyISAM备份选项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">支持温备；不支持热备，所以必须先锁定要备份的库，而后启动备份操作</span><br><span class="line">锁定方法如下：</span><br><span class="line">    -x,--lock-all-tables：加全局读锁，锁定所有库的所有表，同时加--singletransaction或--lock-tables选项会关闭此选项功能</span><br><span class="line">注意：数据量大时，可能会导致长时间无法并发访问数据库</span><br><span class="line"></span><br><span class="line">    -l,--lock-tables：对于需要备份的每个数据库，在启动备份之前分别锁定其所有表，默认为on,--skip-lock-tables选项可禁用,对备份MyISAM的多个库,可能会造成数据不一致</span><br><span class="line"></span><br><span class="line">注：以上选项对InnoDB表一样生效，实现温备，但不推荐使用</span><br></pre></td></tr></table></figure></p>
+<p>InnoDB备份选项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">支持热备，可用温备但不建议用</span><br><span class="line"></span><br><span class="line">--single-transaction</span><br><span class="line">此选项Innodb中推荐使用，不适用MyISAM，此选项会开始备份前，先执行START TRANSACTION指令开启事务</span><br><span class="line"></span><br><span class="line">此选项通过在单个事务中转储所有表来创建一致的快照。 仅适用于存储在支持多版本控制的存储引擎中的表（目前只有InnoDB可以）; 转储不保证与其他存储引擎保持一致。 在进行单事务转储时，要确保有效的转储文件（正确的表内容和二进制日志位置），没有其他连接应该使用以下语句：ALTER TABLE，DROP TABLE，RENAME TABLE，TRUNCATE TABLE</span><br><span class="line"></span><br><span class="line">此选项和--lock-tables（此选项隐含提交挂起的事务）选项是相互排斥</span><br><span class="line">备份大型表时，建议将--single-transaction选项和--quick结合一起使用</span><br></pre></td></tr></table></figure></p>
+<p>生产环境实战备份策略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">InnoDB建议备份策略:</span><br><span class="line">mysqldump –uroot –A –F –E –R --single-transaction --master-data=1 --flush-privileges --triggers --default-character-set=utf8 --hex-blob &gt;$BACKUP/fullbak_$BACKUP_TIME.sql</span><br><span class="line"></span><br><span class="line">MyISAM建议备份策略:</span><br><span class="line">mysqldump –uroot –A –F –E –R –x --master-data=1 --flush-privileges --triggers --default-character-set=utf8 --hex-blob &gt;$BACKUP/fullbak_$BACKUP_TIME.sql</span><br></pre></td></tr></table></figure></p>
+<h2 id="xtrabackup"><a href="#xtrabackup" class="headerlink" title="xtrabackup"></a>xtrabackup</h2><p>特点：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">备份还原过程快速、可靠</span><br><span class="line">备份过程不会打断正在执行的事务</span><br><span class="line">能够基于压缩等功能节约磁盘空间和流量</span><br><span class="line">自动实现备份检验</span><br><span class="line">开源，免费</span><br></pre></td></tr></table></figure></p>
+<p>Xtrabackup2.2版之前包括4个可执行文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">innobackupex: Perl 脚本</span><br><span class="line">xtrabackup: C/C++ 编译的二进制</span><br><span class="line">xbcrypt: 加解密</span><br><span class="line">xbstream: 支持并发写的流文件格式</span><br></pre></td></tr></table></figure></p>
+<p>xtrabackup 是用来备份 InnoDB 表的，不能备份非 InnoDB 表，和 MySQL Server 没有交互</p>
+<p>innobackupex 脚本用来备份非 InnoDB 表，同时会调用 xtrabackup 命令来备份 InnoDB 表，还会和 MySQL Server 发送命令进行交互，如加全局读锁<br>（FTWRL）、获取位点（SHOW SLAVE STATUS）等。即innobackupex是在xtrabackup 之上做了一层封装实现的</p>
+<p>虽然目前一般不用 MyISAM 表，只是 MySQL 库下的系统表是 MyISAM 的，因此备份基本都通过 innobackupex 命令进行</p>
+<p>xtrabackup备份过程<br><img src="/images/mysqlbeifen1.png" alt="Alt text"></p>
+<p>xtrabackup的新版变化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">xtrabackup版本升级到2.4后，相比之前的2.1有了比较大的变化：innobackupex 功能全部集成到 xtrabackup 里面，只有一个 binary程序，另外为了兼容考虑，innobackupex作为 xtrabackup 的软链接，即xtrabackup现在支持非Innodb表备份，并且 Innobackupex 在下一版本中移除，建议通过xtrabackup替换innobackupex</span><br><span class="line"></span><br><span class="line">xtrabackup安装:</span><br><span class="line">    yum install percona-xtrabackup 在EPEL源中</span><br><span class="line">最新版本下载安装：</span><br><span class="line">https://www.percona.com/downloads/XtraBackup/LATEST/</span><br></pre></td></tr></table></figure></p>
+<p>xtrabackup用法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">备份：innobackupex [option] BACKUP-ROOT-DIR</span><br><span class="line">选项说明：https://www.percona.com/doc/percona-xtrabackup/LATEST/genindex.html</span><br><span class="line"></span><br><span class="line">--user：该选项表示备份账号</span><br><span class="line">--password：该选项表示备份的密码</span><br><span class="line">--host：该选项表示备份数据库的地址</span><br><span class="line">--databases：该选项接受的参数为数据库名，如果要指定多个数据库，彼此间需要以空格隔开；如：&quot;xtra_test dba_test&quot;，同时，在指定某数据库时，也可以只指定其中的某张表。如:&quot;mydatabase.mytable&quot;。该选项对innodb引擎表无效，还是会备份所有innodb表</span><br><span class="line">--defaults-file：该选项指定从哪个文件读取MySQL配置，必须放在命令行第一个选项位置</span><br><span class="line">--incremental：该选项表示创建一个增量备份，需要指定--incremental-basedir</span><br><span class="line">--incremental-basedir：该选项指定为前一次全备份或增量备份的目录，与--incremental同时使用</span><br><span class="line">--incremental-dir：该选项表示还原时增量备份的目录</span><br><span class="line">--include=name：指定表名，格式：databasename.tablename</span><br><span class="line"></span><br><span class="line">Prepare：innobackupex --apply-log [option] BACKUP-DIR</span><br><span class="line">选项说明:</span><br><span class="line">    --apply-log：一般情况下,在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据文件仍处理不一致状态。此选项作用是通过回滚未提交的事务及同步已经提交的事务至数据文件使数据文件处于一致性状态</span><br><span class="line">--use-memory：和--apply-log选项一起使用，当prepare 备份时，做crashrecovery分配的内存大小，单位字节，也可1MB,1M,1G,1GB等，推荐1G</span><br><span class="line">--export：表示开启可导出单独的表之后再导入其他Mysql中</span><br><span class="line">--redo-only：此选项在prepare base full backup，往其中合并增量备份时候使用，但不包括对最后一个增量备份的合并</span><br><span class="line"></span><br><span class="line">还原：innobackupex --copy-back [选项] BACKUP-DIR</span><br><span class="line"></span><br><span class="line">innobackupex --move-back [选项] [--defaults-group=GROUP-NAME] BACKUP-DIR</span><br><span class="line">选项说明：</span><br><span class="line">    --copy-back：做数据恢复时将备份数据文件拷贝到MySQL服务器的datadir</span><br><span class="line">    --move-back：这个选项与--copy-back相似，唯一的区别是它不拷贝文件，而是移动文件到目的地。这个选项移除backup文件，用时候必须小心。使用场景：没有足够的磁盘空间同事保留数据文件和Backup副本</span><br><span class="line"></span><br><span class="line">还原注意事项:</span><br><span class="line">1.datadir 目录必须为空。除非指定innobackupex --force-non-empty-directorires选项指定，否则--copy-backup选项不会覆盖</span><br><span class="line"></span><br><span class="line">2.在restore之前,必须shutdown MySQL实例，不能将一个运行中的实例restore到datadir目录中</span><br><span class="line"></span><br><span class="line">3.由于文件属性会被保留，大部分情况下需要在启动实例之前将文件的属主改为mysql，这些文件将属于创建备份的用户</span><br><span class="line">chown -R mysql:mysql /data/mysql</span><br><span class="line">以上需要在用户调用innobackupex之前完成</span><br><span class="line"></span><br><span class="line">--force-non-empty-directories：指定该参数时候，使得innobackupex --copy-back或--move-back选项转移文件到非空目录，已存在的文件不会被覆.如果--copy-back和--move-back文件需要从备份目录拷贝一个在datadir已经存在的文件，会报错失败</span><br></pre></td></tr></table></figure></p>
+<h3 id="备份生成的相关文件"><a href="#备份生成的相关文件" class="headerlink" title="备份生成的相关文件"></a>备份生成的相关文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">使用innobakupex备份时，其会调用xtrabackup备份所有的InnoDB表，复制所有关于表结构定义的相关文件(.frm)、以及MyISAM、MERGE、CSV和ARCHIVE表的相关文件，同时还会备份触发器和数据库配置信息相关的文件。这些文件会被保存至一个以时间命名的目录中,在备份时，innobackupex还会在备份目录中创建如下文件：</span><br><span class="line"></span><br><span class="line">(1)xtrabackup_info：innobackupex工具执行时的相关信息，包括版本，备份选项，备份时长，备份LSN(log sequence number日志序列号)，BINLOG的位置</span><br><span class="line"></span><br><span class="line">(2)xtrabackup_checkpoints：备份类型（如完全或增量）、备份状态（如是否已经为prepared状态）和LSN范围信息,每个InnoDB页(通常为16k大小)都会包含一个日志序列号LSN。LSN是整个数据库系统的系统版本号，每个页面相关的LSN能够表明此页面最近是如何发生改变的</span><br><span class="line"></span><br><span class="line">(3)xtrabackup_binlog_info：MySQL服务器当前正在使用的二进制日志文件及至备份这一刻为止二进制日志事件的位置，可利用实现基于binlog的恢复</span><br><span class="line"></span><br><span class="line">(4)backup-my.cnf：备份命令用到的配置选项信息</span><br><span class="line"></span><br><span class="line">(5)xtrabackup_logfile：备份生成的日志文件</span><br></pre></td></tr></table></figure>
+<h3 id="旧版xtrabackup完全备份及还原"><a href="#旧版xtrabackup完全备份及还原" class="headerlink" title="旧版xtrabackup完全备份及还原"></a>旧版xtrabackup完全备份及还原</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1 在原主机</span><br><span class="line">nnobackupex --user=root /backups</span><br><span class="line"></span><br><span class="line">scp -r /backups/2018-02-23_11-55-57/ 目标主机:/data/ </span><br><span class="line"></span><br><span class="line">2 在目标主机</span><br><span class="line">innobackupex --apply-log /data/2018-02-23_11-55-57/</span><br><span class="line">systemctl stop mariadb</span><br><span class="line"></span><br><span class="line">rm -rf /var/lib/mysql/*</span><br><span class="line"></span><br><span class="line">innobackupex --copy-back /data/2018-02-23_11-55-57/</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql /var/lib/mysql/</span><br><span class="line"></span><br><span class="line">systemctl start mariadb</span><br></pre></td></tr></table></figure>
+<h3 id="新版xtrabackup完全备份及还原"><a href="#新版xtrabackup完全备份及还原" class="headerlink" title="新版xtrabackup完全备份及还原"></a>新版xtrabackup完全备份及还原</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1 在原主机做完全备份到/data/backups</span><br><span class="line"> xtrabackup --backup --target-dir=/backups/</span><br><span class="line"> scp -r /backups/* 目标主机:/backups</span><br><span class="line"></span><br><span class="line">2 在目标主机上</span><br><span class="line"> 1）预准备：确保数据一致，提交完成的事务，回滚未完成的事务</span><br><span class="line"> xtrabackup --prepare --target-dir=/backups/</span><br><span class="line"> 2）复制到数据库目录</span><br><span class="line"> 注意：数据库目录必须为空，MySQL服务不能启动</span><br><span class="line"> xtrabackup --copy-back --target-dir=/backups/</span><br><span class="line"> 3）还原属性</span><br><span class="line"> chown -R mysql:mysql /var/lib/mysql</span><br><span class="line"> 4）启动服务</span><br><span class="line"> systemctl start mariadb</span><br></pre></td></tr></table></figure>
+<h3 id="旧版xtrabackup完全，增量备份及还原"><a href="#旧版xtrabackup完全，增量备份及还原" class="headerlink" title="旧版xtrabackup完全，增量备份及还原"></a>旧版xtrabackup完全，增量备份及还原</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">1 在原主机</span><br><span class="line">innobackupex /backups</span><br><span class="line">mkdir /backups/inc&#123;1,2&#125; </span><br><span class="line"></span><br><span class="line">修改数据库内容</span><br><span class="line"></span><br><span class="line">innobackupex --incremental /backups/inc1 --incrementalbasedir=/backups/2018-02-23_14-21-42（完全备份生成的路径）</span><br><span class="line"></span><br><span class="line">再次修改数据库内容</span><br><span class="line"></span><br><span class="line">innobackupex --incremental /backups/inc2 --incrementalbasedir=/backups/inc1/2018-02-23_14-26-17 （上次增量备份生成的路径）</span><br><span class="line"></span><br><span class="line">scp -r /backups/* 目标主机:/data/</span><br><span class="line"></span><br><span class="line">2 在目标主机</span><br><span class="line">不启动mariadb</span><br><span class="line">rm -rf /var/lib/mysql/*</span><br><span class="line"></span><br><span class="line">innobackupex --apply-log --redo-only /data/2018-02-23_14-21-42/</span><br><span class="line"></span><br><span class="line">innobackupex --apply-log --redo-only /data/2018-02-23_14-21-42/ --incremental-dir=/data/inc1/2018-02-23_14-26-17</span><br><span class="line"></span><br><span class="line">innobackupex --apply-log /data/2018-02-23_14-21-42/ --incrementaldir=/data/inc2/2018-02-23_14-28-29/</span><br><span class="line"></span><br><span class="line">ls /var/lib/mysql/</span><br><span class="line"></span><br><span class="line">innobackupex --copy-back /data/2018-02-23_14-21-42/</span><br><span class="line"></span><br><span class="line">chown -R mysql.mysql /var/lib/mysql/</span><br><span class="line"></span><br><span class="line">systemctl start mariadb</span><br></pre></td></tr></table></figure>
+<h3 id="新版xtrabackup完全，增量备份及还原"><a href="#新版xtrabackup完全，增量备份及还原" class="headerlink" title="新版xtrabackup完全，增量备份及还原"></a>新版xtrabackup完全，增量备份及还原</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">1 备份过程</span><br><span class="line">1）完全备份：</span><br><span class="line">xtrabackup --backup--target-dir=/backups/base</span><br><span class="line"> 2）第一次修改数据</span><br><span class="line"> 3）第一次增量备份</span><br><span class="line">xtrabackup --backup --target-dir=/backups/inc1 --incrementalbasedir=/backups/base</span><br><span class="line"> 4）第二次修改数据</span><br><span class="line"> 5）第二次增量</span><br><span class="line"> xtrabackup --backup --target-dir=/backups/inc2 --incrementalbasedir=/backups/inc1</span><br><span class="line"> 6）scp -r /backups/* 目标主机:/backups/</span><br><span class="line"></span><br><span class="line">备份过程生成三个备份目录</span><br><span class="line">/backups/&#123;base，inc1，inc2&#125;</span><br><span class="line"></span><br><span class="line">2还原过程</span><br><span class="line">1）预准备完成备份，此选项--apply-log-only 阻止回滚未完成的事务</span><br><span class="line">xtrabackup --prepare --apply-log-only --target-dir=/backups/base</span><br><span class="line">2）合并第1次增量备份到完全备份，</span><br><span class="line">xtrabackup --prepare --apply-log-only --target-dir=/backups/base --incremental-dir=/backups/inc1</span><br><span class="line">3）合并第2次增量备份到完全备份：最后一次还原不需要加选项--apply-log-only</span><br><span class="line">xtrabackup --prepare --target-dir=/backups/base --incremental-dir=/backups/inc2</span><br><span class="line">4）复制到数据库目录，注意数据库目录必须为空，MySQL服务不能启动</span><br><span class="line">xtrabackup --copy-back --target-dir=/data/backups/base</span><br><span class="line">5）还原属性：chown -R mysql:mysql /var/lib/mysql</span><br><span class="line">6）启动服务：systemctl start mariadb</span><br></pre></td></tr></table></figure>
+<h3 id="xtrabackup单表导出和导入"><a href="#xtrabackup单表导出和导入" class="headerlink" title="xtrabackup单表导出和导入"></a>xtrabackup单表导出和导入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">1 单表备份</span><br><span class="line">innobackupex --include=&apos;hellodb.students&apos; /backups</span><br><span class="line">2备份表结构</span><br><span class="line">mysql -e &apos;show create table hellodb.students&apos; &gt; student.sql</span><br><span class="line">3删除表</span><br><span class="line">mysql -e &apos;drop table hellodb.students&apos;</span><br><span class="line">4 innobackupex --apply-log --export /backups/2018-02-23_15-03-23/</span><br><span class="line">5 创建表</span><br><span class="line">mysql&gt;CREATE TABLE `students` (</span><br><span class="line"> `StuID` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line"> `Name` varchar(50) NOT NULL,</span><br><span class="line"> `Age` tinyint(3) unsigned NOT NULL,</span><br><span class="line"> `Gender` enum(&apos;F&apos;,&apos;M&apos;) NOT NULL,</span><br><span class="line"> `ClassID` tinyint(3) unsigned DEFAULT NULL,</span><br><span class="line"> `TeacherID` int(10) unsigned DEFAULT NULL,</span><br><span class="line"> PRIMARY KEY (`StuID`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8</span><br><span class="line">6 删除表空间</span><br><span class="line">alter table students discard tablespace;</span><br><span class="line">7 cp /backups/2018-02-23_15-03-23/hellodb/students.&#123;cfg,exp,ibd&#125; /var/lib/mysql/hellodb/</span><br><span class="line">8 chown -R mysql.mysql /var/lib/mysql/hellodb/</span><br><span class="line">9 mysql&gt;alter table students import tablespace;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/05/Mysql用户管理和操作/" rel="next" title="Mysql用户管理和操作">
+                <i class="fa fa-chevron-left"></i> Mysql用户管理和操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/06/网络协议和管理/" rel="prev" title="网络协议和管理">
+                网络协议和管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#备份和恢复"><span class="nav-number">1.</span> <span class="nav-text">备份和恢复</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备份工具"><span class="nav-number">2.</span> <span class="nav-text">备份工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于LVM的备份"><span class="nav-number">2.1.</span> <span class="nav-text">基于LVM的备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysqldump"><span class="nav-number">2.2.</span> <span class="nav-text">mysqldump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xtrabackup"><span class="nav-number">2.3.</span> <span class="nav-text">xtrabackup</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#备份生成的相关文件"><span class="nav-number">2.3.1.</span> <span class="nav-text">备份生成的相关文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旧版xtrabackup完全备份及还原"><span class="nav-number">2.3.2.</span> <span class="nav-text">旧版xtrabackup完全备份及还原</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新版xtrabackup完全备份及还原"><span class="nav-number">2.3.3.</span> <span class="nav-text">新版xtrabackup完全备份及还原</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旧版xtrabackup完全，增量备份及还原"><span class="nav-number">2.3.4.</span> <span class="nav-text">旧版xtrabackup完全，增量备份及还原</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新版xtrabackup完全，增量备份及还原"><span class="nav-number">2.3.5.</span> <span class="nav-text">新版xtrabackup完全，增量备份及还原</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xtrabackup单表导出和导入"><span class="nav-number">2.3.6.</span> <span class="nav-text">xtrabackup单表导出和导入</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

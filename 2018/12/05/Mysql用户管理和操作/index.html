@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="用户管理1234567用户账号：    &amp;apos;USERNAME&amp;apos;@&amp;apos;HOST&amp;apos;        @&amp;apos;HOST&amp;apos;:        主机名        IP地址或Network         通配符： % _         示例：172.16.%.% 创建用户12CREATE USER:CREATE USER &amp;apos;USERNAME&amp;a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql用户管理和操作">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/Mysql用户管理和操作/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="用户管理1234567用户账号：    &amp;apos;USERNAME&amp;apos;@&amp;apos;HOST&amp;apos;        @&amp;apos;HOST&amp;apos;:        主机名        IP地址或Network         通配符： % _         示例：172.16.%.% 创建用户12CREATE USER:CREATE USER &amp;apos;USERNAME&amp;a">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-09T14:07:47.324Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql用户管理和操作">
+<meta name="twitter:description" content="用户管理1234567用户账号：    &amp;apos;USERNAME&amp;apos;@&amp;apos;HOST&amp;apos;        @&amp;apos;HOST&amp;apos;:        主机名        IP地址或Network         通配符： % _         示例：172.16.%.% 创建用户12CREATE USER:CREATE USER &amp;apos;USERNAME&amp;a">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/05/Mysql用户管理和操作/"/>
+
+
+
+
+
+  <title>Mysql用户管理和操作 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/Mysql用户管理和操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql用户管理和操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T20:44:14+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Mysql用户管理和操作/" itemprop="url" rel="index">
+                    <span itemprop="name">Mysql用户管理和操作</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">用户账号：</span><br><span class="line">    &apos;USERNAME&apos;@&apos;HOST&apos;</span><br><span class="line">        @&apos;HOST&apos;:</span><br><span class="line">        主机名</span><br><span class="line">        IP地址或Network </span><br><span class="line">        通配符： % _ </span><br><span class="line">        示例：172.16.%.%</span><br></pre></td></tr></table></figure>
+<h2 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER:</span><br><span class="line">CREATE USER &apos;USERNAME&apos;@&apos;HOST&apos; [IDENTIFIED BY &apos;password&apos;]；</span><br></pre></td></tr></table></figure>
+<h3 id="用户重命名"><a href="#用户重命名" class="headerlink" title="用户重命名"></a>用户重命名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RENAME USER:</span><br><span class="line">RENAME USER old_user_name TO new_user_name;</span><br></pre></td></tr></table></figure>
+<h3 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DROP USER:</span><br><span class="line">DROP USER &apos;USERNAME&apos;@&apos;HOST‘</span><br><span class="line">示例：删除默认的空用户</span><br><span class="line">DROP USER &apos;&apos;@&apos;localhost&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="修改密码"><a href="#修改密码" class="headerlink" title="修改密码"></a>修改密码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD FOR &apos;user&apos;@&apos;host&apos; = PASSWORD(‘password&apos;);</span><br><span class="line">UPDATE mysql.user SET password=PASSWORD(&apos;password&apos;) </span><br><span class="line">WHERE clause;</span><br><span class="line">此方法需要执行下面指令才能生效：</span><br><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br><span class="line"></span><br><span class="line">mysqladmin -u root -poldpass password ‘newpass’</span><br></pre></td></tr></table></figure>
+<h4 id="忘记管理员密码的解决办法"><a href="#忘记管理员密码的解决办法" class="headerlink" title="忘记管理员密码的解决办法"></a>忘记管理员密码的解决办法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">启动mysqld进程时，为其使用如下选项：</span><br><span class="line">vim /etc/my.cnf</span><br><span class="line">--skip-grant-tables </span><br><span class="line">--skip-networking</span><br><span class="line">使用UPDATE命令修改管理员密码</span><br><span class="line">关闭mysqld进程，移除上述两个选项，重启mysqld</span><br></pre></td></tr></table></figure>
+<h2 id="MySQL用户和权限管理"><a href="#MySQL用户和权限管理" class="headerlink" title="MySQL用户和权限管理"></a>MySQL用户和权限管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">管理类：</span><br><span class="line">CREATE TEMPORARY TABLES</span><br><span class="line">CREATE USER</span><br><span class="line">FILE</span><br><span class="line">SUPER</span><br><span class="line">SHOW DATABASES</span><br><span class="line">RELOAD</span><br><span class="line">SHUTDOWN</span><br><span class="line">REPLICATION SLAVE</span><br><span class="line">REPLICATION CLIENT</span><br><span class="line">LOCK TABLES</span><br><span class="line">PROCESS</span><br><span class="line"></span><br><span class="line">程序类： FUNCTION、PROCEDURE、TRIGGER</span><br><span class="line">CREATE</span><br><span class="line">ALTER</span><br><span class="line">DROP</span><br><span class="line">EXCUTE</span><br><span class="line"></span><br><span class="line">库和表级别：DATABASE、TABLE</span><br><span class="line">ALTER</span><br><span class="line">CREATE </span><br><span class="line">CREATE VIEW</span><br><span class="line">DROP</span><br><span class="line">INDEX</span><br><span class="line">SHOW VIEW</span><br><span class="line">GRANT OPTION：能将自己获得的权限转赠给其他用户</span><br></pre></td></tr></table></figure>
+<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">INSERT</span><br><span class="line">DELETE</span><br><span class="line">UPDATE</span><br><span class="line"></span><br><span class="line">字段级别：</span><br><span class="line">SELECT(col1,col2,...)</span><br><span class="line">UPDATE(col1,col2,...)</span><br><span class="line">INSERT(col1,col2,...)</span><br><span class="line"></span><br><span class="line">所有权限：ALL PRIVILEGES 或 ALL</span><br></pre></td></tr></table></figure>
+<p>##授权并创建用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">参考：https://dev.mysql.com/doc/refman/5.7/en/grant.html</span><br><span class="line"></span><br><span class="line">GRANT priv_type [(column_list)],... ON [object_type] priv_level TO &apos;user&apos;@&apos;host&apos; </span><br><span class="line">[IDENTIFIED BY &apos;password&apos;] [WITH GRANT OPTION];</span><br><span class="line">        priv_type: ALL [PRIVILEGES]</span><br><span class="line">        object_type:TABLE | FUNCTION | PROCEDURE</span><br><span class="line">        priv_level: *(所有库) | *.* | db_name.* | db_name.tbl_name | tbl_name(当前库</span><br><span class="line">        的表) | db_name.routine_name(指定库的函数,存储过程,触发器)</span><br><span class="line"></span><br><span class="line">with_option: GRANT OPTION</span><br><span class="line">        | MAX_QUERIES_PER_HOUR count</span><br><span class="line">        | MAX_UPDATES_PER_HOUR count</span><br><span class="line">        | MAX_CONNECTIONS_PER_HOUR count</span><br><span class="line">        | MAX_USER_CONNECTIONS count</span><br><span class="line"></span><br><span class="line">示例：GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO </span><br><span class="line">&apos;someuser&apos;@&apos;somehost‘;</span><br></pre></td></tr></table></figure></p>
+<h3 id="回收授权"><a href="#回收授权" class="headerlink" title="回收授权"></a>回收授权</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">REVOKE priv_type [(column_list)] [, priv_type</span><br><span class="line">[(column_list)]] ... ON [object_type] priv_level FROM user [, user] ...</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">REVOKE DELETE ON testdb.* FROM &apos;testuser&apos;@‘172.16.0.%’;</span><br><span class="line"></span><br><span class="line">查看指定用户获得的授权：</span><br><span class="line">        Help SHOW GRANTS</span><br><span class="line">        SHOW GRANTS FOR &apos;user&apos;@&apos;host&apos;; </span><br><span class="line">        SHOW GRANTS FOR CURRENT_USER[()];</span><br></pre></td></tr></table></figure>
+<p>注意：MariaDB服务进程启动时会读取mysql库中所有授权表至内存<br>(1) GRANT或REVOKE等执行权限操作会保存于系统表中，MariaDB的服务进<br>程通常会自动重读授权表，使之生效<br>(2) 对于不能够或不能及时重读授权表的命令，可手动让MariaDB的服务进程<br>重读授权表：mysql&gt; FLUSH PRIVILEGES;</p>
+<h1 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h1><h2 id="MyISAM引擎特点"><a href="#MyISAM引擎特点" class="headerlink" title="MyISAM引擎特点"></a>MyISAM引擎特点</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">不支持事务</span><br><span class="line">表级锁定</span><br><span class="line">读写相互阻塞，写入不能读，读时不能写</span><br><span class="line">只缓存索引</span><br><span class="line">不支持外键约束</span><br><span class="line">不支持聚簇索引</span><br><span class="line">读取数据较快，占用资源较少</span><br><span class="line">不支持MVCC（多版本并发控制机制）高并发</span><br><span class="line">崩溃恢复性较差</span><br><span class="line">MySQL5.5.5前默认的数据库引擎</span><br></pre></td></tr></table></figure>
+<h2 id="MyISAM存储引擎适用场景"><a href="#MyISAM存储引擎适用场景" class="headerlink" title="MyISAM存储引擎适用场景"></a>MyISAM存储引擎适用场景</h2><pre><code>MyISAM存储引擎适用场景
+    只读（或者写较少）、表较小（可以接受长时间进行修复操作）
+
+MyISAM引擎文件
+    tbl_name.frm 表格式定义
+    tbl_name.MYD 数据文件
+    tbl_name.MYI 索引文件
+</code></pre><h2 id="InnoDB引擎特点"><a href="#InnoDB引擎特点" class="headerlink" title="InnoDB引擎特点"></a>InnoDB引擎特点</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">行级锁</span><br><span class="line">支持事务，适合处理大量短期事务</span><br><span class="line">读写阻塞与事务隔离级别相关</span><br><span class="line">可缓存数据和索引</span><br><span class="line">支持聚簇索引</span><br><span class="line">崩溃恢复性更好</span><br><span class="line">支持MVCC高并发</span><br><span class="line">从MySQL5.5后支持全文索引</span><br><span class="line">从MySQL5.5.5开始为默认的数据库引擎</span><br></pre></td></tr></table></figure>
+<h3 id="InnoDB数据库文件"><a href="#InnoDB数据库文件" class="headerlink" title="InnoDB数据库文件"></a>InnoDB数据库文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">所有InnoDB表的数据和索引放置于同一个表空间中</span><br><span class="line">    表空间文件：datadir定义的目录下</span><br><span class="line">    数据文件：ibddata1, ibddata2, ...</span><br><span class="line"></span><br><span class="line">每个表单独使用一个表空间存储表的数据和索引</span><br><span class="line">    启用：innodb_file_per_table=ON     ON (&gt;= MariaDB 5.5)</span><br><span class="line">    参看：https://mariadb.com/kb/en/library/xtradbinnodb-serversystem-variables/#innodb_file_per_table</span><br><span class="line"></span><br><span class="line">两类文件放在数据库独立目录中</span><br><span class="line">    数据文件(存储数据和索引)：tb_name.ibd</span><br><span class="line">    表格式定义：tb_name.frm</span><br></pre></td></tr></table></figure>
+<h2 id="管理存储引擎"><a href="#管理存储引擎" class="headerlink" title="管理存储引擎"></a>管理存储引擎</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">查看mysql支持的存储引擎</span><br><span class="line">show engines;</span><br><span class="line"></span><br><span class="line">查看当前默认的存储引擎</span><br><span class="line">show variables like &apos;%storage_engine%&apos;; </span><br><span class="line"></span><br><span class="line">设置默认的存储引擎</span><br><span class="line">vim /etc/my.conf</span><br><span class="line">[mysqld]</span><br><span class="line">default_storage_engine= InnoDB</span><br><span class="line"></span><br><span class="line">查看库中所有表使用的存储引擎</span><br><span class="line">show table status from db_name;</span><br><span class="line"></span><br><span class="line">查看库中指定表的存储引擎</span><br><span class="line">show table status like &apos; tb_name &apos;;</span><br><span class="line">show create table tb_name;</span><br><span class="line"></span><br><span class="line">设置表的存储引擎：</span><br><span class="line">CREATE TABLE tb_name(... ) ENGINE=InnoDB;</span><br><span class="line">ALTER TABLE tb_name ENGINE=InnoDB;</span><br></pre></td></tr></table></figure>
+<h1 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysqld选项，服务器系统变量和服务器状态变量</span><br><span class="line">https://dev.mysql.com/doc/refman/5.7/en/mysqld-optiontables.html</span><br><span class="line"></span><br><span class="line">https://mariadb.com/kb/en/library/full-list-of-mariadb-optionssystem-and-status-variabl</span><br><span class="line"></span><br><span class="line">注意：其中有些参数支持运行时修改，会立即生效；有些参数不支持，且只能通过修改配置文件，并重启服务器程序生效；有些参数作用域是全局的，且不可改变；有些可以为每个用户提供单独（会话）的设置</span><br></pre></td></tr></table></figure>
+<h2 id="获取mysqld的可用选项列表"><a href="#获取mysqld的可用选项列表" class="headerlink" title="获取mysqld的可用选项列表"></a>获取mysqld的可用选项列表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqld --help --verbose</span><br><span class="line">mysqld --print-defaults 获取默认设置</span><br></pre></td></tr></table></figure>
+<h2 id="设置服务器选项方法："><a href="#设置服务器选项方法：" class="headerlink" title="设置服务器选项方法："></a>设置服务器选项方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在命令行中设置</span><br><span class="line">shell&gt; ./mysqld_safe --skip-name-resolve=1</span><br><span class="line">在配置文件my.cnf中设置</span><br><span class="line">skip_name_resolve=1</span><br></pre></td></tr></table></figure>
+<h2 id="服务器系统变量"><a href="#服务器系统变量" class="headerlink" title="服务器系统变量"></a>服务器系统变量</h2><pre><code>服务器状态变量：
+    分全局和会话两种
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">获取系统变量</span><br><span class="line">mysql&gt; SHOW GLOBAL VARIABLES;</span><br><span class="line">mysql&gt; SHOW [SESSION] VARIABLES;</span><br><span class="line">mysql&gt; SELECT @@VARIABLES;</span><br><span class="line"></span><br><span class="line">修改服务器变量的值</span><br><span class="line">mysql&gt; help SET</span><br><span class="line"></span><br><span class="line">修改全局变量：仅对修改后新创建的会话有效；对已经建立的会话无效</span><br><span class="line">mysql&gt; SET GLOBAL system_var_name=value;</span><br><span class="line">mysql&gt; SET @@global.system_var_name=value;</span><br><span class="line"></span><br><span class="line">修改会话变量：</span><br><span class="line">mysql&gt; SET [SESSION] system_var_name=value;</span><br><span class="line">mysql&gt; SET @@[session.]system_var_name=value;</span><br><span class="line"></span><br><span class="line">状态变量（只读）：用于保存mysqld运行中的统计数据的变量，不可更改</span><br><span class="line">mysql&gt; SHOW GLOBAL STATUS;</span><br><span class="line">mysql&gt; SHOW [SESSION] STATUS;</span><br></pre></td></tr></table></figure>
+<h2 id="服务器变量SQL-MODE"><a href="#服务器变量SQL-MODE" class="headerlink" title="服务器变量SQL_MODE"></a>服务器变量SQL_MODE</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SQL_MODE：对其设置可以完成一些约束检查的工作,可分别进行全局的设置或当前会</span><br><span class="line">话的设置，参看：https://mariadb.com/kb/en/library/sql-mode/</span><br><span class="line"> 常见MODE:</span><br><span class="line"> NO_AUTO_CREATE_USER</span><br><span class="line"> 禁止GRANT创建密码为空的用户</span><br><span class="line"> NO_ZERO_DATE</span><br><span class="line"> 在严格模式，不允许使用‘0000-00-00’的</span><br><span class="line"> ONLY_FULL_GROUP_BY</span><br><span class="line"> 对于GROUP BY聚合操作，如果在SELECT中的列，没有在GROUP BY中出现，那么</span><br><span class="line">将认为这个SQL是不合法的</span><br><span class="line"> NO_BACKSLASH_ESCAPES</span><br><span class="line"> 反斜杠“\”作为普通字符而非转义字符</span><br><span class="line"> PIPES_AS_CONCAT</span><br><span class="line"> 将&quot;||&quot;视为连接操作符而非“或运算符”</span><br></pre></td></tr></table></figure>
+<h1 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">创建数据库：</span><br><span class="line">CREATE DATABASE|SCHEMA [IF NOT EXISTS] &apos;DB_NAME&apos;; </span><br><span class="line">CHARACTER SET &apos;character set name’COLLATE &apos;collate name&apos;</span><br><span class="line"></span><br><span class="line">修改数据库：</span><br><span class="line">ALTER DATABASE DB_NAME character set utf8;</span><br><span class="line"></span><br><span class="line">删除数据库</span><br><span class="line">DROP DATABASE|SCHEMA [IF EXISTS] &apos;DB_NAME&apos;; </span><br><span class="line"></span><br><span class="line">查看支持所有字符集：SHOW CHARACTER SET;</span><br><span class="line">查看支持所有排序规则：SHOW COLLATION;</span><br><span class="line">获取命令使用帮助：</span><br><span class="line">mysql&gt; HELP KEYWORD;</span><br><span class="line">查看数据库列表：</span><br><span class="line">mysql&gt; SHOW DATABASES;</span><br></pre></td></tr></table></figure>
+<h2 id="表"><a href="#表" class="headerlink" title="表"></a>表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">表：二维关系</span><br><span class="line">设计表：遵循规范</span><br><span class="line">定义：字段，索引</span><br><span class="line">字段：字段名，字段数据类型，修饰符</span><br><span class="line">约束，索引：应该创建在经常用作查询条件的字段上</span><br></pre></td></tr></table></figure>
+<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">创建表：CREATE TABLE</span><br><span class="line">(1) 直接创建</span><br><span class="line">(2) 通过查询现存表创建；新表会被直接插入查询而来的数据</span><br><span class="line">    CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name </span><br><span class="line">    [(create_definition,...)] [table_options]</span><br><span class="line">    [partition_options] select_statement</span><br><span class="line">(3) 通过复制现存的表的表结构创建，但不复制数据</span><br><span class="line">    CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name &#123; LIKE old_tbl_name | (LIKE old_tbl_name) &#125;</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line"> Storage Engine是指表类型，也即在表创建时指明其使用的存储引擎，同一</span><br><span class="line">库中不同表可以使用不同的存储引擎</span><br><span class="line"> 同一个库中表建议要使用同一种存储引擎类型</span><br><span class="line"> </span><br><span class="line"> CREATE TABLE [IF NOT EXISTS] ‘tbl_name’ (col1 type1 修饰符, col2 </span><br><span class="line">type2 修饰符, ...)</span><br><span class="line"></span><br><span class="line">字段信息</span><br><span class="line">• col type1 </span><br><span class="line">• PRIMARY KEY(col1,...)</span><br><span class="line">• INDEX(col1, ...)</span><br><span class="line">• UNIQUE KEY(col1, ...)</span><br><span class="line"></span><br><span class="line">表选项：</span><br><span class="line">• ENGINE [=] engine_name</span><br><span class="line">SHOW ENGINES;查看支持的engine类型</span><br><span class="line">• ROW_FORMAT [=] </span><br><span class="line">&#123;DEFAULT|DYNAMIC|FIXED|COMPRESSED|REDUNDANT|COMPACT&#125;</span><br><span class="line"></span><br><span class="line">获取帮助：mysql&gt; HELP CREATE TABLE;</span><br></pre></td></tr></table></figure>
+<h2 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">查看所有的引擎：SHOW ENGINES</span><br><span class="line">查看表：SHOW TABLES [FROM db_name]</span><br><span class="line">查看表结构：DESC [db_name.]tb_name</span><br><span class="line">SHOW COLUMNS FROM [db_name.]tb_name</span><br><span class="line">删除表：DROP TABLE [IF EXISTS] tb_name</span><br><span class="line">查看表创建命令：SHOW CREATE TABLE tbl_name</span><br><span class="line">查看表状态：SHOW TABLE STATUS LIKE &apos;tbl_name’</span><br><span class="line">查看库中所有表状态：SHOW TABLE STATUS FROM db_name</span><br></pre></td></tr></table></figure>
+<p>删除表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE [IF EXISTS] &apos;tbl_name&apos;;</span><br><span class="line">ALTER TABLE &apos;tbl_name&apos; </span><br><span class="line">        字段：</span><br><span class="line">        添加字段：add</span><br><span class="line">        ADD col1 data_type [FIRST|AFTER col_name]</span><br><span class="line">        删除字段：drop</span><br><span class="line">        修改字段：</span><br><span class="line">        alter（默认值）, change（字段名）, modify（字段属性）</span><br><span class="line">        索引:</span><br><span class="line">        添加索引：add index</span><br><span class="line">        删除索引：drop index</span><br><span class="line">        表选项</span><br><span class="line">        修改：</span><br><span class="line">查看表上的索引：SHOW INDEXES FROM [db_name.]tbl_name;</span><br><span class="line">查看帮助：Help ALTER TABLE</span><br><span class="line"></span><br><span class="line">修改表示例：</span><br><span class="line">ALTER TABLE students RENAME s1;</span><br><span class="line">ALTER TABLE s1 ADD phone varchar(11) AFTER name;</span><br><span class="line">ALTER TABLE s1 MODIFY phone int;</span><br><span class="line">ALTER TABLE s1 CHANGE COLUMN phone mobile char(11);</span><br><span class="line">ALTER TABLE s1 DROP COLUMN mobile;</span><br><span class="line">ALTER TABLE s1 character set utf8;</span><br><span class="line">ALTER TABLE s1 change name name varchar(20) character set utf8;</span><br><span class="line">Help ALTER TABLE 查看帮助</span><br></pre></td></tr></table></figure></p>
+<h2 id="表的增删改"><a href="#表的增删改" class="headerlink" title="表的增删改"></a>表的增删改</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">INSERT</span><br><span class="line">    一次插入一行或多行数据</span><br><span class="line">    语法</span><br><span class="line">    INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE]</span><br><span class="line">        [INTO] tbl_name [(col_name,...)]</span><br><span class="line">        &#123;VALUES | VALUE&#125; (&#123;expr | DEFAULT&#125;,...),(...),...</span><br><span class="line">        [ ON DUPLICATE KEY UPDATE 如果重复更新之</span><br><span class="line">        col_name=expr</span><br><span class="line">        [, col_name=expr] ... ]</span><br><span class="line">    简化写法：</span><br><span class="line">    INSERT tbl_name [(col1,...)] VALUES (val1,...), (val21,...)</span><br><span class="line"></span><br><span class="line">UPDATE</span><br><span class="line">    UPDATE [LOW_PRIORITY] [IGNORE] table_reference</span><br><span class="line">    SET col_name1=&#123;expr1|DEFAULT&#125; [, col_name2=&#123;expr2|DEFAULT&#125;] ...</span><br><span class="line">    [WHERE where_condition]</span><br><span class="line">    [ORDER BY ...]</span><br><span class="line">    [LIMIT row_count]</span><br><span class="line">    注意：一定要有限制条件，否则将修改所有行的指定字段</span><br><span class="line">            限制条件：</span><br><span class="line">            WHERE</span><br><span class="line">            LIMIT</span><br><span class="line">    Mysql 选项：-U|--safe-updates| --i-am-a-dummy</span><br><span class="line"></span><br><span class="line">DELETE</span><br><span class="line">    DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name</span><br><span class="line">    [WHERE where_condition]</span><br><span class="line">    [ORDER BY ...]</span><br><span class="line">    [LIMIT row_count]</span><br><span class="line">    可先排序再指定删除的行数</span><br><span class="line">    注意：一定要有限制条件，否则将清空表中的所有数据</span><br><span class="line">            限制条件：</span><br><span class="line">            WHERE</span><br><span class="line">            LIMIT</span><br><span class="line">    TRUNCATE TABLE tbl_name; 清空表</span><br></pre></td></tr></table></figure>
+<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    ALL | DISTINCT | DISTINCTROW ]</span><br><span class="line">    [SQL_CACHE | SQL_NO_CACHE] </span><br><span class="line">    select_expr [, select_expr ...]</span><br><span class="line">    [FROM table_references</span><br><span class="line">    [WHERE where_condition]</span><br><span class="line">    [GROUP BY &#123;col_name | expr | position&#125;</span><br><span class="line">    [ASC | DESC], ... [WITH ROLLUP]]</span><br><span class="line">    [HAVING where_condition]</span><br><span class="line">    [ORDER BY &#123;col_name | expr | position&#125;</span><br><span class="line">    [ASC | DESC], ...]</span><br><span class="line">    [LIMIT &#123;[offset,] row_count | row_count OFFSET offset&#125;]</span><br><span class="line">    [FOR UPDATE | LOCK IN SHARE MODE]</span><br><span class="line"></span><br><span class="line">字段显示可以使用别名：</span><br><span class="line"> col1 AS alias1, col2 AS alias2, </span><br><span class="line"></span><br><span class="line">WHERE子句：指明过滤条件以实现“选择”的功能：</span><br><span class="line">过滤条件：布尔型表达式</span><br><span class="line">算术操作符：+, -, *, /, %</span><br><span class="line">比较操作符：=,&lt;=&gt;（相等或都为空）, &lt;&gt;, !=(非标准SQL), &gt;, &gt;=, &lt;, &lt;=</span><br><span class="line">BETWEEN min_num AND max_num</span><br><span class="line">IN (element1, element2, ...)</span><br><span class="line">IS NULL</span><br><span class="line">IS NOT NULL</span><br><span class="line"></span><br><span class="line">DISTINCT 去除重复列</span><br><span class="line">SELECT DISTINCT gender FROM students;</span><br><span class="line"></span><br><span class="line">LIKE: </span><br><span class="line">% 任意长度的任意字符</span><br><span class="line">_ 任意单个字符</span><br><span class="line"></span><br><span class="line">RLIKE：正则表达式，索引失效，不建议使用</span><br><span class="line">REGEXP：匹配字符串可用正则表达式书写模式，同上</span><br><span class="line">逻辑操作符：</span><br><span class="line">NOT</span><br><span class="line">AND</span><br><span class="line">OR</span><br><span class="line">XOR</span><br><span class="line"></span><br><span class="line">GROUP：根据指定的条件把查询结果进行“分组”以用于做“聚合”运算</span><br><span class="line">avg(), max(), min(), count(), sum()</span><br><span class="line"> HAVING: 对分组聚合运算后的结果指定过滤条件</span><br><span class="line"></span><br><span class="line"> ORDER BY: 根据指定的字段对查询结果进行排序</span><br><span class="line">升序：ASC</span><br><span class="line">降序：DESC</span><br><span class="line"></span><br><span class="line">LIMIT [[offset,]row_count]：对查询的结果进行输出行数数量限制</span><br><span class="line"></span><br><span class="line">对查询结果中的数据请求施加“锁”</span><br><span class="line">FOR UPDATE: 写锁，独占或排它锁，只有一个读和写</span><br><span class="line">LOCK IN SHARE MODE: 读锁，共享锁，同时多个读</span><br></pre></td></tr></table></figure>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> DESC students;</span><br><span class="line"> INSERT INTO students VALUES(1,&apos;tom&apos;，&apos;m&apos;),(2,&apos;alice&apos;,&apos;f&apos;);</span><br><span class="line"> INSERT INTO students(id,name) VALUES(3,&apos;jack&apos;),(4,&apos;allen&apos;);</span><br><span class="line"> SELECT * FROM students WHERE id &lt; 3;</span><br><span class="line"> SELECT * FROM students WHERE gender=&apos;m&apos;;</span><br><span class="line"> SELECT * FROM students WHERE gender IS NULL;</span><br><span class="line"> SELECT * FROM students WHERE gender IS NOT NULL;</span><br><span class="line"> SELECT * FROM students ORDER BY name DESC LIMIT 2;</span><br><span class="line"> SELECT * FROM students ORDER BY name DESC LIMIT 1,2;</span><br><span class="line"> SELECT * FROM students WHERE id &gt;=2 and id &lt;=4</span><br><span class="line"> SELECT * FROM students WHERE BETWEEN 2 AND 4</span><br><span class="line"> SELECT * FROM students WHERE name LIKE ‘t%’</span><br><span class="line"> SELECT * FROM students WHERE name RLIKE &apos;.*[lo].*&apos;;</span><br><span class="line"> SELECT id stuid,name as stuname FROM students</span><br></pre></td></tr></table></figure>
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><p>交叉连接：笛卡尔乘积</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">内连接：</span><br><span class="line">等值连接：让表之间的字段以“等值”建立连接关系；</span><br><span class="line">不等值连接</span><br><span class="line">自然连接:去掉重复列的等值连接</span><br><span class="line">自连接</span><br><span class="line"></span><br><span class="line">外连接：</span><br><span class="line">左外连接：</span><br><span class="line">FROM tb1 LEFT JOIN tb2 ON tb1.col=tb2.col</span><br><span class="line">右外连接</span><br><span class="line">FROM tb1 RIGHT JOIN tb2 ON tb1.col=tb2.col</span><br><span class="line"></span><br><span class="line">子查询：在查询语句嵌套着查询语句，性能较差</span><br><span class="line">基于某语句的查询结果再次进行的查询</span><br><span class="line"></span><br><span class="line">用在WHERE子句中的子查询</span><br><span class="line">用于比较表达式中的子查询；子查询仅能返回单个值</span><br><span class="line">SELECT Name,Age FROM students WHERE Age&gt;(SELECT avg(Age) FROM students);</span><br><span class="line"></span><br><span class="line">用于IN中的子查询：子查询应该单键查询并返回一个或多个值从构成列表</span><br><span class="line">SELECT Name,Age FROM students WHERE Age IN (SELECT Age </span><br><span class="line">FROM teachers);</span><br><span class="line">用于EXISTS</span><br><span class="line"></span><br><span class="line">用于FROM子句中的子查询</span><br><span class="line">使用格式：SELECT tb_alias.col1,... FROM (SELECT clause) AS tb_alias</span><br><span class="line">WHERE Clause; </span><br><span class="line">    示例：</span><br><span class="line">SELECT s.aage,s.ClassID FROM (SELECT avg(Age) AS aage,ClassID</span><br><span class="line">FROM students WHERE ClassID IS NOT NULL GROUP BY ClassID) AS s </span><br><span class="line">WHERE s.aage&gt;30;</span><br><span class="line"></span><br><span class="line">联合查询：UNION</span><br><span class="line">SELECT Name,Age FROM students UNION SELECT Name,Age FROM </span><br><span class="line">teachers;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/05/Mysql日志/" rel="next" title="Mysql日志">
+                <i class="fa fa-chevron-left"></i> Mysql日志
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/05/Mysql备份及还原/" rel="prev" title="Mysql备份及还原">
+                Mysql备份及还原 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#用户管理"><span class="nav-number">1.</span> <span class="nav-text">用户管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建用户"><span class="nav-number">1.1.</span> <span class="nav-text">创建用户</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户重命名"><span class="nav-number">1.1.1.</span> <span class="nav-text">用户重命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除用户"><span class="nav-number">1.1.2.</span> <span class="nav-text">删除用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改密码"><span class="nav-number">1.1.3.</span> <span class="nav-text">修改密码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#忘记管理员密码的解决办法"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">忘记管理员密码的解决办法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL用户和权限管理"><span class="nav-number">1.2.</span> <span class="nav-text">MySQL用户和权限管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据操作"><span class="nav-number">1.3.</span> <span class="nav-text">数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#回收授权"><span class="nav-number">1.3.1.</span> <span class="nav-text">回收授权</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储引擎"><span class="nav-number">2.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MyISAM引擎特点"><span class="nav-number">2.1.</span> <span class="nav-text">MyISAM引擎特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyISAM存储引擎适用场景"><span class="nav-number">2.2.</span> <span class="nav-text">MyISAM存储引擎适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB引擎特点"><span class="nav-number">2.3.</span> <span class="nav-text">InnoDB引擎特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB数据库文件"><span class="nav-number">2.3.1.</span> <span class="nav-text">InnoDB数据库文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理存储引擎"><span class="nav-number">2.4.</span> <span class="nav-text">管理存储引擎</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器配置"><span class="nav-number">3.</span> <span class="nav-text">服务器配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取mysqld的可用选项列表"><span class="nav-number">3.1.</span> <span class="nav-text">获取mysqld的可用选项列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置服务器选项方法："><span class="nav-number">3.2.</span> <span class="nav-text">设置服务器选项方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器系统变量"><span class="nav-number">3.3.</span> <span class="nav-text">服务器系统变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器变量SQL-MODE"><span class="nav-number">3.4.</span> <span class="nav-text">服务器变量SQL_MODE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库操作"><span class="nav-number">4.</span> <span class="nav-text">数据库操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#表"><span class="nav-number">4.1.</span> <span class="nav-text">表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-number">4.2.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表操作"><span class="nav-number">4.3.</span> <span class="nav-text">表操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表的增删改"><span class="nav-number">4.4.</span> <span class="nav-text">表的增删改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">4.5.</span> <span class="nav-text">select</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">4.5.1.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多表查询"><span class="nav-number">4.6.</span> <span class="nav-text">多表查询</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
