@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ProxySQLProxySQL： MySQL中间件，两个版本：官方版和percona版，percona版是基于官方版基础上修改，C++语言开发，轻量级但性能优异(支持处理千亿级数据)，具有中间件所需的绝大多数功能，包括：123456                        多种方式的的读/写分离                        定制基于用户、基于schema、基于语句的规则对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql读写分离ProxySQL">
+<meta property="og:url" content="http://yoursite.com/2018/12/10/Mysql读写分离ProxySQL/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="ProxySQLProxySQL： MySQL中间件，两个版本：官方版和percona版，percona版是基于官方版基础上修改，C++语言开发，轻量级但性能优异(支持处理千亿级数据)，具有中间件所需的绝大多数功能，包括：123456                        多种方式的的读/写分离                        定制基于用户、基于schema、基于语句的规则对">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-12T01:59:13.369Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql读写分离ProxySQL">
+<meta name="twitter:description" content="ProxySQLProxySQL： MySQL中间件，两个版本：官方版和percona版，percona版是基于官方版基础上修改，C++语言开发，轻量级但性能优异(支持处理千亿级数据)，具有中间件所需的绝大多数功能，包括：123456                        多种方式的的读/写分离                        定制基于用户、基于schema、基于语句的规则对">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/10/Mysql读写分离ProxySQL/"/>
+
+
+
+
+
+  <title>Mysql读写分离ProxySQL | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/10/Mysql读写分离ProxySQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql读写分离ProxySQL</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-10T18:12:20+08:00">
+                2018-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Mysql读写分离ProxySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">Mysql读写分离ProxySQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ProxySQL"><a href="#ProxySQL" class="headerlink" title="ProxySQL"></a>ProxySQL</h1><p>ProxySQL： MySQL中间件，两个版本：官方版和percona版，percona版是基于官方版基础上修改，C++语言开发，轻量级但性能优异(支持处理千亿级数据)，具有中间件所需的绝大多数功能，包括：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">                        多种方式的的读/写分离</span><br><span class="line">                        定制基于用户、基于schema、基于语句的规则对SQL语句进行路由</span><br><span class="line">                        缓存查询结果</span><br><span class="line">                        后端节点监控</span><br><span class="line">官方站点：https://proxysql.com/</span><br><span class="line">官方手册：https://github.com/sysown/proxysql/wi</span><br></pre></td></tr></table></figure></p>
+<h1 id="ProxySQL安装"><a href="#ProxySQL安装" class="headerlink" title="ProxySQL安装"></a>ProxySQL安装</h1><h2 id="基于YUM仓库安装"><a href="#基于YUM仓库安装" class="headerlink" title="基于YUM仓库安装"></a>基于YUM仓库安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF | tee /etc/yum.repos.d/proxysql.repo </span><br><span class="line">[proxysql_repo]</span><br><span class="line">name= ProxySQL YUM repository</span><br><span class="line">baseurl=http://repo.proxysql.com/ProxySQL/proxysql-1.4.x/centos/\$releasever</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgke</span><br><span class="line"></span><br><span class="line">基于RPM下载安装：https://github.com/sysown/proxysql/releas</span><br></pre></td></tr></table></figure>
+<h2 id="ProxySQL组成"><a href="#ProxySQL组成" class="headerlink" title="ProxySQL组成"></a>ProxySQL组成</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">服务脚本：/etc/init.d/proxysql</span><br><span class="line">配置文件：/etc/proxysql.cnf</span><br><span class="line">主程序：/usr/bin/proxysql</span><br></pre></td></tr></table></figure>
+<h1 id="ProxySQL实现读写分离"><a href="#ProxySQL实现读写分离" class="headerlink" title="ProxySQL实现读写分离"></a>ProxySQL实现读写分离</h1><h2 id="准备："><a href="#准备：" class="headerlink" title="准备："></a>准备：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 实现读写分离前，先实现主从复制   注意：slave节点需要设置read_only=1</span><br><span class="line"></span><br><span class="line">2 启动ProxySQL：service proxysql start</span><br><span class="line">启动后会监听两个端口，默认为6032(ProxySQL的管理端口)和6033(ProxySQL对外提供服务的端口)</span><br><span class="line"></span><br><span class="line">3 使用mysql客户端连接到ProxySQL的管理接口6032</span><br><span class="line">默认管理员用户和密码都是admin：mysql -uadmin -padmin -P6032 -h127.0.0.1</span><br><span class="line"></span><br><span class="line">说明：在main和monitor数据库中的表， runtime_开头的是运行时的配置，不能修改，只能修改非runtime_表，修改后必须执行LOAD … TO RUNTIME才能加载到RUNTIME生效，执行save … to disk将配置持久化保存到磁盘</span><br></pre></td></tr></table></figure>
+<h2 id="向ProxySQL中添加MySQL节点"><a href="#向ProxySQL中添加MySQL节点" class="headerlink" title="向ProxySQL中添加MySQL节点"></a>向ProxySQL中添加MySQL节点</h2><p>以下操作不需要use main也可成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MySQL [(none)]&gt; select * from mysql_servers; </span><br><span class="line">MySQL [(none)]&gt; insert into mysql_servers(hostgroup_id,hostname,port，comment) values(10,‘192.168.6.17’,3306,‘write group’);</span><br><span class="line">MySQL [(none)]&gt; insert into mysql_servers(hostgroup_id,hostname,port，comment) values(10,‘192.168.6.27’,3306,‘read group’);</span><br><span class="line">MySQL [(none)]&gt; load mysql servers to runtime;</span><br><span class="line">MySQL [(none)]&gt; save mysql servers to disk;</span><br></pre></td></tr></table></figure></p>
+<h2 id="添加监控后端节点的用户"><a href="#添加监控后端节点的用户" class="headerlink" title="添加监控后端节点的用户"></a>添加监控后端节点的用户</h2><p>因为ProxySQL需要通过每个节点的read_only值来自动调整它们是属于读组还是写组</p>
+<h3 id="在master上执行"><a href="#在master上执行" class="headerlink" title="在master上执行:"></a>在master上执行:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; grant replication client on *.* to monitor@&apos;192.168.6.%&apos; identified by &apos;magedu&apos;;</span><br></pre></td></tr></table></figure>
+<h2 id="ProxySQL上配置监控"><a href="#ProxySQL上配置监控" class="headerlink" title="ProxySQL上配置监控"></a>ProxySQL上配置监控</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set mysql-monitor_username=&apos;monitor&apos;;</span><br><span class="line">set mysql-monitor_password=&apos;magedu&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="加载到RUNTIME，并保存到disk"><a href="#加载到RUNTIME，并保存到disk" class="headerlink" title="加载到RUNTIME，并保存到disk"></a>加载到RUNTIME，并保存到disk</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">load mysql_variables to runtime;</span><br><span class="line">save mysql_variables to disk;</span><br></pre></td></tr></table></figure>
+<h2 id="监控模块的指标保存在monitor库的log表中"><a href="#监控模块的指标保存在monitor库的log表中" class="headerlink" title="监控模块的指标保存在monitor库的log表中"></a>监控模块的指标保存在monitor库的log表中</h2><h2 id="查看监控连接是否正常的-对connect指标的监控-：-如果connect-error的结果为NULL则表示正常"><a href="#查看监控连接是否正常的-对connect指标的监控-：-如果connect-error的结果为NULL则表示正常" class="headerlink" title="查看监控连接是否正常的 (对connect指标的监控)：(如果connect_error的结果为NULL则表示正常)"></a>查看监控连接是否正常的 (对connect指标的监控)：(如果connect_error的结果为NULL则表示正常)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from mysql_server_connect_log;</span><br></pre></td></tr></table></figure>
+<h2 id="查看监控心跳信息-对ping指标的监控-："><a href="#查看监控心跳信息-对ping指标的监控-：" class="headerlink" title="查看监控心跳信息 (对ping指标的监控)："></a>查看监控心跳信息 (对ping指标的监控)：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from mysql_server_ping_log;</span><br></pre></td></tr></table></figure>
+<h2 id="查看read-only和replication-lag的监控日志"><a href="#查看read-only和replication-lag的监控日志" class="headerlink" title="查看read_only和replication_lag的监控日志"></a>查看read_only和replication_lag的监控日志</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from mysql_server_read_only_log;</span><br><span class="line">mysql&gt; select * from mysql_server_replication_lag_log;</span><br></pre></td></tr></table></figure>
+<h2 id="设置分组信息"><a href="#设置分组信息" class="headerlink" title="设置分组信息"></a>设置分组信息</h2><p>需要修改的是main库中的mysql_replication_hostgroups表，该表有3个字段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">writer_hostgroup，reader_hostgroup，comment, 指定写组的id为10，读组的id为20</span><br><span class="line">insert into mysql_replication_hostgroups values(10,20,&quot;test&quot;);</span><br><span class="line"></span><br><span class="line">将mysql_replication_hostgroups表的修改加载到RUNTIME生效</span><br><span class="line">load mysql servers to runtime;</span><br><span class="line">save mysql servers to disk;</span><br><span class="line"></span><br><span class="line">Monitor模块监控后端的read_only值，按照read_only的值将节点自动移动到读/写组</span><br><span class="line"></span><br><span class="line">select hostgroup_id,hostname,port,status,weight from mysql_servers; </span><br><span class="line">+--------------+--------------+------+--------+--------+</span><br><span class="line">| hostgroup_id | hostname | port | status | weight |</span><br><span class="line">+--------------+--------------+------+--------+--------+</span><br><span class="line">| 10 | 192.168.50.107 | 3306 | ONLINE | 1 |</span><br><span class="line">| 20 | 192.168.50.117 | 3306 | ONLINE | 1 |</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置发送SQL语句的用户"><a href="#配置发送SQL语句的用户" class="headerlink" title="配置发送SQL语句的用户"></a>配置发送SQL语句的用户</h2><p>在master节点上执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all on *.* to sqluser@&apos;192.168.6.%&apos; identified by &apos;magedu&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>在ProxySQL配置，将用户sqluser添加到mysql_users表中， default_hostgroup默认组设置为写组10，当读写分离的路由规则不符合时，会访问默认组的数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">insert into mysql_users(username,password,default_hostgroup) values(&apos;sqluser&apos;,&apos;magedu&apos;,10);</span><br><span class="line"></span><br><span class="line">load mysql users to runtime;</span><br><span class="line">save mysql users to disk;</span><br></pre></td></tr></table></figure></p>
+<p>使用root用户和sqluser用户测试是否能路由到默认的10写组实现读、写数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;select @@server_id&apos; </span><br><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;create database testdb&apos;</span><br><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;use testdb;create table t(id int)&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置路由规则，实现读写分离"><a href="#配置路由规则，实现读写分离" class="headerlink" title="配置路由规则，实现读写分离"></a>配置路由规则，实现读写分离</h2><p>与规则有关的表:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_query_rules和mysql_query_rules_fast_routing，后者是前者的扩展表，1.4.7之后支持</span><br></pre></td></tr></table></figure></p>
+<p>插入路由规则:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">将select语句分离到20的读组，select语句中有一个特殊语句SELECT...FOR UPDATE它会申请写锁，应路由到10的写组</span><br><span class="line">insert into mysql_query_rules \   (\为换行)</span><br><span class="line">(rule_id,active,match_digest,destination_hostgroup,apply)VALUES \</span><br><span class="line">(1,1,&apos;^SELECT.*FOR UPDATE$&apos;,10,1),(2,1,&apos;^SELECT&apos;,20,1);</span><br><span class="line"></span><br><span class="line">load mysql query rules to runtim</span><br><span class="line">save mysql query rules to disk;</span><br></pre></td></tr></table></figure></p>
+<p>注意：因ProxySQL根据rule_id顺序进行规则匹配，select … for update规则的rule_id必须要小于普通的select规则的rule_id</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试读操作是否路由给20的读组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;select @@server_id&apos;</span><br></pre></td></tr></table></figure></p>
+<p>测试写操作，以事务方式进行测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 \    (\为换行)</span><br><span class="line">-e &apos;start transaction;select @@server_id;commit;select @@server_id&apos; </span><br><span class="line"></span><br><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;insert testdb.t values (1)&apos;</span><br><span class="line">mysql -usqluser -pmagedu -P6033 -h127.0.0.1 -e &apos;select id from testdb.t&apos;</span><br></pre></td></tr></table></figure></p>
+<p>路由的信息</p>
+<p>查询stats库中的stats_mysql_query_digest表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT hostgroup hg,sum_time, count_star, digest_text from stats_mysql_query_digest ORDER BY sum_time DESC;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/10/Mysql主从搭建/" rel="next" title="Mysql主从搭建">
+                <i class="fa fa-chevron-left"></i> Mysql主从搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/12/Mysql实现MHA高可用性/" rel="prev" title="Mysql实现MHA高可用性">
+                Mysql实现MHA高可用性 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ProxySQL"><span class="nav-number">1.</span> <span class="nav-text">ProxySQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ProxySQL安装"><span class="nav-number">2.</span> <span class="nav-text">ProxySQL安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于YUM仓库安装"><span class="nav-number">2.1.</span> <span class="nav-text">基于YUM仓库安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProxySQL组成"><span class="nav-number">2.2.</span> <span class="nav-text">ProxySQL组成</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ProxySQL实现读写分离"><span class="nav-number">3.</span> <span class="nav-text">ProxySQL实现读写分离</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备："><span class="nav-number">3.1.</span> <span class="nav-text">准备：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#向ProxySQL中添加MySQL节点"><span class="nav-number">3.2.</span> <span class="nav-text">向ProxySQL中添加MySQL节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加监控后端节点的用户"><span class="nav-number">3.3.</span> <span class="nav-text">添加监控后端节点的用户</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在master上执行"><span class="nav-number">3.3.1.</span> <span class="nav-text">在master上执行:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProxySQL上配置监控"><span class="nav-number">3.4.</span> <span class="nav-text">ProxySQL上配置监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载到RUNTIME，并保存到disk"><span class="nav-number">3.4.1.</span> <span class="nav-text">加载到RUNTIME，并保存到disk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控模块的指标保存在monitor库的log表中"><span class="nav-number">3.5.</span> <span class="nav-text">监控模块的指标保存在monitor库的log表中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看监控连接是否正常的-对connect指标的监控-：-如果connect-error的结果为NULL则表示正常"><span class="nav-number">3.6.</span> <span class="nav-text">查看监控连接是否正常的 (对connect指标的监控)：(如果connect_error的结果为NULL则表示正常)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看监控心跳信息-对ping指标的监控-："><span class="nav-number">3.7.</span> <span class="nav-text">查看监控心跳信息 (对ping指标的监控)：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看read-only和replication-lag的监控日志"><span class="nav-number">3.8.</span> <span class="nav-text">查看read_only和replication_lag的监控日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置分组信息"><span class="nav-number">3.9.</span> <span class="nav-text">设置分组信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置发送SQL语句的用户"><span class="nav-number">3.10.</span> <span class="nav-text">配置发送SQL语句的用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置路由规则，实现读写分离"><span class="nav-number">3.11.</span> <span class="nav-text">配置路由规则，实现读写分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">3.12.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
