@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是HTTP？HTTP是超文本传输协议，计算机之间要通信，必须遵循协议的规则。 工作机制：http请求：http requesthttp响应：http response一次http事务：请求响应 Web资源：web resource一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源的集合 静态文件：无需">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP工作机制">
+<meta property="og:url" content="http://yoursite.com/2018/12/16/HTTP工作机制/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="什么是HTTP？HTTP是超文本传输协议，计算机之间要通信，必须遵循协议的规则。 工作机制：http请求：http requesthttp响应：http response一次http事务：请求响应 Web资源：web resource一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源的集合 静态文件：无需">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/http8.png">
+<meta property="og:image" content="http://yoursite.com/images/http9.png">
+<meta property="og:image" content="http://yoursite.com/images/http10.png">
+<meta property="og:image" content="http://yoursite.com/images/http11.png">
+<meta property="og:image" content="http://yoursite.com/images/http12.png">
+<meta property="og:image" content="http://yoursite.com/images/http13.png">
+<meta property="og:image" content="http://yoursite.com/images/http14.png">
+<meta property="og:image" content="http://yoursite.com/images/http15.png">
+<meta property="og:image" content="http://yoursite.com/images/http16.png">
+<meta property="og:updated_time" content="2018-12-16T07:54:49.534Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP工作机制">
+<meta name="twitter:description" content="什么是HTTP？HTTP是超文本传输协议，计算机之间要通信，必须遵循协议的规则。 工作机制：http请求：http requesthttp响应：http response一次http事务：请求响应 Web资源：web resource一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源的集合 静态文件：无需">
+<meta name="twitter:image" content="http://yoursite.com/images/http8.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/16/HTTP工作机制/"/>
+
+
+
+
+
+  <title>HTTP工作机制 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/16/HTTP工作机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP工作机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-16T14:48:21+08:00">
+                2018-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/HTTP工作机制/" itemprop="url" rel="index">
+                    <span itemprop="name">HTTP工作机制</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是HTTP？"><a href="#什么是HTTP？" class="headerlink" title="什么是HTTP？"></a>什么是HTTP？</h1><p>HTTP是超文本传输协议，计算机之间要通信，必须遵循协议的规则。</p>
+<h1 id="工作机制："><a href="#工作机制：" class="headerlink" title="工作机制："></a>工作机制：</h1><p>http请求：http request<br>http响应：http response<br>一次http事务：请求<-->响应</--></p>
+<h2 id="Web资源：web-resource"><a href="#Web资源：web-resource" class="headerlink" title="Web资源：web resource"></a>Web资源：web resource</h2><p>一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源的集合</p>
+<p>静态文件：无需服务端做出额外处理<br>文件后缀：.html, .txt, .jpg, .js, .css, .mp3, .avi</p>
+<p>动态文件：服务端执行程序，返回执行的结果<br>文件后缀：.php, .jsp ,.asp</p>
+<h2 id="提高HTTP连接性能"><a href="#提高HTTP连接性能" class="headerlink" title="提高HTTP连接性能"></a>提高HTTP连接性能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">并行连接：通过多条TCP连接发起并发的HTTP请求</span><br><span class="line">持久连接：keep-alive,长连接，重用TCP连接，以消除连接和关闭的时延,以事务个数和时间来决定是否关闭连接</span><br><span class="line">管道化连接：通过共享TCP连接发起并发的HTTP请求</span><br><span class="line">复用的连接：交替传送请求和响应报文（实验阶段）</span><br></pre></td></tr></table></figure>
+<p>HTTP连接请求<br><img src="/images/http8.png" alt="Alt text"></p>
+<p>串行和并行连接<br><img src="/images/http9.png" alt="Alt text"></p>
+<p>串行,持久连接和管道<br><img src="/images/http10.png" alt="Alt text"></p>
+<h1 id="URI"><a href="#URI" class="headerlink" title="URI"></a>URI</h1><h2 id="URI-Uniform-Resource-Identifier-统一资源标识，分为URL和URN"><a href="#URI-Uniform-Resource-Identifier-统一资源标识，分为URL和URN" class="headerlink" title="URI: Uniform Resource Identifier 统一资源标识，分为URL和URN"></a>URI: Uniform Resource Identifier 统一资源标识，分为URL和URN</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">URN: Uniform Resource Naming，统一资源命名</span><br><span class="line">示例： P2P下载使用的磁力链接是URN的一种实现</span><br><span class="line">magnet:?xt=urn:btih:660557A6890EF888666</span><br><span class="line"></span><br><span class="line">URL: Uniform Resorce Locator，统一资源定位符，用于描述某服务器某特</span><br><span class="line">定资源位置</span><br><span class="line"></span><br><span class="line">两者区别：URN如同一个人的名称，而URL代表一个人的住址。换言之，</span><br><span class="line">URN定义某事物的身份，而URL提供查找该事物的方法。URN仅用于命名，</span><br><span class="line">而不指定地址</span><br></pre></td></tr></table></figure>
+<h2 id="URL组成"><a href="#URL组成" class="headerlink" title="URL组成"></a>URL组成</h2><p><img src="/images/http11.png" alt="Alt text"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> &lt;scheme&gt;://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;path&gt;;&lt;params&gt;?&lt;query&gt;#&lt;frag&gt;</span><br><span class="line"> scheme:方案，访问服务器以获取资源时要使用哪种协议</span><br><span class="line"> user:用户，某些方案访问资源时需要的用户名</span><br><span class="line"> password:密码，用户对应的密码，中间用：分隔</span><br><span class="line"> Host:主机，资源宿主服务器的主机名或IP地址</span><br><span class="line"> port:端口,资源宿主服务器正在监听的端口号，很多方案有默认端口号</span><br><span class="line"> path:路径,服务器资源的本地名，由一个/将其与前面的URL组件分隔</span><br><span class="line"> params:参数，指定输入的参数，参数为名/值对，多个参数，用;分隔</span><br><span class="line"> query:查询，传递参数给程序，如数据库，用？分隔,多个查询用&amp;分隔</span><br><span class="line"> frag:片段,一小片或一部分资源的名字，此组件在客户端使用，用#分隔</span><br></pre></td></tr></table></figure></p>
+<h1 id="网站访问量"><a href="#网站访问量" class="headerlink" title="网站访问量"></a>网站访问量</h1><p>IP:(独立IP)：即Internet Protocol,指独立IP数。一天内来自相同客户机IP地址只计算一次，记录远程客户机IP地址的计算机访问网站的次数，是衡量网站流量的重要指标</p>
+<p>PV:(访问量)： 即Page View, 页面浏览量或点击量，用户每次刷新即被计算一次，PV反映的是浏览某网站的页面数，PV与来访者的数量成正比，PV并不是页面的来访者数量，而是网站被访问的页面数量</p>
+<p>UV:(独立访客)：即Unique Visitor,访问网站的一台电脑为一个访客。一天内相同的客户端只被计算一次。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的</p>
+<p>网站访问量统计：<a href="http://www.alexa.cn/ran" target="_blank" rel="noopener">http://www.alexa.cn/ran</a></p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">甲乙丙三人在同一台通过ADSL上网的电脑上（中间没有断网），分别访问www.magedu.com网站，并且每人各浏览了2个页面，那么网站的流量统计是：</span><br><span class="line">                        IP: 1 PV:6 UV：1</span><br><span class="line">若三人都是ADSL重新拨号后,各浏览了2个页面，则:</span><br><span class="line">                         IP: 3 PV:6 UV</span><br></pre></td></tr></table></figure></p>
+<p>QPS：request per second，每秒请求数</p>
+<p>PV，QPS,并发连接数换算公式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QPS= PV* 页⾯衍⽣连接次数/ 统计时间（86400）</span><br><span class="line">并发连接数 =QPS * http平均响应时间</span><br><span class="line"></span><br><span class="line">峰值时间：每天80%的访问集中在20%的时间里，这20%时间为峰值时间</span><br><span class="line">峰值时间每秒请求数(QPS)=( 总PV数 *页⾯衍⽣连接次数）*80% ) / ( 每天秒数* 20% )</span><br></pre></td></tr></table></figure></p>
+<p>Web服务请求处理步骤<br><img src="/images/http12.png" alt="Alt text"></p>
+<h1 id="一次完整的http请求处理过程"><a href="#一次完整的http请求处理过程" class="headerlink" title="一次完整的http请求处理过程"></a>一次完整的http请求处理过程</h1><h2 id="1-建立连接：接收或拒绝连接请求"><a href="#1-建立连接：接收或拒绝连接请求" class="headerlink" title="1.建立连接：接收或拒绝连接请求"></a>1.建立连接：接收或拒绝连接请求</h2><h2 id="2-接收请求：接收客户端请求报文中对某资源的一次请求的过程"><a href="#2-接收请求：接收客户端请求报文中对某资源的一次请求的过程" class="headerlink" title="2.接收请求：接收客户端请求报文中对某资源的一次请求的过程"></a>2.接收请求：接收客户端请求报文中对某资源的一次请求的过程</h2><p>Web访问响应模型（Web I/O）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">单进程I/O模型：启动一个进程处理用户请求，而且一次只处理一个，多个请求被串行响应</span><br><span class="line">多进程I/O模型：并行启动多个进程,每个进程响应一个连接请求</span><br><span class="line">复用I/O结构：启动一个进程，同时响应N个连接请求</span><br><span class="line"></span><br><span class="line">实现方法：多线程模型和事件驱动</span><br><span class="line"> 多线程模型：一个进程生成N个线程，每线程响应一个连接请求</span><br><span class="line"> 事件驱动：一个进程处理N个请求</span><br><span class="line"></span><br><span class="line">复用的多进程I/O模型：启动M个进程，每个进程响应N个连接请求，同时接收M*N个请求</span><br></pre></td></tr></table></figure></p>
+<p>Web访问响应模型<br><img src="/images/http13.png" alt="Alt text"></p>
+<h2 id="3-处理请求"><a href="#3-处理请求" class="headerlink" title="3.处理请求"></a>3.处理请求</h2><p>服务器对请求报文进行解析，并获取请求的资源及请求方法等相关信息，根据方法，资源，首部和可选的主体部分对请求进行处理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">元数据：请求报文首部</span><br><span class="line">&lt;method&gt; &lt;URL&gt; &lt;VERSION&gt;</span><br><span class="line">HEADERS 格式 name:value</span><br><span class="line">&lt;request body&gt;</span><br><span class="line">示例：</span><br><span class="line">Host: www.magedu.com 请求的主机名称</span><br><span class="line">Server: Apache/2.4.7</span><br><span class="line">HTTP常用请求方式，Method</span><br><span class="line"> GET、POST、HEAD、PUT、DELETE、TRACE、OPTIONS</span><br></pre></td></tr></table></figure></p>
+<h2 id="4-访问资源"><a href="#4-访问资源" class="headerlink" title="4.访问资源"></a>4.访问资源</h2><p>服务器获取请求报文中请求的资源web服务器，即存放了web资源的服务器，负责向请求者提供对方请求的静态资源，或动态运行后生成的资源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">资源放置于本地文件系统特定的路径：DocRoot</span><br><span class="line">DocRoot --&gt; /var/www/html</span><br><span class="line">/var/www/html/images/logo.jpg</span><br><span class="line">http://www.xxx.com/images/logo.jpg</span><br><span class="line"></span><br><span class="line">web服务器资源路径映射方式：</span><br><span class="line">(a) docroot</span><br><span class="line">(b) alias</span><br><span class="line">(c) 虚拟主机docroot</span><br><span class="line">(d) 用户家目录docroot</span><br></pre></td></tr></table></figure></p>
+<h2 id="5-构建响应报文"><a href="#5-构建响应报文" class="headerlink" title="5.构建响应报文"></a>5.构建响应报文</h2><p>一旦Web服务器识别除了资源，就执行请求方法中描述的动作，并返回响应报文。响应报文中 包含有响应状态码、响应首部，如果生成了响应主体的话，还包括响应主体<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">1）响应实体：如果事务处理产生了响应主体，就将内容放在响应报文中回送过</span><br><span class="line">去。响应报文中通常包括：</span><br><span class="line"> 描述了响应主体MIME类型的Content-Type首部</span><br><span class="line"> 描述了响应主体长度的Content-Length</span><br><span class="line"> 实际报文的主体内容</span><br><span class="line"></span><br><span class="line">2）URL重定向：web服务构建的响应并非客户端请求的资源，而是资源另外一</span><br><span class="line">个访问路径</span><br><span class="line">永久重定向：http://www.360buy.com</span><br><span class="line">临时重定向：http://www.taobao.com</span><br><span class="line"></span><br><span class="line">3）MIME类型： </span><br><span class="line"> Web服务器要负责确定响应主体的MIME类型。多种配置服务器的方法可将</span><br><span class="line">MIME类型与资源管理起来</span><br><span class="line"> 魔法分类：Apache web服务器可以扫描每个资源的内容，并将其与一个已知模</span><br><span class="line">式表(被称为魔法文件)进行匹配，以决定每个文件的MIME类型。这样做可能比较</span><br><span class="line">慢，但很方便，尤其是文件没有标准扩展名时</span><br><span class="line"> 显式分类：可以对Web服务器进行配置，使其不考虑文件的扩展名或内容，强</span><br><span class="line">制特定文件或目录内容拥有某个MIME类型</span><br><span class="line"> 类型协商： 有些Web服务器经过配置，可以以多种文档格式来存储资源。在这</span><br><span class="line">种情况下，可以配置Web服务器，使其可以通过与用户的协商来决定使用哪种格</span><br><span class="line">式(及相关的MIME类型)&quot;最好</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-发送响应报文"><a href="#6-发送响应报文" class="headerlink" title="6.发送响应报文"></a>6.发送响应报文</h2><p>Web服务器通过连接发送数据时也会面临与接收数据一样的问题。服务器可能有很多条到各个客户端的连接，有些是空闲的，有些在向服务器发送数据，还有一些在向客户端回送响应数据。服务器要记录连接的状态，还要特别注意对持久连接的处理。对非持久连接而言，服务器应该在发送了整条报文之后，关闭自己这一端的连接。对持久连接来说，连接可能仍保持打开状态，在这种情况下，服务器要正确地计算Content-Length首部，不然客户端就无法知道响应什么时候结束了</p>
+<h2 id="7-记录日志"><a href="#7-记录日志" class="headerlink" title="7.记录日志"></a>7.记录日志</h2><p>最后，当事务结束时，Web服务器会在日志文件中添加一个条目，来描述已执行的事务</p>
+<h1 id="一次HTTP请求操作称为一个事务，其工作整个过程如下"><a href="#一次HTTP请求操作称为一个事务，其工作整个过程如下" class="headerlink" title="一次HTTP请求操作称为一个事务，其工作整个过程如下"></a>一次HTTP请求操作称为一个事务，其工作整个过程如下</h1><p>在TCP/IP的模型图中，HTTP协议位于最上层的应用层 , 它是互联网上应用最为广泛的一种网络协议 , 所有 www 文件都必须遵守这个协议。</p>
+<p>HTTP 是一个由请求和响应组成的 , 标准的客户端/服务端模型(C/S结构) . HTTP 协议永远是由客户端发起请求 , 服务端给与响应。</p>
+<p>如下图所示 ：<br><img src="/images/http14.png" alt="Alt text"></p>
+<p>HTTP 是一种无状态协议，无状态是指客户端和服务端之间不需要建立持久的连接,客户端发起一个请求,服务器端返回响应，这个连接就会被关闭 , 在服务器端不会保留该请求的有关信息。</p>
+<h2 id="HTTP的工作流程如下"><a href="#HTTP的工作流程如下" class="headerlink" title="HTTP的工作流程如下"></a>HTTP的工作流程如下</h2><p> 1 . 地址解析<br>       HTTP协议是通过标准URL来请求指定的服务器中指定服务的 . 一个标的 URL ：<a href="http://www.baidu.com:80/index.html?name=tom&amp;age=18" target="_blank" rel="noopener">http://www.baidu.com:80/index.html?name=tom&amp;age=18</a><br>    下面来解析一下 URL , 看看这些组成都是做什么的<br>    (1) http: 协议类型，这里指的是要发送的是什么协议，还可以是FTP等其他协议，而这里请求的是服务器中的网页，所以使用的是常见的HTTP协议。</p>
+<pre><code>(2) www.baidu.com：主机名 . 通过主机名，可以准确定位到要访问的那台服务器 . 而在前面说的网络通信中，IP是可以唯一表示服务器地址的，但IP烦琐复杂，很难记忆，所以人们就想了个办法，通过熟悉的英文、数字等来表示一台服务器的地址，称为域名。这样就需要一个文件（作为一个数据仓库）把IP和域名一一对应起来 . 在很早的时候，我们确实是这么做的，不过随着IP越来越多，文件也变得越来越大，不堪负重 . 于是人们就想到了把这些一一对应的关系都放到一台统一的服务器上，这台服务器被称为DNS域名解析系统，它会把域名解析成对应的IP
+
+(3) 80：端口号 . 用户已经可以通过域名或者IP访问到一台服务器了，但是一台服务器里有那么多的服务和应用，怎样才能准确找到用户需要访问的那个服务或应用呢？在服务器中，每个服务和应用都会开启一个进程，都会有一个进程号（PID），如果对外提供服务，则还会有一个唯一的端口号，这让外部应用可以直接通过这个端口号访问到指定的服务和应用。端口号的范围是0～65 535，一些常用的服务和应用都有默认的端口号，一般不能轻易更改，比如Web服务器的80端口、远程连接SSH服务的22端口、数据库MySQL的3306端口等等。因为80端口是Web服务器的默认端口，所以在写HTTP请求的URL的时候，80端口一般是省略的
+
+(4) index.html：请求的文件名 . 用户通过域名和端口号已经能访问到Web服务器了，接下来就可以通过文件名来访问指定的文件了 . Web服务器一般都做好了路由，不同的路由所提供的访问文件的形式可能不一样，但核心都是一样的
+
+(5) ?name=tom&amp;age=18：请求参数 . 即使同一个网页，可能针对不同的用户，服务器要返回给客户端的信息也是不一样的，而服务器就是通过URL中“?”后面携带的参数不同来响应不同的用户或者同一个用户的不同请求的
+</code></pre><p> 2 . 封装HTTP 请求<br>       这一步把上面写的 URL 以及本机的一些信息封装成一个 HTTP 请求数据包</p>
+<p> 3 . 封装 TCP 包<br>       第三步就是封装 TCP 包 , 建立 TCP 连接 , 也就是常说的”三次握手” . 由于HTTP位于最上层的应用层 , 所以HTTP在工作之前要由 TCP 和 IP 协议建立网络连接 , 这就是TCP/IP协议族 , 因此互联网又称为 TCP/IP 网络 .<br>       这里就少TCP/IP协议的”三次握手” , 首先由客户端发送建立连接的请求 , 客户端发送一个 syn 包 , 等待服务端的响应 ; 服务端收到 syn 包之后 , 返回给客户端一个表示确认的 syn 包 和 ack 包 , 最后客户端收到之后向服务端发送 ACK 包 , 发送完之后开始建立连接。<br>    如下图：<br><img src="/images/http15.png" alt="Alt text"></p>
+<p> 4 . 客户端发送请求命令<br>       第四步就是在连接建立之后 , 客户端发送 HTTP 请求到服务端与请求相关的信息都会包含在请求头和请求体中发送给服务器端。</p>
+<p> 5 . 服务器端响应<br>       服务器端在收到请求之后 , 根据客户端的请求发送给客户端相应的信息 , 相关的响应信息都会放在响应头和响应体中</p>
+<p> 6 . 关闭连接<br>       服务器端在发送完响应之后 , 就会关闭连接 , 如果过客户端的请求的头部信息中有 Connection-alive , 那么客户端在响应完这个请求之后不会关闭连接 , 知道客户端的所有请求都响应完毕 , 才会关闭连接 , 这样大大节省了带宽和 IO 资源 .</p>
+<h2 id="请求和响应"><a href="#请求和响应" class="headerlink" title="请求和响应"></a>请求和响应</h2><p>HTTP请求室友两部分组成 : HTTP消息头和 HTTP消息体 . 消息头告诉服务器该请求是做什么的 , 消息体高速服务器怎么做 , 比如访问一个网页 , 头部信息可以到浏览器中的调试中心看 , 而消息体需要用户单机鼠标右键查看源码 , 那些HTML代码就是服务器返回给客户端的消息体</p>
+<p>HTTP的请求头由三部分组成 : 请求行 , 请求头和请求正文 , 如下图:<br><img src="/images/http16.png" alt="Alt text"></p>
+<p>1 . 请求行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请求的第一行是请求行 , 里面有请求方法 , URL , 协议版本等 , 比如上图中 , 请求的方法是 GET，请求的URL是/ , 协议版本是HTTP/1.1 .</span><br><span class="line">常见的请求方式有GET 和 POST , GET 方式主要用于请求网络资源 , POST 方式主要用于表单提交 , 由于GET方式的参数是在地址栏中的  , 所以总是可见的 , 不是很安全 , 而且长度也有限制 (2048个字符) , 而 POST 方式的参数是封装成实体之后发送给服务器的 , 是不可见的 , 相对比较安全 , 用户的敏感信息一般采用post  方式提交</span><br></pre></td></tr></table></figure></p>
+<p>2 . 请求头</p>
+<p>每个头域都由一个头域名 , 冒号和值域组成 , 下面介绍一些最常见的头域<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(1) Connection : 表示是否需要持久连接 , 如果服务器看到它的值为 keep-alive , 或者请求协议使用的是HTTP/1.1(默认使用持久连接) , 同一个页面如果包含多个资源 , 则只会使用一个连接 , 如Connection : keep-alive . 如果设置了 Connetion:close , 则每一个请求结束都会关闭连接 , 新的请求又会重新建立连接 , 一个网页至少有几十个资源请求 , 这样会浪费带宽和时间</span><br><span class="line">(2) Host : 这个是必需的 , 表示请求的服务器地址是什么 , 是从URL 中提取出来的 . 比如 http://www.baidu.com/ 的host 就是 www.baidu.com , 这里是80端口 , 默认省略 ; 如果是其他端口 , 比如 http://www.baidu.com:8080 , 则Host是 www.baidu.com:8080</span><br><span class="line">(3) Accept : 浏览器可以接受的媒体类型(MIME) , 如 Accept:text/html 代表可以接受HTML文档 , &quot; * &quot;代表接受任何类型 , 如 Accept:/ </span><br><span class="line">(4) Accept-Encoding : 浏览器申明自己接受的编码方法 , 通常指定压缩方法 , 是否支持压缩 , 支持什么格式的压缩</span><br></pre></td></tr></table></figure></p>
+<p>3 . 请求正文<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">也叫请求数据 , 在使用post请求表单数据的时候 , 这些表单数据就会被放在 HTTP 请求的请求正文中 , 以加密的形式向服务器传输。</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/12/HTTP1-0-HTTP1-1和HTTP2-0区别/" rel="next" title="HTTP1.0、HTTP1.1和HTTP2.0区别">
+                <i class="fa fa-chevron-left"></i> HTTP1.0、HTTP1.1和HTTP2.0区别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是HTTP？"><span class="nav-number">1.</span> <span class="nav-text">什么是HTTP？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作机制："><span class="nav-number">2.</span> <span class="nav-text">工作机制：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web资源：web-resource"><span class="nav-number">2.1.</span> <span class="nav-text">Web资源：web resource</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高HTTP连接性能"><span class="nav-number">2.2.</span> <span class="nav-text">提高HTTP连接性能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URI"><span class="nav-number">3.</span> <span class="nav-text">URI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URI-Uniform-Resource-Identifier-统一资源标识，分为URL和URN"><span class="nav-number">3.1.</span> <span class="nav-text">URI: Uniform Resource Identifier 统一资源标识，分为URL和URN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL组成"><span class="nav-number">3.2.</span> <span class="nav-text">URL组成</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网站访问量"><span class="nav-number">4.</span> <span class="nav-text">网站访问量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">5.</span> <span class="nav-text">一次完整的http请求处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-建立连接：接收或拒绝连接请求"><span class="nav-number">5.1.</span> <span class="nav-text">1.建立连接：接收或拒绝连接请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-接收请求：接收客户端请求报文中对某资源的一次请求的过程"><span class="nav-number">5.2.</span> <span class="nav-text">2.接收请求：接收客户端请求报文中对某资源的一次请求的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-处理请求"><span class="nav-number">5.3.</span> <span class="nav-text">3.处理请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-访问资源"><span class="nav-number">5.4.</span> <span class="nav-text">4.访问资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-构建响应报文"><span class="nav-number">5.5.</span> <span class="nav-text">5.构建响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-发送响应报文"><span class="nav-number">5.6.</span> <span class="nav-text">6.发送响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-记录日志"><span class="nav-number">5.7.</span> <span class="nav-text">7.记录日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次HTTP请求操作称为一个事务，其工作整个过程如下"><span class="nav-number">6.</span> <span class="nav-text">一次HTTP请求操作称为一个事务，其工作整个过程如下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP的工作流程如下"><span class="nav-number">6.1.</span> <span class="nav-text">HTTP的工作流程如下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求和响应"><span class="nav-number">6.2.</span> <span class="nav-text">请求和响应</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
