@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="日志介绍1234567891011日志：    历史事件:时间，地点，人物，事件    日志级别：事件的关键性程度，Loglevel系统日志服务：    sysklogd :CentOS 5之前版本    syslogd: system application 记录应用日志    klogd: linux kernel 记录内核日志    事件记录格式：    日期时间 主机 进程[pid]: 事">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日志管理">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/日志管理/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="日志介绍1234567891011日志：    历史事件:时间，地点，人物，事件    日志级别：事件的关键性程度，Loglevel系统日志服务：    sysklogd :CentOS 5之前版本    syslogd: system application 记录应用日志    klogd: linux kernel 记录内核日志    事件记录格式：    日期时间 主机 进程[pid]: 事">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-17T11:44:40.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="日志管理">
+<meta name="twitter:description" content="日志介绍1234567891011日志：    历史事件:时间，地点，人物，事件    日志级别：事件的关键性程度，Loglevel系统日志服务：    sysklogd :CentOS 5之前版本    syslogd: system application 记录应用日志    klogd: linux kernel 记录内核日志    事件记录格式：    日期时间 主机 进程[pid]: 事">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/17/日志管理/"/>
+
+
+
+
+
+  <title>日志管理 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/日志管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">日志管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T18:22:27+08:00">
+                2018-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/日志管理/" itemprop="url" rel="index">
+                    <span itemprop="name">日志管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="日志介绍"><a href="#日志介绍" class="headerlink" title="日志介绍"></a>日志介绍</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">日志：</span><br><span class="line">    历史事件:时间，地点，人物，事件</span><br><span class="line">    日志级别：事件的关键性程度，Loglevel</span><br><span class="line"></span><br><span class="line">系统日志服务：</span><br><span class="line">    sysklogd :CentOS 5之前版本</span><br><span class="line">    syslogd: system application 记录应用日志</span><br><span class="line">    klogd: linux kernel 记录内核日志</span><br><span class="line">    事件记录格式：</span><br><span class="line">    日期时间 主机 进程[pid]: 事件内容</span><br><span class="line">    C/S架构：通过TCP或UDP协议的服务完成日志记录传送，将分布在不同主机的日志实现集中管理</span><br></pre></td></tr></table></figure>
+<h1 id="rsyslog"><a href="#rsyslog" class="headerlink" title="rsyslog"></a>rsyslog</h1><h2 id="rsyslog特性：CentOS6和7"><a href="#rsyslog特性：CentOS6和7" class="headerlink" title="rsyslog特性：CentOS6和7"></a>rsyslog特性：CentOS6和7</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">多线程</span><br><span class="line">UDP, TCP, SSL, TLS, RELP</span><br><span class="line">MySQL, PGSQL, Oracle实现日志存储</span><br><span class="line">强大的过滤器，可实现过滤记录日志信息中任意部分</span><br><span class="line">自定义输出格式</span><br><span class="line">ELK：elasticsearch, logstash, kibana</span><br><span class="line">非关系型分布式数据库</span><br><span class="line">基于apache软件基金会jakarta项目组的项目lucene</span><br><span class="line">Elasticsearch是个开源分布式搜索引擎</span><br><span class="line">Logstash对日志进行收集、分析，并将其存储供以后使用</span><br><span class="line">kibana 可以提供的日志分析友好的 Web 界面</span><br></pre></td></tr></table></figure>
+<h2 id="rsyslog配置"><a href="#rsyslog配置" class="headerlink" title="rsyslog配置"></a>rsyslog配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">术语，参见man logger</span><br><span class="line"> facility：设施，从功能或程序上对日志进行归类</span><br><span class="line"> auth, authpriv, cron, daemon,ftp,kern, lpr, mail, news, security(auth), user, uucp, local0-local7, syslog</span><br><span class="line"></span><br><span class="line">Priority 优先级别，从低到高排序</span><br><span class="line"> debug, info, notice, warn(warning), err(error), crit(critical), alert, emerg(panic)</span><br><span class="line"></span><br><span class="line">参看帮助： man 3 syslog</span><br><span class="line"></span><br><span class="line">程序包：rsyslog</span><br><span class="line">主程序：/usr/sbin/rsyslogd</span><br><span class="line">CentOS 6：service rsyslog &#123;start|stop|restart|status&#125;</span><br><span class="line">CentOS 7：/usr/lib/systemd/system/rsyslog.service</span><br><span class="line">配置文件：/etc/rsyslog.conf，/etc/rsyslog.d/*.conf</span><br><span class="line">库文件： /lib64/rsyslog/*.so </span><br><span class="line">配置文件格式：由三部分组成</span><br><span class="line">MODULES：相关模块配置</span><br><span class="line">GLOBAL DIRECTIVES：全局配置</span><br><span class="line">RULES：日志记录相关的规则配置</span><br><span class="line"></span><br><span class="line">RULES配置格式： facility.priority; facility.priority… target</span><br><span class="line">facility:</span><br><span class="line">    *: 所有的facility </span><br><span class="line">    facility1,facility2,facility3,...：指定的facility列表</span><br><span class="line">priority:</span><br><span class="line">    *: 所有级别</span><br><span class="line">    none：没有级别，即不记录</span><br><span class="line">    PRIORITY：指定级别（含）以上的所有级别</span><br><span class="line">    =PRIORITY：仅记录指定级别的日志信息</span><br><span class="line">target:</span><br><span class="line">    文件路径：通常在/var/log/，文件路径前的-表示异步写入用户：将日志事件通知给指定的用户，* 表示登录的所有用户日志服务器：@host，把日志送往至指定的远程服务器记录管道： | COMMAND，转发给其它命令处理</span><br><span class="line"></span><br><span class="line">通常的日志格式：</span><br><span class="line">    事件产生的日期时间 主机 进程(pid)：事件内容</span><br><span class="line">    如： /var/log/messages,cron,secure等</span><br><span class="line"></span><br><span class="line">配置rsyslog成为日志服务器</span><br><span class="line">    #### MODULES ####</span><br><span class="line">    # Provides UDP syslog reception</span><br><span class="line">    $ModLoad imudp</span><br><span class="line">    $UDPServerRun 514</span><br><span class="line">    # Provides TCP syslog reception</span><br><span class="line">    $ModLoad imtcp</span><br><span class="line">    $InputTCPServerRun 514</span><br></pre></td></tr></table></figure>
+<h2 id="其它的日志文件"><a href="#其它的日志文件" class="headerlink" title="其它的日志文件"></a>其它的日志文件</h2><p>/var/log/secure：系统安全日志，文本格式，应周期性分析</p>
+<p>/var/log/btmp：当前系统上，用户的失败尝试登录相关的日志信息，二进制格式，lastb命令进行查看</p>
+<p>/var/log/wtmp：当前系统上，用户正常登录系统的相关日志信息，二进制格式，last命令可以查看</p>
+<p>/var/log/lastlog:每一个用户最近一次的登录信息，二进制格式，lastlog命令可以查看</p>
+<p>/var/log/dmesg：系统引导过程中的日志信息，文本格式。  文本查看工具查看  专用命令dmesg查看</p>
+<p>/var/log/messages ：系统中大部分的信息</p>
+<p>/var/log/anaconda : anaconda的日志</p>
+<h1 id="journalctl"><a href="#journalctl" class="headerlink" title="journalctl"></a>journalctl</h1><p>Systemd 统一管理所有 Unit 的启动日志。带来的好处就是，可以只用journalctl一个命令，查看所有日志（内核日志和应用日志）。日志的配置文件/etc/systemd/journald.conf</p>
+<h2 id="journalctl用法"><a href="#journalctl用法" class="headerlink" title="journalctl用法"></a>journalctl用法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">查看所有日志（默认情况下 ，只保存本次启动的日志）</span><br><span class="line">journalctl</span><br><span class="line">查看内核日志（不显示应用日志）</span><br><span class="line">journalctl -k</span><br><span class="line">查看系统本次启动的日志</span><br><span class="line">journalctl -b</span><br><span class="line">journalctl -b -0</span><br><span class="line">查看上一次启动的日志（需更改设置）</span><br><span class="line">journalctl -b -1</span><br><span class="line">查看指定时间的日志</span><br><span class="line">journalctl --since=&quot;2017-10-30 18:10:30&quot;</span><br><span class="line">journalctl --since &quot;20 min ago&quot;</span><br><span class="line">journalctl --since yesterday</span><br><span class="line">journalctl --since &quot;2017-01-10&quot; --until &quot;2017-01-11 03:00&quot;</span><br><span class="line">journalctl --since 09:00 --until &quot;1 hour ago&quot;</span><br><span class="line">显示尾部的最新10行日志</span><br><span class="line">journalctl -n</span><br><span class="line">显示尾部指定行数的日志</span><br><span class="line">journalctl -n 20</span><br><span class="line">实时滚动显示最新日志</span><br><span class="line">journalctl -f</span><br><span class="line">查看指定服务的日志</span><br><span class="line">journalctl /usr/lib/systemd/systemd</span><br><span class="line">查看指定进程的日志</span><br><span class="line">journalctl _PID=1</span><br><span class="line">查看某个路径的脚本的日志</span><br><span class="line">journalctl /usr/bin/bash</span><br><span class="line">查看指定用户的日志</span><br><span class="line">journalctl _UID=33 --since today</span><br><span class="line">查看某个 Unit 的日志</span><br><span class="line">journalctl -u nginx.service</span><br><span class="line">journalctl -u nginx.service --since today</span><br><span class="line">实时滚动显示某个 Unit 的最新日志</span><br><span class="line">journalctl -u nginx.service -f</span><br><span class="line">合并显示多个 Unit 的日志</span><br><span class="line">journalctl -u nginx.service -u php-fpm.service --since today</span><br></pre></td></tr></table></figure>
+<h2 id="查看指定优先级（及其以上级别）的日志"><a href="#查看指定优先级（及其以上级别）的日志" class="headerlink" title="查看指定优先级（及其以上级别）的日志"></a>查看指定优先级（及其以上级别）的日志</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">共有8级</span><br><span class="line">0: emerg</span><br><span class="line">1: alert</span><br><span class="line">2: crit</span><br><span class="line">3: err</span><br><span class="line">4: warning</span><br><span class="line">5: notice</span><br><span class="line">6: info</span><br><span class="line">7: debug</span><br><span class="line">journalctl -p err -b</span><br><span class="line"></span><br><span class="line">日志默认分页输出，--no-pager 改为正常的标准输出</span><br><span class="line">journalctl --no-pager </span><br><span class="line">以 JSON 格式（单行）输出</span><br><span class="line">journalctl -b -u nginx.service -o json</span><br><span class="line">以 JSON 格式（多行）输出，可读性更好</span><br><span class="line">journalctl -b -u nginx.serviceqq -o json-pretty</span><br><span class="line">显示日志占据的硬盘空间</span><br><span class="line">journalctl --disk-usage</span><br><span class="line">指定日志文件占据的最大空间</span><br><span class="line">journalctl --vacuum-size=1G</span><br><span class="line">指定日志文件保存多久</span><br><span class="line">journalctl --vacuum-time=1years</span><br></pre></td></tr></table></figure>
+<h1 id="rsyslog将日志记录于MySQL中"><a href="#rsyslog将日志记录于MySQL中" class="headerlink" title="rsyslog将日志记录于MySQL中"></a>rsyslog将日志记录于MySQL中</h1><pre><code>(1) 准备MySQL Server
+
+(2) 在mysql server上授权rsyslog能连接至当前服务器
+GRANT ALL ON Syslog.* TO &apos;USER&apos;@&apos;HOST&apos; IDENTIFIED BY &apos;PASSWORD&apos;;
+
+(3) 在rsyslog服务器上安装mysql模块相关的程序包
+yum install rsyslog-mysql
+
+(4) 为rsyslog创建数据库及表；
+mysql -uUSERNAME -hHOST -pPASSWORD &lt; /usr/share/doc/rsyslog-7.4.7/mysql-createDB.sql
+
+(5) 配置rsyslog将日志保存到mysql中
+    #### MODULES ####
+    $ModLoad ommysql
+    #### RULES ####
+    facility.priority :ommysql:DBHOST,DBNAME,DBUSER, PASSWORD
+</code></pre><h2 id="安装loganalyzer展示数据库中的日志"><a href="#安装loganalyzer展示数据库中的日志" class="headerlink" title="安装loganalyzer展示数据库中的日志"></a>安装loganalyzer展示数据库中的日志</h2><pre><code>(1) 在rsyslog服务器上准备amp或nmp组合
+yum install httpd php php-mysql php-gd
+
+(2) 安装LogAnalyzer
+tar xf loganalyzer-4.1.5.tar.gz
+cp -a loganalyzer-4.1.5/src /var/www/html/loganalyzer
+cd /var/www/html/loganalyzer
+touch config.php
+chmod 666 config.php
+
+(3) 配置loganalyzer
+systemctl start httpd.service
+http://HOST/loganalyzer
+MySQL Native, Syslog Fields, Monitorware
+
+(4) 安全加强
+cd /var/www/html/loganalyzer
+chmod 644 config.php
+</code></pre><h1 id="Logrotate日志存储"><a href="#Logrotate日志存储" class="headerlink" title="Logrotate日志存储"></a>Logrotate日志存储</h1><p>logrotate 程序是一个日志文件管理工具。用来把旧的日志文件删除，并创建新的日志文件，称为日志转储或滚动。可以根据日志文件的大小，也可以根据其天数来转储，这个过程一般通过 cron 程序来执行</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>配置文件是 /etc/logrotate.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">compress 通过gzip 压缩转储以后的日志</span><br><span class="line">nocompress 不需要压缩时，用这个参数</span><br><span class="line">copytruncate 用于还在打开中的日志文件，把当前日志备份并截断</span><br><span class="line">nocopytruncate 备份日志文件但是不截断</span><br><span class="line">create mode owner group 转储文件，使用指定的文件模式创建新的日志文件</span><br><span class="line">nocreate 不建立新的日志文件</span><br><span class="line">delaycompress 和 compress 一起使用时，转储的日志文件到下一次转储时才压缩</span><br><span class="line">nodelaycompress 覆盖 delaycompress 选项，转储并压缩</span><br><span class="line">errors address 专储时的错误信息发送到指定的Email 地址</span><br><span class="line">ifempty 即使是空文件也转储，是缺省选项。</span><br><span class="line">notifempty 如果是空文件的话，不转储</span><br><span class="line">mail address 把转储的日志文件发送到指定的E-mail 地址</span><br><span class="line">nomail 转储时不发送日志文件</span><br><span class="line">olddir directory 转储后的日志文件放入指定的目录，必须和当前日志文件在同一个文件系统</span><br><span class="line">noolddir 转储后的日志文件和当前日志文件放在同一个目录下</span><br><span class="line">prerotate/endscript 在转储以前需要执行的命令可以放入这个对，这两个关键字必须单独成行</span><br><span class="line">postrotate/endscript 在转储以后需要执行的命令可以放入这个对，这两个关键字必须单独成行</span><br><span class="line">daily 指定转储周期为每天</span><br><span class="line">weekly 指定转储周期为每周</span><br><span class="line">monthly 指定转储周期为每月</span><br><span class="line">size 大小 指定日志超过多大时，就执行日志转储</span><br><span class="line">rotate count 指定日志文件删除之前转储的次数，0 指没有备份，5 指保留5 个备份</span><br><span class="line">Missingok 如果日志不存在，提示错误</span><br><span class="line">Nomissingok如果日志不存在，继续下一次日志，不提示错误</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/17/LAMP架构/" rel="next" title="LAMP架构">
+                <i class="fa fa-chevron-left"></i> LAMP架构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#日志介绍"><span class="nav-number">1.</span> <span class="nav-text">日志介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rsyslog"><span class="nav-number">2.</span> <span class="nav-text">rsyslog</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rsyslog特性：CentOS6和7"><span class="nav-number">2.1.</span> <span class="nav-text">rsyslog特性：CentOS6和7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rsyslog配置"><span class="nav-number">2.2.</span> <span class="nav-text">rsyslog配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它的日志文件"><span class="nav-number">2.3.</span> <span class="nav-text">其它的日志文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#journalctl"><span class="nav-number">3.</span> <span class="nav-text">journalctl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#journalctl用法"><span class="nav-number">3.1.</span> <span class="nav-text">journalctl用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看指定优先级（及其以上级别）的日志"><span class="nav-number">3.2.</span> <span class="nav-text">查看指定优先级（及其以上级别）的日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rsyslog将日志记录于MySQL中"><span class="nav-number">4.</span> <span class="nav-text">rsyslog将日志记录于MySQL中</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装loganalyzer展示数据库中的日志"><span class="nav-number">4.1.</span> <span class="nav-text">安装loganalyzer展示数据库中的日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Logrotate日志存储"><span class="nav-number">5.</span> <span class="nav-text">Logrotate日志存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">5.1.</span> <span class="nav-text">配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

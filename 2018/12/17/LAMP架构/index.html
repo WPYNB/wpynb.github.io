@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="LAM(M)PL: linux A: apache (httpd) M: mysql, mariadb M:memcached P: php, perl, pyth WEB资源类型:     静态资源：原始形式与响应内容一致，在客户端浏览器执行     动态资源：原始形式通常为程序文件，需要在服务器端执行之后，将执行结果返回给客户端 Web相关语言     客户端技术： html，javascri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LAMP架构">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/LAMP架构/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="LAM(M)PL: linux A: apache (httpd) M: mysql, mariadb M:memcached P: php, perl, pyth WEB资源类型:     静态资源：原始形式与响应内容一致，在客户端浏览器执行     动态资源：原始形式通常为程序文件，需要在服务器端执行之后，将执行结果返回给客户端 Web相关语言     客户端技术： html，javascri">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/lamp.jpg">
+<meta property="og:image" content="http://yoursite.com/images/php.png">
+<meta property="og:updated_time" content="2018-12-17T09:23:40.059Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LAMP架构">
+<meta name="twitter:description" content="LAM(M)PL: linux A: apache (httpd) M: mysql, mariadb M:memcached P: php, perl, pyth WEB资源类型:     静态资源：原始形式与响应内容一致，在客户端浏览器执行     动态资源：原始形式通常为程序文件，需要在服务器端执行之后，将执行结果返回给客户端 Web相关语言     客户端技术： html，javascri">
+<meta name="twitter:image" content="http://yoursite.com/images/lamp.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/17/LAMP架构/"/>
+
+
+
+
+
+  <title>LAMP架构 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/LAMP架构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LAMP架构</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T16:00:36+08:00">
+                2018-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/LAMP架构/" itemprop="url" rel="index">
+                    <span itemprop="name">LAMP架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="LAM-M-P"><a href="#LAM-M-P" class="headerlink" title="LAM(M)P"></a>LAM(M)P</h1><p>L: linux</p>
+<p>A: apache (httpd)</p>
+<p>M: mysql, mariadb</p>
+<p>M:memcached</p>
+<p>P: php, perl, pyth</p>
+<pre><code>WEB资源类型:
+    静态资源：原始形式与响应内容一致，在客户端浏览器执行
+    动态资源：原始形式通常为程序文件，需要在服务器端执行之后，将执行结果返回给客户端
+Web相关语言
+    客户端技术： html，javascript，css，jpg
+    服务器端技术：php， jsp，python，asp
+</code></pre><h1 id="CGI-Common-Gateway-Interface"><a href="#CGI-Common-Gateway-Interface" class="headerlink" title="CGI:Common Gateway Interface"></a>CGI:Common Gateway Interface</h1><p>可以让一个客户端，从网页浏览器通过http服务器向执行在网络服务器上的程序传输数据；CGI描述了客户端和服务器程序之间传输的一种标准</p>
+<p>请求流程：</p>
+<pre><code>Client -- (httpd) --&gt; httpd -- (cgi) --&gt; application server (program file) -- (mysql) --&gt; mysql
+</code></pre><p>php: 脚本编程语言、嵌入到html中的嵌入式web程序语言  基于zend编译成opcode（二进制格式的字节码，重复运行，可省略编译环境）</p>
+<p>LAMP工作原理图<br><img src="/images/lamp.jpg" alt="Alt text"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">LAMP</span><br><span class="line">httpd：接收用户的web请求；静态资源则直接响应；动态资源为php脚本，对此类资源的请求将交由php来运行</span><br><span class="line">php：运行php程序</span><br><span class="line">MariaDB：数据管理系统</span><br><span class="line"></span><br><span class="line">http与php结合的方式</span><br><span class="line">    CGI </span><br><span class="line">    FastCGI</span><br><span class="line">    modules (将php编译成为httpd的模块,默认方式)</span><br><span class="line">        MPM:</span><br><span class="line">            prefork: libphp5.so</span><br><span class="line">            event, worker: libphp5-zts.so</span><br></pre></td></tr></table></figure>
+<h1 id="php配置"><a href="#php配置" class="headerlink" title="php配置"></a>php配置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">php：脚本语言解释器</span><br><span class="line">配置文件：/etc/php.ini, /etc/php.d/*.ini</span><br><span class="line">配置文件在php解释器启动时被读取</span><br><span class="line">对配置文件的修改生效方法:</span><br><span class="line">    Modules：重启httpd服务</span><br><span class="line">    FastCGI：重启php-fpm服务</span><br><span class="line">/etc/php.ini配置文件格式：</span><br><span class="line">    [foo]：Section Header</span><br><span class="line">    directive = value</span><br><span class="line">注释符：较新的版本中，已经完全使用;进行注释</span><br><span class="line">#：纯粹的注释信息</span><br><span class="line">;：用于注释可启用的directive</span><br><span class="line"></span><br><span class="line">max_execution_time= 30 最长执行时间30s</span><br><span class="line">memory_limit 128M 生产不够，可调大</span><br><span class="line">display_errors off 调试使用，不要打开，否则可能暴露重要信息</span><br><span class="line">display_startup_errors off 建议关闭</span><br><span class="line">post_max_size 8M 最大上传数据大小，生产可能临时要调大，比下面项要大</span><br><span class="line">upload_max_filesize 2M 最大上传文件，生产可能要调大</span><br><span class="line">max_file_uploads = 20 同时上传最多文件数</span><br><span class="line">date.timezone =Asia/Shanghai 指定时区</span><br><span class="line">short_open_tag=on 开启短标签,如&lt;? phpinfo();?&gt;</span><br><span class="line"></span><br><span class="line">php.ini的核心配置选项文档： </span><br><span class="line">    http://php.net/manual/zh/ini.core.php</span><br><span class="line">php.ini配置选项列表：</span><br><span class="line">    http://php.net/manual/zh/ini.list.php</span><br><span class="line"></span><br><span class="line">php语言格式</span><br><span class="line">&lt;?php</span><br><span class="line">...php code...</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="PHP连接MySQL数据库的三种方式-mysql、mysqli、pdo"><a href="#PHP连接MySQL数据库的三种方式-mysql、mysqli、pdo" class="headerlink" title="PHP连接MySQL数据库的三种方式(mysql、mysqli、pdo)"></a>PHP连接MySQL数据库的三种方式(mysql、mysqli、pdo)</h1><p>PHP与MySQL的连接有三种API接口，分别是：PHP的MySQL扩展 、PHP的mysqli扩展 、PHP数据对象(PDO) ，下面针对以上三种连接方式做下总结，以备在不同场景下选出最优方案。</p>
+<h2 id="PHP的MySQL扩展"><a href="#PHP的MySQL扩展" class="headerlink" title="PHP的MySQL扩展"></a>PHP的MySQL扩展</h2><p>PHP的MySQL扩展是设计开发允许php应用与MySQL数据库交互的早期扩展。MySQL扩展提供了一个面向过程的接口，并且是针对MySQL4.1.3或者更早版本设计的。因此这个扩展虽然可以与MySQL4.1.3或更新的数据库服务端进行交互，但并不支持后期MySQL服务端提供的一些特性。由于太古老，又不安全，所以已被后来的mysqli完全取代；</p>
+<h2 id="PHP的mysqli扩展"><a href="#PHP的mysqli扩展" class="headerlink" title="PHP的mysqli扩展"></a>PHP的mysqli扩展</h2><p>PHP的mysqli扩展，我们有时称之为MySQL增强扩展，可以用于使用 MySQL4.1.3或更新版本中新的高级特性。其特点为：面向对象接口 、prepared语句支持、多语句执行支持、事务支持 、增强的调试能力、嵌入式服务支持 、预处理方式完全解决了sql注入的问题。不过其也有缺点，就是只支持mysql数据库。如果你要是不操作其他的数据库，这无疑是最好的选择。</p>
+<h2 id="PHP数据对象-PDO"><a href="#PHP数据对象-PDO" class="headerlink" title="PHP数据对象(PDO)"></a>PHP数据对象(PDO)</h2><p>PDO是PHP Data Objects的缩写，是PHP应用中的一个数据库抽象层规范。PDO提供了一个统一的API接口可以使得你的PHP应用不去关心具体要连接的数据库服务器系统类型，也就是说，如果你使用PDO的API，可以在任何需要的时候无缝切换数据库服务器，比如从Oracle 到MySQL，仅仅需要修改很少的PHP代码。其功能类似于JDBC、ODBC、DBI之类接口。同样，其也解决了sql注入问题，有很好的安全性。不过他也有缺点，某些多语句执行查询不支持（不过该情况很少）.</p>
+<p>三者之间也做了列表性的比较:<br><img src="/images/php.png" alt="Alt text"></p>
+<p>从表给出的这份结果上来看，优先推荐msqli，其次是PDO 。而生产中给出的结果很多是倾向于使用PDO，因为其不担有跨库的优点，更有读写速度快的特点。</p>
+<h1 id="常见LAMP应用"><a href="#常见LAMP应用" class="headerlink" title="常见LAMP应用"></a>常见LAMP应用</h1><p>PhpMyAdmin是一个以PHP为基础，以Web-Base方式架构在网站主机上的MySQL的数据库管理工具，让管理者可用Web接口管理MySQL数据库</p>
+<h2 id="PhpMyAdmin安装"><a href="#PhpMyAdmin安装" class="headerlink" title="PhpMyAdmin安装"></a>PhpMyAdmin安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">yum -y install httpd mariadb-server php php-mysql</span><br><span class="line">systemctl start httpd</span><br><span class="line">systemctl start mariadb</span><br><span class="line">mysql_secure_installation</span><br><span class="line">下载：https://www.phpmyadmin.net/downloads/</span><br><span class="line">tar xvf phpMyAdmin-4.0.10.20-all-languages.tar.xz cd /var/www/htmlcd phpadmin/</span><br><span class="line">cp config.sample.inc.php config.inc.p</span><br><span class="line">yum -y install php-mbstring</span><br><span class="line">systemctl reload httpd</span><br></pre></td></tr></table></figure>
+<p>WordPress是一种使用PHP语言开发的博客平台，用户可以在支持PHP和MySQL数据库的服务器上架设属于自己的网站。也可把 WordPress当作一个内容管理系统（CMS）来使用</p>
+<h2 id="wordpress安装"><a href="#wordpress安装" class="headerlink" title="wordpress安装"></a>wordpress安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">下载地址官网：https://cn.wordpress.org/</span><br><span class="line"></span><br><span class="line">解压缩WordPress博客程序到网页站点目录下</span><br><span class="line"> unzip wordpress-4.9.4-zh_CN.tar.gz</span><br><span class="line"> cp -av wordpress/* /var/www/html/</span><br><span class="line"> cd /var/www/html/ </span><br><span class="line"> mv wp-config-sample.php wp-config.php</span><br><span class="line">新建wpdb库和wpuser用户</span><br><span class="line"> mysql&gt; create database wpdb;</span><br><span class="line"> mysql&gt; grant all privileges on wpdb.* to wpuser@&apos;%&apos; identified by &quot;wppass&quot;;</span><br><span class="line"></span><br><span class="line">打开http://localhost/wordpress</span><br><span class="line">进行页面安装</span><br><span class="line">注意wordpress目录权限Setfacl –R –m u:apache:rwx wordpre</span><br></pre></td></tr></table></figure>
+<h1 id="编译安装实现lamp"><a href="#编译安装实现lamp" class="headerlink" title="编译安装实现lamp"></a>编译安装实现lamp</h1><h2 id="所需包"><a href="#所需包" class="headerlink" title="所需包"></a>所需包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在centos7上编译安装LAMP：</span><br><span class="line">mairadb：通用二进制格式，mariadb-10.2.19-linux-x86_64.tar.gz</span><br><span class="line">httpd：编译安装，httpd-2.4.37.tar.bz2</span><br><span class="line">php7：编译安装，php-7.1.18.tar.bz2</span><br><span class="line">wordpress: wordpress-4.9.4-zh_CN.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="mairadb"><a href="#mairadb" class="headerlink" title="mairadb"></a>mairadb</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf mariadb-10.2.19-linux-x86_64.tar.gz -C /usr/local/</span><br><span class="line"></span><br><span class="line">useradd -s /sbin/nologin -r mysql -d /data/mysql</span><br><span class="line">chown -R root.root mariadb-10.2.19-linux-x86_64/</span><br><span class="line"></span><br><span class="line">ln -s mariadb-10.2.19-linux-x86_64/ mysql</span><br><span class="line">cd mysql/</span><br><span class="line"></span><br><span class="line">mkdir  /data/mysql</span><br><span class="line">chown mysql.mysql /data/mysql</span><br><span class="line">scripts/mysql_install_db --user=mysql --datadir=/data/mysql</span><br><span class="line"></span><br><span class="line">cp support-files/my-huge.cnf /etc/mysql/my.cnf</span><br><span class="line">vim /etc/mysql/my.cnf</span><br><span class="line">datadir   = /data/mysql</span><br><span class="line"></span><br><span class="line">cp support-files/mysql.server /etc/init.d/mysqld</span><br><span class="line">chkconfig --add mysqld</span><br><span class="line"></span><br><span class="line">service mysqld start</span><br><span class="line"></span><br><span class="line">mysql&lt; create database wpdb;</span><br><span class="line">mysql&lt; grant all on wpdb.* to wpuser@&apos;192.168.50.%&apos; identified by &apos;123456&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="httpd"><a href="#httpd" class="headerlink" title="httpd"></a>httpd</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">tar -xf apr-1.6.5.tar.bz2 </span><br><span class="line">tar -xf apr-util-1.6.1.tar.bz2 </span><br><span class="line">tar -xf httpd-2.4.37.tar.bz2</span><br><span class="line"></span><br><span class="line">cp -r apr-1.6.5 httpd-2.4.37/srclib/apr</span><br><span class="line">cp -r apr-util-1.6.1 httpd-2.4.37/srclib/apr-util</span><br><span class="line"></span><br><span class="line">yum install  &quot;development tools&quot;</span><br><span class="line">yum install pcre-devel expat-devel  openssl-devel</span><br><span class="line">  </span><br><span class="line">cd httpd-2.4.37/</span><br><span class="line">./configure \</span><br><span class="line">--prefix=/app/httpd24 \</span><br><span class="line">--enable-so \</span><br><span class="line">--enable-ssl \</span><br><span class="line">--enable-cgi \</span><br><span class="line">--enable-rewrite \</span><br><span class="line">--with-zlib \</span><br><span class="line">--with-pcre \</span><br><span class="line">--with-included-apr \</span><br><span class="line">--enable-modules=most \</span><br><span class="line">--enable-mpms-shared=all \</span><br><span class="line">--with-mpm=prefork </span><br><span class="line">make -j 4 &amp;&amp; make install</span><br><span class="line"></span><br><span class="line">echo &apos;PATH=/app/httpd24/bin:$PATH&apos; &gt; /etc/profile.d/httpd.sh</span><br><span class="line">useradd -r -s /sbin/nologin apache</span><br><span class="line"></span><br><span class="line">vim /app/httpd24/conf/httpd.conf</span><br><span class="line">User apache</span><br><span class="line">Group apache</span><br><span class="line">###修改httpd支持php</span><br><span class="line">vim /app/httpd24/conf/httpd.conf</span><br><span class="line">取消下面两行的注释</span><br><span class="line">LoadModule proxy_module modules/mod_proxy.so</span><br><span class="line">LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so</span><br><span class="line">修改下面行</span><br><span class="line">&lt;IfModule dir_module&gt;</span><br><span class="line">DirectoryIndex index.php index.html</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">加下面四行</span><br><span class="line">AddType application/x-httpd-php .php</span><br><span class="line">AddType application/x-httpd-php-source .phps</span><br><span class="line">ProxyRequests Off</span><br><span class="line">ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/app/httpd24/htdocs/$1</span><br><span class="line">启动服务</span><br><span class="line">apachectl start</span><br></pre></td></tr></table></figure>
+<h3 id="php-fpm方式编译安装LAMP"><a href="#php-fpm方式编译安装LAMP" class="headerlink" title="php(fpm方式编译安装LAMP)"></a>php(fpm方式编译安装LAMP)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">yum install -y libxml2-devel bzip2-devel libmcrypt-devel</span><br><span class="line">tar -xvf php-7.1.18.tar.bz2</span><br><span class="line"></span><br><span class="line">./configure --prefix=/app/php \</span><br><span class="line">--enable-mysqlnd \</span><br><span class="line">--with-mysqli=mysqlnd \</span><br><span class="line">--with-openssl \</span><br><span class="line">--with-pdo-mysql=mysqlnd \</span><br><span class="line">--enable-mbstring \</span><br><span class="line">--with-freetype-dir \</span><br><span class="line">--with-jpeg-dir \</span><br><span class="line">--with-png-dir \</span><br><span class="line">--with-zlib \</span><br><span class="line">--with-libxml-dir=/usr \</span><br><span class="line">--enable-xml \</span><br><span class="line">--enable-sockets \</span><br><span class="line">--enable-fpm \</span><br><span class="line">--with-config-file-path=/etc \</span><br><span class="line">--with-config-file-scan-dir=/etc/php.d \</span><br><span class="line">--enable-maintainer-zts \</span><br><span class="line">--disable-fileinf</span><br><span class="line">make &amp;&amp; make install </span><br><span class="line"></span><br><span class="line">cd php-7.1.18/</span><br><span class="line">cp php.ini-production /etc/php.ini</span><br><span class="line">cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm</span><br><span class="line"></span><br><span class="line">chmod +x /etc/init.d/php-fpm</span><br><span class="line">chkconfig --add php-fpm</span><br><span class="line">chkconfig php-fpm </span><br><span class="line"></span><br><span class="line">cd /app/php/etc</span><br><span class="line">mv php-fpm.conf.default php-fpm.conf</span><br><span class="line">mv php-fpm.d/www.conf.default php-fpm.d/www.conf</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/17/APACHE的httpd编译安装/" rel="next" title="APACHE的httpd编译安装">
+                <i class="fa fa-chevron-left"></i> APACHE的httpd编译安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/17/日志管理/" rel="prev" title="日志管理">
+                日志管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LAM-M-P"><span class="nav-number">1.</span> <span class="nav-text">LAM(M)P</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CGI-Common-Gateway-Interface"><span class="nav-number">2.</span> <span class="nav-text">CGI:Common Gateway Interface</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#php配置"><span class="nav-number">3.</span> <span class="nav-text">php配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP连接MySQL数据库的三种方式-mysql、mysqli、pdo"><span class="nav-number">4.</span> <span class="nav-text">PHP连接MySQL数据库的三种方式(mysql、mysqli、pdo)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP的MySQL扩展"><span class="nav-number">4.1.</span> <span class="nav-text">PHP的MySQL扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP的mysqli扩展"><span class="nav-number">4.2.</span> <span class="nav-text">PHP的mysqli扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP数据对象-PDO"><span class="nav-number">4.3.</span> <span class="nav-text">PHP数据对象(PDO)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见LAMP应用"><span class="nav-number">5.</span> <span class="nav-text">常见LAMP应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PhpMyAdmin安装"><span class="nav-number">5.1.</span> <span class="nav-text">PhpMyAdmin安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wordpress安装"><span class="nav-number">5.2.</span> <span class="nav-text">wordpress安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译安装实现lamp"><span class="nav-number">6.</span> <span class="nav-text">编译安装实现lamp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#所需包"><span class="nav-number">6.1.</span> <span class="nav-text">所需包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mairadb"><span class="nav-number">6.1.1.</span> <span class="nav-text">mairadb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httpd"><span class="nav-number">6.1.2.</span> <span class="nav-text">httpd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php-fpm方式编译安装LAMP"><span class="nav-number">6.1.3.</span> <span class="nav-text">php(fpm方式编译安装LAMP)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

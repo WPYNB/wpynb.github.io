@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="httpd功能特性12345678910虚拟主机  IP、Port、FQDNCGI：Common Gateway Interface，通用网关接口反向代理负载均衡路径别名丰富的用户认证机制   basic   digest支持第三方模块 httpd-2.4新特性1234567891011MPM支持运行为DSO机制；以模块形式按需加载event MPM生产环境可用异步读写机制支持每模块及每目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP配置">
+<meta property="og:url" content="http://yoursite.com/2018/12/16/HTTP配置/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="httpd功能特性12345678910虚拟主机  IP、Port、FQDNCGI：Common Gateway Interface，通用网关接口反向代理负载均衡路径别名丰富的用户认证机制   basic   digest支持第三方模块 httpd-2.4新特性1234567891011MPM支持运行为DSO机制；以模块形式按需加载event MPM生产环境可用异步读写机制支持每模块及每目">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-16T13:24:57.833Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP配置">
+<meta name="twitter:description" content="httpd功能特性12345678910虚拟主机  IP、Port、FQDNCGI：Common Gateway Interface，通用网关接口反向代理负载均衡路径别名丰富的用户认证机制   basic   digest支持第三方模块 httpd-2.4新特性1234567891011MPM支持运行为DSO机制；以模块形式按需加载event MPM生产环境可用异步读写机制支持每模块及每目">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/16/HTTP配置/"/>
+
+
+
+
+
+  <title>HTTP配置 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/16/HTTP配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-16T20:32:39+08:00">
+                2018-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/HTTP配置/" itemprop="url" rel="index">
+                    <span itemprop="name">HTTP配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="httpd功能特性"><a href="#httpd功能特性" class="headerlink" title="httpd功能特性"></a>httpd功能特性</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">虚拟主机</span><br><span class="line">  IP、Port、FQDN</span><br><span class="line">CGI：Common Gateway Interface，通用网关接口</span><br><span class="line">反向代理</span><br><span class="line">负载均衡</span><br><span class="line">路径别名</span><br><span class="line">丰富的用户认证机制</span><br><span class="line">   basic</span><br><span class="line">   digest</span><br><span class="line">支持第三方模块</span><br></pre></td></tr></table></figure>
+<h1 id="httpd-2-4"><a href="#httpd-2-4" class="headerlink" title="httpd-2.4"></a>httpd-2.4</h1><p>新特性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MPM支持运行为DSO机制；以模块形式按需加载</span><br><span class="line">event MPM生产环境可用</span><br><span class="line">异步读写机制</span><br><span class="line">支持每模块及每目录的单独日志级别定义</span><br><span class="line">每请求相关的专用配置</span><br><span class="line">增强版的表达式分析式</span><br><span class="line">毫秒级持久连接时长定义</span><br><span class="line">基于FQDN的虚拟主机不需要NameVirutalHost指令</span><br><span class="line">新指令，AllowOverrideList</span><br><span class="line">支持用户自定义变量</span><br><span class="line">更低的内存消耗</span><br></pre></td></tr></table></figure></p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">主配置文件：</span><br><span class="line">/etc/httpd/conf/httpd.conf</span><br><span class="line">/etc/httpd/conf.d/*.conf</span><br><span class="line"></span><br><span class="line">检查配置语法：</span><br><span class="line">httpd –t</span><br><span class="line"></span><br><span class="line">服务单元文件： /usr/lib/systemd/system/httpd.service</span><br><span class="line">配置文件：/etc/sysconfig/httpd</span><br><span class="line"></span><br><span class="line">服务控制和启动：</span><br><span class="line">systemctl enable|disable httpd.service</span><br><span class="line">systemctl &#123;start|stop|restart|status&#125; httpd.service</span><br><span class="line"></span><br><span class="line">站点网页文档根目录：</span><br><span class="line">/var/www/html</span><br><span class="line"></span><br><span class="line">模块文件路径：</span><br><span class="line">/etc/httpd/modules</span><br><span class="line">/usr/lib64/httpd/modules</span><br><span class="line"></span><br><span class="line">主程序文件：</span><br><span class="line">/usr/sbin/httpd</span><br><span class="line"></span><br><span class="line">主进程文件：</span><br><span class="line">/etc/httpd/run/httpd.pid </span><br><span class="line"></span><br><span class="line">日志文件目录：</span><br><span class="line">/var/log/httpd</span><br><span class="line">access_log: 访问日志</span><br><span class="line">error_log：错误日志</span><br><span class="line"></span><br><span class="line">帮助文档包：</span><br><span class="line">httpd-manual</span><br></pre></td></tr></table></figure></p>
+<h2 id="常见配置"><a href="#常见配置" class="headerlink" title="常见配置"></a>常见配置</h2><p>httpd配置文件的组成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">主要组成</span><br><span class="line">Global Environment</span><br><span class="line">Main server configuration</span><br><span class="line">virtual host</span><br><span class="line"></span><br><span class="line">配置格式：directive value</span><br><span class="line">directive 不区分字符大小写</span><br><span class="line">value 为路径时，是否区分大小写，取决于文件系统</span><br><span class="line"></span><br><span class="line">官方帮助</span><br><span class="line">http://httpd.apache.org/docs/2.4/</span><br></pre></td></tr></table></figure></p>
+<h3 id="显示服务器版本信息"><a href="#显示服务器版本信息" class="headerlink" title="显示服务器版本信息"></a>显示服务器版本信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</span><br><span class="line">ServerTokens Prod[uctOnly] ：Server: Apache</span><br><span class="line">ServerTokens Major: Server: Apache/2</span><br><span class="line">ServerTokens Minor: Server: Apache/2.0</span><br><span class="line">ServerTokens Min[imal]: Server: Apache/2.0.41</span><br><span class="line">ServerTokens OS: Server: Apache/2.0.41 (Unix)</span><br><span class="line">ServerTokens Full (or not specified): Server: Apache/2.0.41 (Unix) PHP/4.2.2 MyMod/1.2</span><br><span class="line">This setting applies to the entire server and cannot be enabled or disabled on a virtualhost-by-virtualhost basis.</span><br><span class="line">After version 2.0.44, this directive also controls the information presented by the Server.</span><br><span class="line">建议使用：ServerTokens Prod</span><br></pre></td></tr></table></figure>
+<h3 id="修改监听的IP和Port"><a href="#修改监听的IP和Port" class="headerlink" title="修改监听的IP和Port"></a>修改监听的IP和Port</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Listen [IP:]PORT</span><br><span class="line">(1) 省略IP表示为本机所有IP</span><br><span class="line">(2) Listen指令至少一个，可重复出现多次</span><br><span class="line">Listen 80</span><br><span class="line">Listen 8080</span><br><span class="line">示例：</span><br><span class="line">Listen 192.168.1.100:8080</span><br><span class="line">Lsten 80</span><br></pre></td></tr></table></figure>
+<h3 id="持久连接"><a href="#持久连接" class="headerlink" title="持久连接"></a>持久连接</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Persistent Connection：连接建立，每个资源获取完成后不会断开连接，而是继续等待其它的请求完成，默认关闭持久连接断开条件：时间限制：以秒为单位， 默认5s，httpd-2.4 支持毫秒级</span><br><span class="line">副作用：对并发访问量大的服务器，持久连接会使有些请求得不到响应</span><br><span class="line">折衷：使用较短的持久连接时间</span><br><span class="line">设置：</span><br><span class="line">    KeepAlive On|Off</span><br><span class="line">    KeepAliveTimeout 15</span><br><span class="line">测试：</span><br><span class="line">    telnet WEB_SERVER_IP PORT</span><br><span class="line">    GET /URL HTTP/1.1</span><br><span class="line">    Host: WEB_SERVER_IP</span><br></pre></td></tr></table></figure>
+<h3 id="MPM（-Multi-Processing-Module）多路处理模块"><a href="#MPM（-Multi-Processing-Module）多路处理模块" class="headerlink" title="MPM（ Multi-Processing Module）多路处理模块"></a>MPM（ Multi-Processing Module）多路处理模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">切换使用的MPM</span><br><span class="line">/etc/httpd/conf.modules.d/00-mpm.conf</span><br><span class="line">启用要启用的MPM相关的LoadModule指令即可</span><br><span class="line"></span><br><span class="line">查看静态编译的模块</span><br><span class="line">httpd -l</span><br><span class="line"></span><br><span class="line">查看静态编译及动态装载的模块</span><br><span class="line">httpd –M</span><br><span class="line"></span><br><span class="line">动态模块加载：不需重启即生效</span><br><span class="line">动态模块路径</span><br><span class="line">/usr/lib64/httpd/modules/</span><br></pre></td></tr></table></figure>
+<p>prefork的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StartServers 8</span><br><span class="line">MinSpareServers 5</span><br><span class="line">MaxSpareServers 20</span><br><span class="line">ServerLimit 256 最多进程数,最大20000</span><br><span class="line">MaxRequestsPerChild 4000 子进程最多能处理的请求数量。在处理</span><br><span class="line">MaxRequestsPerChild 个请求之后,子进程将会被父进程终止，这时候子进程占用的内存就会释放(为0时永远不释放）</span><br></pre></td></tr></table></figure></p>
+<p>worker的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ServerLimit 16</span><br><span class="line">StartServers 2</span><br><span class="line">MaxRequestWorkers 150</span><br><span class="line">MinSpareThreads 25</span><br><span class="line">MaxSpareThreads 75</span><br><span class="line">ThreadsPerChild 25</span><br></pre></td></tr></table></figure></p>
+<h3 id="DSO：-Dynamic-Shared-Object"><a href="#DSO：-Dynamic-Shared-Object" class="headerlink" title="DSO： Dynamic Shared Object"></a>DSO： Dynamic Shared Object</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">加载动态模块配置</span><br><span class="line">/etc/httpd/conf/httpd.conf</span><br><span class="line">Include conf.modules.d/*.conf</span><br><span class="line">配置指定实现模块加载格式：</span><br><span class="line">LoadModule &lt;mod_name&gt; &lt;mod_path&gt;</span><br><span class="line">模块文件路径可使用相对路径：</span><br><span class="line">相对于ServerRoot（默认/etc/httpd）</span><br><span class="line">示例：</span><br><span class="line">LoadModule auth_basic_module modules/mod_auth_basic.so</span><br></pre></td></tr></table></figure>
+<h3 id="定义’Main’-server的文档页面路径"><a href="#定义’Main’-server的文档页面路径" class="headerlink" title="定义’Main’ server的文档页面路径"></a>定义’Main’ server的文档页面路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DocumentRoot &quot;/path&quot;</span><br><span class="line">文档路径映射：</span><br><span class="line">DocumentRoot指向的路径为URL路径的起始位置</span><br><span class="line">示例：</span><br><span class="line">DocumentRoot &quot;/app/data“</span><br><span class="line">http://HOST:PORT/test/index.html --&gt; /app/data/test/index.html</span><br><span class="line">注意：SELinux和iptables的状态</span><br><span class="line"></span><br><span class="line">定义站点主页面</span><br><span class="line">DirectoryIndex index.html index.html.var</span><br></pre></td></tr></table></figure>
+<h3 id="站点访问控制常见机制"><a href="#站点访问控制常见机制" class="headerlink" title="站点访问控制常见机制"></a>站点访问控制常见机制</h3><p>可基于两种机制指明对哪些资源进行何种访问控制</p>
+<p>访问控制机制有两种：客户端来源地址，用户账号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">文件系统路径：</span><br><span class="line">&lt;Directory &quot;/path&quot;&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;File &quot;/path/file&quot;&gt; </span><br><span class="line">...</span><br><span class="line">&lt;/File&gt;</span><br><span class="line">&lt;FileMatch &quot;PATTERN&quot;&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/FileMatch&gt;</span><br><span class="line"></span><br><span class="line">URL路径：</span><br><span class="line">&lt;Location &quot;&quot;&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/Location&gt;</span><br><span class="line">&lt;LocationMatch &quot;&quot;&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/LocationMatch&gt;</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">&lt;FilesMatch &quot;\.(gif|jpe?g|png)$&quot;&gt;</span><br><span class="line">&lt;Files &quot;?at.*&quot;&gt; 通配符</span><br><span class="line">&lt;Location /status&gt;</span><br><span class="line">&lt;LocationMatch &quot;/(extra|special)/data&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="中”基于源地址”实现访问控制"><a href="#中”基于源地址”实现访问控制" class="headerlink" title="中”基于源地址”实现访问控制"></a><directory>中”基于源地址”实现访问控制</directory></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">(1) Options：后跟1个或多个以空白字符分隔的选项列表</span><br><span class="line"> 在选项前的+，- 表示增加或删除指定选项</span><br><span class="line"> 常见选项：</span><br><span class="line">Indexes：指明的URL路径下不存在与定义的主页面资源相符的资</span><br><span class="line">源文件时，返回索引列表给用户</span><br><span class="line">FollowSymLinks：允许访问符号链接文件所指向的源文件</span><br><span class="line">None：全部禁用</span><br><span class="line">All： 全部允许</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">&lt;Directory /web/docs&gt;</span><br><span class="line">Options Indexes FollowSymLinks</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;Directory /web/docs/spec&gt;</span><br><span class="line">Options FollowSymLinks</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">&lt;Directory /web/docs&gt;</span><br><span class="line">Options Indexes FollowSymLinks</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;Directory /web/docs/spec&gt;</span><br><span class="line">Options +Includes -Indexes</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">(2) AllowOverride</span><br><span class="line">与访问控制相关的哪些指令可以放在指定目录下的.htaccess（由</span><br><span class="line">AccessFileName指定）文件中，覆盖之前的配置指令</span><br><span class="line">只对&lt;directory&gt;语句有效</span><br><span class="line">AllowOverride All: .htaccess中所有指令都有效</span><br><span class="line">AllowOverride None： .htaccess 文件无效</span><br><span class="line">AllowOverride AuthConfig Indexes 除了AuthConfig 和Indexes的其它指令都无法覆盖</span><br><span class="line"></span><br><span class="line">(3) 基于IP的访问控制:</span><br><span class="line">无明确授权的目录，默认拒绝</span><br><span class="line">允许所有主机访问：Require all granted</span><br><span class="line">拒绝所有主机访问：Require all denied</span><br><span class="line">控制特定的IP访问：</span><br><span class="line">Require ip IPADDR：授权指定来源的IP访问</span><br><span class="line">Require not ip IPADDR：拒绝特定的IP访问</span><br><span class="line">控制特定的主机访问：</span><br><span class="line">Require host HOSTNAME：授权特定主机访问</span><br><span class="line">Require not host HOSTNAME：拒绝</span><br><span class="line">HOSTNAME：</span><br><span class="line">FQDN：特定主机</span><br><span class="line">domin.tld：指定域名下的所有主机</span><br><span class="line"></span><br><span class="line">不能有失败，至少有一个成功匹配才成功，即失败优先</span><br><span class="line">&lt;RequireAll&gt; </span><br><span class="line">Require all granted</span><br><span class="line">Require not ip 172.16.1.1 拒绝特定IP</span><br><span class="line">&lt;/RequireAll&gt;</span><br><span class="line"></span><br><span class="line">多个语句有一个成功，则成功，即成功优先</span><br><span class="line">&lt;RequireAny&gt;</span><br><span class="line">Require all denied</span><br><span class="line">require ip 172.16.1.1 允许特定IP</span><br><span class="line">&lt;/RequireAny&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="日志设定"><a href="#日志设定" class="headerlink" title="日志设定"></a>日志设定</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">日志类型：</span><br><span class="line">    访问日志</span><br><span class="line">    错误日志</span><br><span class="line"></span><br><span class="line">错误日志：</span><br><span class="line">    ErrorLog logs/error_log</span><br><span class="line">    LogLevel warn</span><br><span class="line">    LogLevel 可选值: debug, info, notice, warn,error, crit, alert, emerg</span><br><span class="line"></span><br><span class="line">访问日志：</span><br><span class="line">    定义日志格式：LogFormat format strings</span><br><span class="line">        LogFormat &quot;%h %l %u %&#123;%Y-%m-%d %H:%M:%S&#125;t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot;&quot; testlog</span><br><span class="line">    使用日志格式：</span><br><span class="line">        CustomLog logs/access_log testlog</span><br><span class="line">参考帮助：</span><br><span class="line">http://httpd.apache.org/docs/2.2/mod/mod_log_config.html#formats</span><br><span class="line"></span><br><span class="line">%h 客户端IP地址</span><br><span class="line">%l 远程用户,启用mod_ident才有效，通常为减号“-”</span><br><span class="line">%u 验证（basic，digest）远程用户,非登录访问时，为一个减号“-”</span><br><span class="line">%t 服务器收到请求时的时间</span><br><span class="line">%r First line of request，即表示请求报文的首行；记录了此次请求的“方法”，“URL”以及协议版本</span><br><span class="line">%&gt;s 响应状态码</span><br><span class="line">%b 响应报文的大小，单位是字节；不包括响应报文http首部</span><br><span class="line">%&#123;Referer&#125;i 请求报文中首部“referer”的值；即从哪个页面中的超链接跳转至当前页面的</span><br><span class="line">%&#123;User-Agent&#125;i 请求报文中首部“User-Agent”的值；即发出请求的应用程序</span><br></pre></td></tr></table></figure>
+<h3 id="设定默认字符集"><a href="#设定默认字符集" class="headerlink" title="设定默认字符集"></a>设定默认字符集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddDefaultCharset UTF-8 此为默认值</span><br><span class="line">中文字符集：GBK, GB2312, GB18030</span><br></pre></td></tr></table></figure>
+<h3 id="定义路径别名"><a href="#定义路径别名" class="headerlink" title="定义路径别名"></a>定义路径别名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">格式：Alias /URL/ &quot;/PATH/&quot;</span><br><span class="line">DocumentRoot &quot;/www/htdocs&quot;</span><br><span class="line">    http://www.magedu.com/download/bash.rpm </span><br><span class="line">        ==&gt;/www/htdocs/download/bash.rpm</span><br><span class="line">Alias /download/ &quot;/rpms/pub/&quot;</span><br><span class="line">    http://www.magedu.com/download/bash.rpm </span><br><span class="line">        ==&gt;/rpms/pub/bash.rpm</span><br><span class="line">    http://www.magedu.com/images/logo.png</span><br><span class="line">        ==&gt;/www/htdocs/images/logo.png</span><br></pre></td></tr></table></figure>
+<h2 id="基于用户的访问控制"><a href="#基于用户的访问控制" class="headerlink" title="基于用户的访问控制"></a>基于用户的访问控制</h2><p>认证质询：WWW-Authenticate：响应码为401，拒绝客户端请求，并说明要求客户端提供账号和密码</p>
+<p>认证：Authorization：客户端用户填入账号和密码后再次发送请求报文；认证通过时，则服务器发送响应的资源</p>
+<p>认证方式两种：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">basic：明文</span><br><span class="line">digest：消息摘要认证,兼容性差</span><br></pre></td></tr></table></figure></p>
+<p>安全域：需要用户认证后方能访问的路径；应该通过名称对其进行标识，以便于告知用户认证的原因</p>
+<p>用户的账号和密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">虚拟账号：仅用于访问某服务时用到的认证标识</span><br><span class="line">存储：文本文件，SQL数据库，ldap目录存储，nis等</span><br></pre></td></tr></table></figure></p>
+<h3 id="basic认证"><a href="#basic认证" class="headerlink" title="basic认证"></a>basic认证</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(1) 定义安全域</span><br><span class="line">&lt;Directory &quot;/path&quot;&gt;</span><br><span class="line">    Options None</span><br><span class="line">    AllowOverride None</span><br><span class="line">    AuthType Basic</span><br><span class="line">    AuthName &quot;String&quot;</span><br><span class="line">    AuthUserFile &quot;/PATH/HTTPD_USER_PASSWD_FILE&quot;</span><br><span class="line">    Require user username1 username2 ...</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">允许账号文件中的所有用户登录访问：Require valid-user</span><br><span class="line"></span><br><span class="line">(2) 提供账号和密码存储（文本文件）</span><br><span class="line">使用专用命令完成此类文件的创建及用户管理</span><br><span class="line">htpasswd [options] /PATH/HTTPD_PASSWD_FILE username </span><br><span class="line">-c 自动创建文件，仅应该在文件不存在时使用</span><br><span class="line">-p 明文密码</span><br><span class="line">-d CRYPT格式加密，默认</span><br><span class="line">-m md5格式加密</span><br><span class="line">-s sha格式加密</span><br><span class="line">-D 删除指定用户</span><br></pre></td></tr></table></figure>
+<h3 id="基于组账号进行认证"><a href="#基于组账号进行认证" class="headerlink" title="基于组账号进行认证"></a>基于组账号进行认证</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">(1) 定义安全域</span><br><span class="line">&lt;Directory “/path&quot;&gt;</span><br><span class="line">AuthType Basic</span><br><span class="line">AuthName &quot;String“</span><br><span class="line">AuthUserFile &quot;/PATH/HTTPD_USER_PASSWD_FILE&quot;</span><br><span class="line">AuthGroupFile &quot;/PATH/HTTPD_GROUP_FILE&quot;</span><br><span class="line">Require group grpname1 grpname2 ...</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">(2) 创建用户账号和组账号文件</span><br><span class="line">组文件：每一行定义一个组</span><br><span class="line">GRP_NAME: username1 username2 ...</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">&lt;Directory &quot;/www/htdocs/admin&quot;&gt;</span><br><span class="line"> Options None</span><br><span class="line"> AllowOverride None</span><br><span class="line"> AuthType Basic</span><br><span class="line"> AuthName &quot;Administator private&quot;</span><br><span class="line"> AuthUserFile &quot;/etc/httpd/conf.d/.htpasswd&quot;</span><br><span class="line"> AuthGroupFile &quot;/etc/httpd/conf.d/.htgroup&quot;</span><br><span class="line"> Require group webadmins</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">vim /etc/httpd/conf.d/.htgroup</span><br><span class="line">webadmins:wpy li</span><br></pre></td></tr></table></figure>
+<h3 id="远程客户端和用户验证的控制"><a href="#远程客户端和用户验证的控制" class="headerlink" title="远程客户端和用户验证的控制"></a>远程客户端和用户验证的控制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Satisfy ALL|Any</span><br><span class="line">ALL 客户机IP和用户验证都需要通过才可以</span><br><span class="line">Any客户机IP和用户验证,有一个满足即可</span><br><span class="line">示例：</span><br><span class="line">Require valid-user</span><br><span class="line">Order allow,deny</span><br><span class="line">Allow from 192.168.1</span><br><span class="line">Satisfy Any</span><br></pre></td></tr></table></figure>
+<h2 id="实现用户家目录的http共享"><a href="#实现用户家目录的http共享" class="headerlink" title="实现用户家目录的http共享"></a>实现用户家目录的http共享</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">基于模块mod_userdir.so实现</span><br><span class="line">SELinux: http_enable_homedirs</span><br><span class="line"></span><br><span class="line">相关设置：</span><br><span class="line">vim /etc/httpd/conf/httpd.conf</span><br><span class="line">&lt;IfModule mod_userdir.c&gt;</span><br><span class="line">#UserDir disabled</span><br><span class="line">UserDir public_html #指定共享目录的名称</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line"></span><br><span class="line">准备目录</span><br><span class="line">su – wang;mkdir ~/public_html</span><br><span class="line">setfacl –m u:apache:x ~wang</span><br><span class="line"></span><br><span class="line">访问</span><br><span class="line">http://localhost/~wang/index.html</span><br></pre></td></tr></table></figure>
+<h2 id="ServerSignature-On-Off-EMail"><a href="#ServerSignature-On-Off-EMail" class="headerlink" title="ServerSignature On | Off | EMail"></a>ServerSignature On | Off | EMail</h2><p>当客户请求的网页并不存在时，服务器将产生错误文档，缺省情况下由于打开了 ServerSignature选项，错误文档的最后一行将包含服务器的名字、Apache的版本等信息</p>
+<p>如果不对外显示这些信息，就可以将这个参数设置为Off</p>
+<p>设置为Email，将显示ServerAdmin 的Email提示</p>
+<h2 id="status页面"><a href="#status页面" class="headerlink" title="status页面"></a>status页面</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LoadModule status_module modules/mod_status.so</span><br><span class="line">&lt;Location &quot;/status&quot;&gt;</span><br><span class="line"> SetHandler server-status</span><br><span class="line">&lt;/Location&gt;</span><br><span class="line">ExtendedStatus On 显示扩展信息</span><br></pre></td></tr></table></figure>
+<h1 id="虚拟主机"><a href="#虚拟主机" class="headerlink" title="虚拟主机"></a>虚拟主机</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">站点标识： socket</span><br><span class="line">IP相同，但端口不同</span><br><span class="line">IP不同，但端口均为默认端口</span><br><span class="line">FQDN不同：请求报文中首部 Host: www.magedu.com</span><br><span class="line"></span><br><span class="line">有三种实现方案：</span><br><span class="line">基于ip：为每个虚拟主机准备至少一个ip地址</span><br><span class="line">基于port：为每个虚拟主机使用至少一个独立的port</span><br><span class="line">基于FQDN：为每个虚拟主机使用至少一个FQDN</span><br><span class="line"></span><br><span class="line">虚拟主机的配置方法：</span><br><span class="line">&lt;VirtualHost IP:PORT&gt;</span><br><span class="line">ServerName FQDN</span><br><span class="line">DocumentRoot “/path&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">建议：上述配置存放在独立的配置文件中</span><br><span class="line"></span><br><span class="line">其它可用指令：</span><br><span class="line">ServerAlias：虚拟主机的别名；可多次使用</span><br><span class="line">ErrorLog： 错误日志</span><br><span class="line">CustomLog：访问日志</span><br><span class="line">&lt;Directory “/path&quot;&gt; &lt;/Directory&gt;</span><br><span class="line">Alias</span><br></pre></td></tr></table></figure>
+<h2 id="基于IP的虚拟主机示例"><a href="#基于IP的虚拟主机示例" class="headerlink" title="基于IP的虚拟主机示例"></a>基于IP的虚拟主机示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost 172.16.100.6:80&gt;</span><br><span class="line">ServerName www.a.com</span><br><span class="line">DocumentRoot &quot;/www/a.com/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">&lt;VirtualHost 172.16.100.7:80&gt;</span><br><span class="line">ServerName www.b.net</span><br><span class="line">DocumentRoot &quot;/www/b.net/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">&lt;VirtualHost 172.16.100.8:80&gt;</span><br><span class="line">ServerName www.c.org</span><br><span class="line">DocumentRoot &quot;/www/c.org/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="基于端口的虚拟主机"><a href="#基于端口的虚拟主机" class="headerlink" title="基于端口的虚拟主机"></a>基于端口的虚拟主机</h2><p>可和基于IP的虚拟主机混和使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">listen 808</span><br><span class="line">listen 8080</span><br><span class="line">&lt;VirtualHost 172.16.100.6:80&gt;</span><br><span class="line">ServerName www.a.com</span><br><span class="line">DocumentRoot &quot;/www/a.com/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">&lt;VirtualHost 172.16.100.6:808&gt;</span><br><span class="line">ServerName www.b.net</span><br><span class="line">DocumentRoot &quot;/www/b.net/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">&lt;VirtualHost 172.16.100.6:8080&gt;</span><br><span class="line">ServerName www.c.org</span><br><span class="line">DocumentRoot &quot;/www/c.org/htdocs&quot;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="基于FQDN虚拟主机"><a href="#基于FQDN虚拟主机" class="headerlink" title="基于FQDN虚拟主机"></a>基于FQDN虚拟主机</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">基于FQDN的虚拟主机不再需要NameVirutalHost指令</span><br><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">    ServerName www.b.net</span><br><span class="line">    DocumentRoot &quot;/apps/b.net/htdocs&quot;</span><br><span class="line">    &lt;Directory &quot;/apps/b.net/htdocs&quot;&gt;</span><br><span class="line">        Options None</span><br><span class="line">        AllowOverride None</span><br><span class="line">        Require all granted</span><br><span class="line">    &lt;/Directory&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">注意：任意目录下的页面只有显式授权才能被访问</span><br></pre></td></tr></table></figure>
+<h1 id="mod-deflate模块"><a href="#mod-deflate模块" class="headerlink" title="mod_deflate模块"></a>mod_deflate模块</h1><p>使用mod_deflate模块压缩页面优化传输速度</p>
+<p>适用场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(1) 节约带宽，额外消耗CPU；同时，可能有些较老浏览器不支持</span><br><span class="line">(2) 压缩适于压缩的资源，例如文本文件</span><br><span class="line">LoadModule deflate_module modules/mod_deflate.so SetOutputFilter DEFLATE SetOutputFilter DEFLATE</span><br><span class="line"># Restrict compression to these MIME types</span><br><span class="line">AddOutputFilterByType DEFLATE text/plain </span><br><span class="line">AddOutputFilterByType DEFLATE text/html</span><br><span class="line">AddOutputFilterByType DEFLATE application/xhtml+xml</span><br><span class="line">AddOutputFilterByType DEFLATE text/xml</span><br><span class="line">AddOutputFilterByType DEFLATE application/xml</span><br><span class="line">AddOutputFilterByType DEFLATE application/x-javascript</span><br><span class="line">AddOutputFilterByType DEFLATE text/javascript</span><br><span class="line">AddOutputFilterByType DEFLATE text/css</span><br><span class="line"></span><br><span class="line">压缩比：Level of compression (Highest 9 - Lowest 1)</span><br><span class="line">DeflateCompressionLevel 9</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/16/HTTP工作机制/" rel="next" title="HTTP工作机制">
+                <i class="fa fa-chevron-left"></i> HTTP工作机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/16/HTTP实现HTTPS/" rel="prev" title="HTTP实现HTTPS">
+                HTTP实现HTTPS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#httpd功能特性"><span class="nav-number">1.</span> <span class="nav-text">httpd功能特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#httpd-2-4"><span class="nav-number">2.</span> <span class="nav-text">httpd-2.4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见配置"><span class="nav-number">3.1.</span> <span class="nav-text">常见配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示服务器版本信息"><span class="nav-number">3.1.1.</span> <span class="nav-text">显示服务器版本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改监听的IP和Port"><span class="nav-number">3.1.2.</span> <span class="nav-text">修改监听的IP和Port</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久连接"><span class="nav-number">3.1.3.</span> <span class="nav-text">持久连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPM（-Multi-Processing-Module）多路处理模块"><span class="nav-number">3.1.4.</span> <span class="nav-text">MPM（ Multi-Processing Module）多路处理模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSO：-Dynamic-Shared-Object"><span class="nav-number">3.1.5.</span> <span class="nav-text">DSO： Dynamic Shared Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义’Main’-server的文档页面路径"><span class="nav-number">3.1.6.</span> <span class="nav-text">定义’Main’ server的文档页面路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#站点访问控制常见机制"><span class="nav-number">3.1.7.</span> <span class="nav-text">站点访问控制常见机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中”基于源地址”实现访问控制"><span class="nav-number">3.1.8.</span> <span class="nav-text">中”基于源地址”实现访问控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志设定"><span class="nav-number">3.1.9.</span> <span class="nav-text">日志设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设定默认字符集"><span class="nav-number">3.1.10.</span> <span class="nav-text">设定默认字符集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义路径别名"><span class="nav-number">3.1.11.</span> <span class="nav-text">定义路径别名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于用户的访问控制"><span class="nav-number">3.2.</span> <span class="nav-text">基于用户的访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#basic认证"><span class="nav-number">3.2.1.</span> <span class="nav-text">basic认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于组账号进行认证"><span class="nav-number">3.2.2.</span> <span class="nav-text">基于组账号进行认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程客户端和用户验证的控制"><span class="nav-number">3.2.3.</span> <span class="nav-text">远程客户端和用户验证的控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现用户家目录的http共享"><span class="nav-number">3.3.</span> <span class="nav-text">实现用户家目录的http共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServerSignature-On-Off-EMail"><span class="nav-number">3.4.</span> <span class="nav-text">ServerSignature On | Off | EMail</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#status页面"><span class="nav-number">3.5.</span> <span class="nav-text">status页面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟主机"><span class="nav-number">4.</span> <span class="nav-text">虚拟主机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于IP的虚拟主机示例"><span class="nav-number">4.1.</span> <span class="nav-text">基于IP的虚拟主机示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于端口的虚拟主机"><span class="nav-number">4.2.</span> <span class="nav-text">基于端口的虚拟主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于FQDN虚拟主机"><span class="nav-number">4.3.</span> <span class="nav-text">基于FQDN虚拟主机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mod-deflate模块"><span class="nav-number">5.</span> <span class="nav-text">mod_deflate模块</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

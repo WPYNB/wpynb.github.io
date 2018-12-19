@@ -95,7 +95,11 @@
 <meta property="og:image" content="http://yoursite.com/images/http14.png">
 <meta property="og:image" content="http://yoursite.com/images/http15.png">
 <meta property="og:image" content="http://yoursite.com/images/http16.png">
-<meta property="og:updated_time" content="2018-12-16T07:54:49.534Z">
+<meta property="og:image" content="http://yoursite.com/images/mpm.png">
+<meta property="og:image" content="http://yoursite.com/images/mpm1.png">
+<meta property="og:image" content="http://yoursite.com/images/mpm2.png">
+<meta property="og:image" content="http://yoursite.com/images/mpm3.jpg">
+<meta property="og:updated_time" content="2018-12-17T06:50:24.449Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP工作机制">
 <meta name="twitter:description" content="什么是HTTP？HTTP是超文本传输协议，计算机之间要通信，必须遵循协议的规则。 工作机制：http请求：http requesthttp响应：http response一次http事务：请求响应 Web资源：web resource一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源的集合 静态文件：无需">
@@ -411,6 +415,13 @@
 <p>2 . 请求头</p>
 <p>每个头域都由一个头域名 , 冒号和值域组成 , 下面介绍一些最常见的头域<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(1) Connection : 表示是否需要持久连接 , 如果服务器看到它的值为 keep-alive , 或者请求协议使用的是HTTP/1.1(默认使用持久连接) , 同一个页面如果包含多个资源 , 则只会使用一个连接 , 如Connection : keep-alive . 如果设置了 Connetion:close , 则每一个请求结束都会关闭连接 , 新的请求又会重新建立连接 , 一个网页至少有几十个资源请求 , 这样会浪费带宽和时间</span><br><span class="line">(2) Host : 这个是必需的 , 表示请求的服务器地址是什么 , 是从URL 中提取出来的 . 比如 http://www.baidu.com/ 的host 就是 www.baidu.com , 这里是80端口 , 默认省略 ; 如果是其他端口 , 比如 http://www.baidu.com:8080 , 则Host是 www.baidu.com:8080</span><br><span class="line">(3) Accept : 浏览器可以接受的媒体类型(MIME) , 如 Accept:text/html 代表可以接受HTML文档 , &quot; * &quot;代表接受任何类型 , 如 Accept:/ </span><br><span class="line">(4) Accept-Encoding : 浏览器申明自己接受的编码方法 , 通常指定压缩方法 , 是否支持压缩 , 支持什么格式的压缩</span><br></pre></td></tr></table></figure></p>
 <p>3 . 请求正文<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">也叫请求数据 , 在使用post请求表单数据的时候 , 这些表单数据就会被放在 HTTP 请求的请求正文中 , 以加密的形式向服务器传输。</span><br></pre></td></tr></table></figure></p>
+<h1 id="MPM工作模式"><a href="#MPM工作模式" class="headerlink" title="MPM工作模式"></a>MPM工作模式</h1><h2 id="prefork"><a href="#prefork" class="headerlink" title="prefork"></a>prefork</h2><p>多进程I/O模型，每个进程响应一个请求，默认模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">一个主进程：生成和回收n个子进程，创建套接字，不响应请求</span><br><span class="line">多个子进程：工作work进程，每个子进程处理一个请求；系统初始时，预先生成多个空闲进程，等待请求，最大不超过1024个</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/mpm.png" alt="Alt text"></p>
+<h2 id="worker"><a href="#worker" class="headerlink" title="worker"></a>worker</h2><p>复用的多进程I/O模型,多进程多线程，IIS使用此模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个主进程：生成m个子进程，每个子进程负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/mpm1.png" alt="Alt text"></p>
+<h2 id="event"><a href="#event" class="headerlink" title="event"></a>event</h2><p>事件驱动模型（worker模型的变种）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">一个主进程：生成m个子进程，每个进程直接响应n个请求，并发响应请求：m*n，有专门的线程来管理这些keep-alive类型的线程，当有真实请求时，将请求传递给服务线程，执行完毕后，又允许释放。这样增强了高并发场景下的请求处理能力</span><br><span class="line"></span><br><span class="line">httpd-2.2：event 测试版，centos6默认</span><br><span class="line">httpd-2.4：event 稳定版，centos7默认</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/mpm2.png" alt="Alt text"></p>
+<p>进程角色<br><img src="/images/mpm3.jpg" alt="Alt text"></p>
 
       
     </div>
@@ -444,6 +455,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/16/HTTP配置/" rel="prev" title="HTTP配置">
+                HTTP配置 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -520,7 +535,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -531,7 +546,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -566,7 +581,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是HTTP？"><span class="nav-number">1.</span> <span class="nav-text">什么是HTTP？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作机制："><span class="nav-number">2.</span> <span class="nav-text">工作机制：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web资源：web-resource"><span class="nav-number">2.1.</span> <span class="nav-text">Web资源：web resource</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高HTTP连接性能"><span class="nav-number">2.2.</span> <span class="nav-text">提高HTTP连接性能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URI"><span class="nav-number">3.</span> <span class="nav-text">URI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URI-Uniform-Resource-Identifier-统一资源标识，分为URL和URN"><span class="nav-number">3.1.</span> <span class="nav-text">URI: Uniform Resource Identifier 统一资源标识，分为URL和URN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL组成"><span class="nav-number">3.2.</span> <span class="nav-text">URL组成</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网站访问量"><span class="nav-number">4.</span> <span class="nav-text">网站访问量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">5.</span> <span class="nav-text">一次完整的http请求处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-建立连接：接收或拒绝连接请求"><span class="nav-number">5.1.</span> <span class="nav-text">1.建立连接：接收或拒绝连接请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-接收请求：接收客户端请求报文中对某资源的一次请求的过程"><span class="nav-number">5.2.</span> <span class="nav-text">2.接收请求：接收客户端请求报文中对某资源的一次请求的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-处理请求"><span class="nav-number">5.3.</span> <span class="nav-text">3.处理请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-访问资源"><span class="nav-number">5.4.</span> <span class="nav-text">4.访问资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-构建响应报文"><span class="nav-number">5.5.</span> <span class="nav-text">5.构建响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-发送响应报文"><span class="nav-number">5.6.</span> <span class="nav-text">6.发送响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-记录日志"><span class="nav-number">5.7.</span> <span class="nav-text">7.记录日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次HTTP请求操作称为一个事务，其工作整个过程如下"><span class="nav-number">6.</span> <span class="nav-text">一次HTTP请求操作称为一个事务，其工作整个过程如下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP的工作流程如下"><span class="nav-number">6.1.</span> <span class="nav-text">HTTP的工作流程如下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求和响应"><span class="nav-number">6.2.</span> <span class="nav-text">请求和响应</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是HTTP？"><span class="nav-number">1.</span> <span class="nav-text">什么是HTTP？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作机制："><span class="nav-number">2.</span> <span class="nav-text">工作机制：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web资源：web-resource"><span class="nav-number">2.1.</span> <span class="nav-text">Web资源：web resource</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高HTTP连接性能"><span class="nav-number">2.2.</span> <span class="nav-text">提高HTTP连接性能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URI"><span class="nav-number">3.</span> <span class="nav-text">URI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URI-Uniform-Resource-Identifier-统一资源标识，分为URL和URN"><span class="nav-number">3.1.</span> <span class="nav-text">URI: Uniform Resource Identifier 统一资源标识，分为URL和URN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL组成"><span class="nav-number">3.2.</span> <span class="nav-text">URL组成</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网站访问量"><span class="nav-number">4.</span> <span class="nav-text">网站访问量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">5.</span> <span class="nav-text">一次完整的http请求处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-建立连接：接收或拒绝连接请求"><span class="nav-number">5.1.</span> <span class="nav-text">1.建立连接：接收或拒绝连接请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-接收请求：接收客户端请求报文中对某资源的一次请求的过程"><span class="nav-number">5.2.</span> <span class="nav-text">2.接收请求：接收客户端请求报文中对某资源的一次请求的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-处理请求"><span class="nav-number">5.3.</span> <span class="nav-text">3.处理请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-访问资源"><span class="nav-number">5.4.</span> <span class="nav-text">4.访问资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-构建响应报文"><span class="nav-number">5.5.</span> <span class="nav-text">5.构建响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-发送响应报文"><span class="nav-number">5.6.</span> <span class="nav-text">6.发送响应报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-记录日志"><span class="nav-number">5.7.</span> <span class="nav-text">7.记录日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一次HTTP请求操作称为一个事务，其工作整个过程如下"><span class="nav-number">6.</span> <span class="nav-text">一次HTTP请求操作称为一个事务，其工作整个过程如下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP的工作流程如下"><span class="nav-number">6.1.</span> <span class="nav-text">HTTP的工作流程如下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求和响应"><span class="nav-number">6.2.</span> <span class="nav-text">请求和响应</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MPM工作模式"><span class="nav-number">7.</span> <span class="nav-text">MPM工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#prefork"><span class="nav-number">7.1.</span> <span class="nav-text">prefork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#worker"><span class="nav-number">7.2.</span> <span class="nav-text">worker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#event"><span class="nav-number">7.3.</span> <span class="nav-text">event</span></a></li></ol></li></ol></div>
             
 
           </div>

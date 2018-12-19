@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="http协议http协议：http/0.9, http/1.0, http/1.1, http/2  http协议：stateless 无状态  服务器无法持续追踪访问者来源  解决http协议无状态方法         cookie 客户端存放         session 服务端存放  http事务：一次访问的过程         请求：request          响应：respons">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP协议">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/HTTP协议/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="http协议http协议：http/0.9, http/1.0, http/1.1, http/2  http协议：stateless 无状态  服务器无法持续追踪访问者来源  解决http协议无状态方法         cookie 客户端存放         session 服务端存放  http事务：一次访问的过程         请求：request          响应：respons">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/baowen.jpg">
+<meta property="og:image" content="http://yoursite.com/images/baowen1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/cookie.png">
+<meta property="og:updated_time" content="2018-12-17T07:25:33.309Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP协议">
+<meta name="twitter:description" content="http协议http协议：http/0.9, http/1.0, http/1.1, http/2  http协议：stateless 无状态  服务器无法持续追踪访问者来源  解决http协议无状态方法         cookie 客户端存放         session 服务端存放  http事务：一次访问的过程         请求：request          响应：respons">
+<meta name="twitter:image" content="http://yoursite.com/images/baowen.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/17/HTTP协议/"/>
+
+
+
+
+
+  <title>HTTP协议 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/HTTP协议/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP协议</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T14:50:12+08:00">
+                2018-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/HTTP协议/" itemprop="url" rel="index">
+                    <span itemprop="name">HTTP协议</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="http协议"><a href="#http协议" class="headerlink" title="http协议"></a>http协议</h1><pre><code>http协议：http/0.9, http/1.0, http/1.1, http/2
+
+http协议：stateless 无状态  服务器无法持续追踪访问者来源
+
+解决http协议无状态方法
+        cookie 客户端存放
+        session 服务端存放
+
+http事务：一次访问的过程
+        请求：request 
+        响应：response
+</code></pre><h1 id="HTTP请求报文"><a href="#HTTP请求报文" class="headerlink" title="HTTP请求报文"></a>HTTP请求报文</h1><p><img src="/images/baowen.jpg" alt="Alt text"></p>
+<h1 id="HTTP响应报文"><a href="#HTTP响应报文" class="headerlink" title="HTTP响应报文"></a>HTTP响应报文</h1><p><img src="/images/baowen1.jpg" alt="Alt text"></p>
+<h2 id="报文语法格式"><a href="#报文语法格式" class="headerlink" title="报文语法格式"></a>报文语法格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">request报文</span><br><span class="line">&lt;method&gt; &lt;request-URL&gt; &lt;version&gt;</span><br><span class="line">&lt;headers&gt;</span><br><span class="line">&lt;entity-body&gt;</span><br><span class="line"></span><br><span class="line">response报文</span><br><span class="line">&lt;version&gt; &lt;status&gt; &lt;reason-phrase&gt;</span><br><span class="line">&lt;headers&gt;</span><br><span class="line">&lt;entity-body&gt;</span><br><span class="line"></span><br><span class="line">method: 请求方法，标明客户端希望服务器对资源执行的动作GET、HEAD、POST等</span><br><span class="line">        GET： 从服务器获取一个资源</span><br><span class="line">        HEAD： 只从服务器获取文档的响应首部</span><br><span class="line">        POST： 向服务器输入数据，通常会再由网关程序继续处理</span><br><span class="line">        PUT： 将请求的主体部分存储在服务器中，如上传文件</span><br><span class="line">        DELETE： 请求删除服务器上指定的文档</span><br><span class="line">        TRACE： 追踪请求到达服务器中间经过的代理服务器</span><br><span class="line">        OPTIONS：请求服务器返回对指定资源支持使用的请求方法</span><br><span class="line"></span><br><span class="line">version:</span><br><span class="line">    HTTP/&lt;major&gt;.&lt;minor&gt;</span><br><span class="line"></span><br><span class="line">status:</span><br><span class="line">    三位数字，如200，301, 302, 404, 502; 标记请求处理过程中发生的情况</span><br><span class="line">        status(状态码)：</span><br><span class="line">        1xx：100-101 信息提示</span><br><span class="line">        2xx：200-206 成功</span><br><span class="line">        3xx：300-305 重定向</span><br><span class="line">        4xx：400-415 错误类信息，客户端错误</span><br><span class="line">        5xx：500-505 错误类信息，服务器端错误</span><br><span class="line"></span><br><span class="line">reason-phrase：</span><br><span class="line">    状态码所标记的状态的简要描述</span><br><span class="line"></span><br><span class="line">headers：</span><br><span class="line">    每个请求或响应报文可包含任意个首部；每个首部都有首部名称，后面跟一个冒号，而后跟一个可选空格，接着是一个值</span><br><span class="line"></span><br><span class="line">entity-body：请求时附加的数据或响应时附加的数据</span><br><span class="line"></span><br><span class="line">协议查看或分析的工具：</span><br><span class="line">    tcpdump, wireshark,tshark</span><br></pre></td></tr></table></figure>
+<h1 id="http协议状态码分类"><a href="#http协议状态码分类" class="headerlink" title="http协议状态码分类"></a>http协议状态码分类</h1><pre><code>200： 成功，请求数据通过响应报文的entity-body部分发送;OK
+301： 请求的URL指向的资源已经被删除；但在响应报文中通过首部Location指明了资源现在所处的新位置；Moved Permanently
+302： 响应报文Location指明资源临时新位置 Moved Temporarily
+304： 客户端发出了条件式请求，但服务器上的资源未曾发生改变，则通过响应此响应状态码通知客户端；Not Modified
+401： 需要输入账号和密码认证方能访问资源；Unauthorized
+403： 请求被禁止；Forbidden
+404： 服务器无法找到客户端请求的资源；Not Found
+500： 服务器内部错误；Internal Server Error
+502： 代理服务器从后端服务器收到了一条伪响应，如无法连接到网关；Bad Gateway
+503： 服务不可用，临时服务器维护或过载，服务器无法处理请求
+504： 网关超时
+</code></pre><h1 id="http协议格式"><a href="#http协议格式" class="headerlink" title="http协议格式"></a>http协议格式</h1><p>headers：</p>
+<p>Name: Value<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Request URL:http://www.xxx.com/</span><br><span class="line">Request Method:GET</span><br><span class="line">Status Code:200 OK</span><br><span class="line">Remote Address:101.200.188.230:80</span><br><span class="line"></span><br><span class="line">Response Headers</span><br><span class="line">view source</span><br><span class="line">Connection:keep-alive</span><br><span class="line">Content-Encoding:gzip</span><br><span class="line">Content-Type:text/html; charset=UTF-8</span><br><span class="line">Date:Sun, 29 Jan 2017 14:32:30 GMT</span><br><span class="line">Server:Tengine</span><br><span class="line">Transfer-Encoding:chunked</span><br><span class="line">Vary:Accept-Encoding</span><br><span class="line">X-Pingback:http://www.xxx.com/xmlrpc.php</span><br><span class="line"></span><br><span class="line">Request Headers</span><br><span class="line">view source</span><br><span class="line">Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Encoding:gzip, deflate, sdch</span><br><span class="line">Accept-Language:zh-CN,zh;q=0.8</span><br><span class="line">Cache-Control:max-age=0</span><br><span class="line">Connection:keep-alive</span><br><span class="line">Cookie:53gid2=10104634518015; 53gid0=10104634518015; 53gid1=10104634518015; 53revisit=1485699843851; 53uvid=1; </span><br><span class="line">onliner_zdfq72145423=0; CNZZDATA1260642320=1664910013-1485697454-%7C1485697454; visitor_type=old; </span><br><span class="line">53kf_72145423_keyword=; kf_72145423_keyword_ok=1; Hm_lvt_4a78dc1643884da1c990c4c878832e70=1485699844; </span><br><span class="line">Hm_lpvt_4a78dc1643884da1c990c4c878832e70=1485700088</span><br><span class="line">Host:www.xxx.com</span><br><span class="line">Upgrade-Insecure-Requests:1</span><br><span class="line">User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36</span><br></pre></td></tr></table></figure></p>
+<h1 id="HTTP-首部"><a href="#HTTP-首部" class="headerlink" title="HTTP 首部"></a>HTTP 首部</h1><p>HTTP 首部字段包含的信息最为丰富。首部字段同时存在于请求和响应报文内，并涵盖 HTTP 报文相关的内容信息。使用首部字段是为了给客服端和服务器端提供报文主体大小、所使用的语言、认证信息等内容</p>
+<p>首部字段结构HTTP 首部字段是由首部字段名和字段值构成的，中间用冒号“：”分隔</p>
+<p>字段值对应单个 HTTP 首部字段可以有多个值</p>
+<p>报文首部中出现了两个或以上具有相同首部字段名的首部字段时，在规范内尚未明确，根据浏览器内部处理逻辑的不同，优先处理的顺序可能不同，结果可能并不一致</p>
+<h2 id="首部的分类"><a href="#首部的分类" class="headerlink" title="首部的分类"></a>首部的分类</h2><p>通用首部:请求报文和响应报文两方都会使用的首部</p>
+<pre><code>通用首部：
+Date: 报文的创建时间
+Connection：连接状态，如keep-alive, close
+Via：显示报文经过的中间节点（代理，网关）
+Cache-Control：控制缓存，如缓存时长
+MIME-Version:发送端使用的MIME版本
+Warning：错误通知
+</code></pre><p>请求首部:从客户端向服务器端发送请求报文时使用的首部。补充了请求的附加内容、客户端信息、请求内容相关优先级等信息</p>
+<pre><code>请求首部：
+Accept：通知服务器自己可接受的媒体类型
+Accept-Charset： 客户端可接受的字符集
+Accept-Encoding：客户端可接受编码格式，如gzip
+Accept-Language：客户端可接受的语言
+
+Client-IP: 请求的客户端IP
+Host: 请求的服务器名称和端口号
+Referer：跳转至当前URI的前一个URL
+User-Agent：客户端代理，浏览器版本
+
+条件式请求首部：
+Expect：允许客户端列出某请求所要求的服务器行为
+If-Modified-Since：自从指定的时间之后，请求的资源是否发生过修改
+If-Unmodified-Since：与上面相反
+If-None-Match：本地缓存中存储的文档的ETag标签是否与服务器文档的Etag不匹配
+If-Match：与上面相反
+
+安全请求首部：
+Authorization：向服务器发送认证信息，如账号和密码
+Cookie: 客户端向服务器发送cookie
+
+代理请求首部：
+Proxy-Authorization: 向代理服务器认证
+</code></pre><p>响应首部：从服务器端向客户端返回响应报文时使用的首部。补充了响应的附加内容，也会要求客户端附加额外的内容信息</p>
+<pre><code>信息性：
+    Age：从最初创建开始，响应持续时长
+    Server：服务器程序软件名称和版本
+
+协商首部：某资源有多种表示方法时使用
+    Accept-Ranges：服务器可接受的请求范围类型
+    Vary：服务器查看的其它首部列表
+
+安全响应首部：
+    Set-Cookie：向客户端设置cookie
+    WWW-Authenticate：来自服务器对客户端的质询列表
+</code></pre><p>实体首部：针对请求报文和响应报文的实体部分使用的首部。补充了资源内容更新时间等与实体有关的的信息</p>
+<pre><code>实体首部：
+    Allow: 列出对此资源实体可使用的请求方法
+    Location：告诉客户端真正的实体位于何处
+    Content-Encoding:对主体执行的编码
+    Content-Language:理解主体时最适合的语言
+    Content-Length: 主体的长度
+    Content-Location: 实体真正所处位置
+    Content-Type：主体的对象类型，如text
+
+缓存相关：
+    ETag：实体的扩展标签
+    Expires：实体的过期时间
+    Last-Modified：最后一次修改的时间
+</code></pre><p>扩展首部</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p><img src="/images/cookie.png" alt="Alt text"></p>
+<h2 id="Set-Cookie首部字段"><a href="#Set-Cookie首部字段" class="headerlink" title="Set-Cookie首部字段"></a>Set-Cookie首部字段</h2><pre><code>Set-cookie首部字段示例：
+    Set-Cookie: status=enable; expires=Fri, 24 Nov 2017 20:30:02 GMT;path=/;
+NAME=VALUE 赋予 Cookie 的名称和其值,此为必需项
+expires=DATE Cookie 的有效期，若不明确指定则默认为浏览器关闭前为止
+path=PATH 将服务器上的文件目录作为Cookie的适用对象，若不指定则默认为文档所在的文件目录
+domain=域名 作为 Cookie 适用对象的域名，若不指定则默认为创建Cookie的服务器的域名
+Secure 仅在 HTTPS 安全通信时才会发送 Cookie
+HttpOnly 加以限制使 Cookie 不能被 JavaScript 脚本访问
+</code></pre><h1 id="curl工具"><a href="#curl工具" class="headerlink" title="curl工具"></a>curl工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">curl [options] [URL...]</span><br><span class="line">-A/--user-agent &lt;string&gt; 设置用户代理发送给服务器</span><br><span class="line">-e/--referer &lt;URL&gt; 来源网址</span><br><span class="line">--cacert &lt;file&gt; CA证书 (SSL)</span><br><span class="line">-k/--insecure 允许忽略证书进行 SSL 连接</span><br><span class="line">--compressed 要求返回是压缩的格式</span><br><span class="line">-H/--header &lt;line&gt;自定义首部信息传递给服务器</span><br><span class="line">-i 显示页面内容，包括报文首部信息</span><br><span class="line">-I/--head 只显示响应报文首部信息</span><br><span class="line">-D/--dump-header &lt;file&gt;将url的header信息存放在指定文件中</span><br><span class="line">--basic 使用HTTP基本认证</span><br><span class="line">-u/--user &lt;user[:password]&gt;设置服务器的用户和密码</span><br><span class="line">-L 如果有3xx响应码，重新发请求到新位置</span><br><span class="line">-O 使用URL中默认的文件名保存文件到本地</span><br><span class="line">-o &lt;file&gt; 将网络文件保存为指定的文件中</span><br><span class="line">--limit-rate &lt;rate&gt; 设置传输速度</span><br><span class="line">-0/--http1.0 数字0，使用HTTP 1.0</span><br><span class="line">-v/--verbose 更详细</span><br><span class="line">-C 选项可对文件使用断点续传功能</span><br><span class="line">-c/--cookie-jar &lt;file name&gt; 将url中cookie存放在指定文件中</span><br><span class="line">-x/--proxy &lt;proxyhost[:port]&gt; 指定代理服务器地址</span><br><span class="line">-X/--request &lt;command&gt; 向服务器发送指定请求方法</span><br><span class="line">-U/--proxy-user &lt;user:password&gt; 代理服务器用户和密码</span><br><span class="line">-T 选项可将指定的本地文件上传到FTP服务器上</span><br><span class="line">--data/-d 方式指定使用POST方式传递数据</span><br><span class="line">-b name=data 从服务器响应set-cookie得到值，返回给服务器</span><br></pre></td></tr></table></figure>
+<h1 id="elinks工具"><a href="#elinks工具" class="headerlink" title="elinks工具"></a>elinks工具</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">elinks [OPTION]... [URL]...</span><br><span class="line">-dump: 非交互式模式，将URL的内容输出至标准输出</span><br><span class="line">-source:打印源码</span><br></pre></td></tr></table></figure>
+<h1 id="httpd自带的工具程序"><a href="#httpd自带的工具程序" class="headerlink" title="httpd自带的工具程序"></a>httpd自带的工具程序</h1><p>htpasswd：basic认证基于文件实现时，用到的账号密码文件生成工具</p>
+<p>apachectl：httpd自带的服务控制脚本，支持start和stop</p>
+<p>rotatelogs：日志滚动工具</p>
+<pre><code>access.log --&gt;
+    access.log, access.1.log --&gt;
+        access.log, acccess.1.log, access.2.log
+</code></pre><h1 id="httpd的压力测试工具"><a href="#httpd的压力测试工具" class="headerlink" title="httpd的压力测试工具"></a>httpd的压力测试工具</h1><p>ab [OPTIONS] URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">来自httpd-tools包</span><br><span class="line">-n：总请求数</span><br><span class="line">-c：模拟的并行数</span><br><span class="line">-k：以持久连接模式测试</span><br><span class="line"></span><br><span class="line">ulimit –n # 调整能打开的文件数</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/16/HTTP实现HTTPS/" rel="next" title="HTTP实现HTTPS">
+                <i class="fa fa-chevron-left"></i> HTTP实现HTTPS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/17/APACHE的httpd编译安装/" rel="prev" title="APACHE的httpd编译安装">
+                APACHE的httpd编译安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#http协议"><span class="nav-number">1.</span> <span class="nav-text">http协议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP请求报文"><span class="nav-number">2.</span> <span class="nav-text">HTTP请求报文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP响应报文"><span class="nav-number">3.</span> <span class="nav-text">HTTP响应报文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#报文语法格式"><span class="nav-number">3.1.</span> <span class="nav-text">报文语法格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http协议状态码分类"><span class="nav-number">4.</span> <span class="nav-text">http协议状态码分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http协议格式"><span class="nav-number">5.</span> <span class="nav-text">http协议格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-首部"><span class="nav-number">6.</span> <span class="nav-text">HTTP 首部</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#首部的分类"><span class="nav-number">6.1.</span> <span class="nav-text">首部的分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie"><span class="nav-number">7.</span> <span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Set-Cookie首部字段"><span class="nav-number">7.1.</span> <span class="nav-text">Set-Cookie首部字段</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#curl工具"><span class="nav-number">8.</span> <span class="nav-text">curl工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#elinks工具"><span class="nav-number">9.</span> <span class="nav-text">elinks工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#httpd自带的工具程序"><span class="nav-number">10.</span> <span class="nav-text">httpd自带的工具程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#httpd的压力测试工具"><span class="nav-number">11.</span> <span class="nav-text">httpd的压力测试工具</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
