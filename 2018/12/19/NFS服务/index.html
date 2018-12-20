@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NFS服务介绍NFS：Network File System 网络文件系统，基于内核的文件系统。Sun公司开发，通过使用NFS，用户和程序可以像访问本地文件一样访问远端系统上的文件，基于RPC（Remote Procedure Call Protocol远程过程调用）实现 RPC采用C/S模式。客户机请求程序调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NFS服务">
+<meta property="og:url" content="http://yoursite.com/2018/12/19/NFS服务/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="NFS服务介绍NFS：Network File System 网络文件系统，基于内核的文件系统。Sun公司开发，通过使用NFS，用户和程序可以像访问本地文件一样访问远端系统上的文件，基于RPC（Remote Procedure Call Protocol远程过程调用）实现 RPC采用C/S模式。客户机请求程序调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/nfs.png">
+<meta property="og:image" content="http://yoursite.com/images/nfs1.png">
+<meta property="og:updated_time" content="2018-12-19T09:07:49.453Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NFS服务">
+<meta name="twitter:description" content="NFS服务介绍NFS：Network File System 网络文件系统，基于内核的文件系统。Sun公司开发，通过使用NFS，用户和程序可以像访问本地文件一样访问远端系统上的文件，基于RPC（Remote Procedure Call Protocol远程过程调用）实现 RPC采用C/S模式。客户机请求程序调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠">
+<meta name="twitter:image" content="http://yoursite.com/images/nfs.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/19/NFS服务/"/>
+
+
+
+
+
+  <title>NFS服务 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/19/NFS服务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NFS服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-19T15:20:12+08:00">
+                2018-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/NFS服务/" itemprop="url" rel="index">
+                    <span itemprop="name">NFS服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="NFS服务介绍"><a href="#NFS服务介绍" class="headerlink" title="NFS服务介绍"></a>NFS服务介绍</h1><p>NFS：Network File System 网络文件系统，基于内核的文件系统。Sun公司开发，通过使用NFS，用户和程序可以像访问本地文件一样访问远端系统上的文件，基于RPC（Remote Procedure Call Protocol远程过程调用）实现</p>
+<p>RPC采用C/S模式。客户机请求程序调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠状态直到调用信息到达为止。当一个调用信息到达，服务器获得进程参数，计算结果，发送答复信息，然后等待下一个调用信息，最后，客户端调用进程接收答复信息，获得进程结果，然后调用执行继续进行。</p>
+<p>NFS优势：节省本地存储空间，将常用的数据,如home目录,存放在NFS服务器上且可以通过网络访问，本地终端将可减少自身存储空间的使用。</p>
+<p>NFS文件系统<br><img src="/images/nfs.png" alt="Alt text"></p>
+<p>NFS各个版本的对比<br><img src="/images/nfs1.png" alt="Alt text"></p>
+<pre><code>软件包:centos6:nfs-utils
+        centos7:nfs-server
+Kernel支持:nfs.ko
+端口：2049(nfsd), 其它端口由portmap(111)分配
+配置文件：/etc/exports,/etc/exports.d/*.exports
+CentOS7不支持同一目录同时用nfs和samba共享，因为使用锁机制不同
+相关软件包:rpcbind（必须），tcp_wrappers
+CentOS6开始portmap进程由rpcbind代替
+NFS服务主要进程：
+rpc.nfsd 最主要的NFS进程，管理客户端是否可登录
+rpc.mountd 挂载和卸载NFS文件系统，包括权限管理
+rpc.lockd 非必要，管理文件锁，避免同时写出错
+rpc.statd 非必要，检查文件一致性，可修复文件
+日志：/var/lib/nfs/
+</code></pre><h1 id="配置防火墙，开放NFS服务"><a href="#配置防火墙，开放NFS服务" class="headerlink" title="配置防火墙，开放NFS服务"></a>配置防火墙，开放NFS服务</h1><p>配置NFS使用固定端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sysconfig/nfs</span><br><span class="line">RQUOTAD_PORT=875</span><br><span class="line">LOCKD_TCPPORT=32803</span><br><span class="line">LOCKD_UDPPORT=32769</span><br><span class="line">MOUNTD_PORT=892</span><br><span class="line">STATD_PORT=662</span><br><span class="line">STATD_OUTGOING_PORT=2020</span><br><span class="line">防火墙除开放上述端口，还需开放TCP和UDP的111和2049共4个端口</span><br></pre></td></tr></table></figure></p>
+<h1 id="NFS配置文件"><a href="#NFS配置文件" class="headerlink" title="NFS配置文件"></a>NFS配置文件</h1><p>导出的文件系统的格式:/dir 主机1(opt1,opt2) 主机2(opt1,opt2)…</p>
+<h2 id="主机格式："><a href="#主机格式：" class="headerlink" title="主机格式："></a>主机格式：</h2><pre><code>• 单个主机：ipv4，ipv6，FQDN
+• IP networks：两种掩码格式均支持
+172.18.0.0/255.255.0.0
+172.18.0.0/16
+• wildcards：主机名通配，例如*.magedu.com，IP不可以
+• netgroups：NIS域的主机组，@group_name
+• anonymous：表示使用*通配所有客户端
+</code></pre><h2 id="每个条目指定目录导出到的哪些主机，及相关的权限和选项"><a href="#每个条目指定目录导出到的哪些主机，及相关的权限和选项" class="headerlink" title="每个条目指定目录导出到的哪些主机，及相关的权限和选项"></a>每个条目指定目录导出到的哪些主机，及相关的权限和选项</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">• 默认选项：(ro,sync,root_squash,no_all_squash)</span><br><span class="line">• ro,rw 只读和读写</span><br><span class="line">• async 异步，数据变化后不立即写磁盘，性能高</span><br><span class="line">• sync（1.0.0后为默认）同步，数据在请求时立即写入共享</span><br><span class="line">• no_all_squash （默认）保留共享文件的UID和GID</span><br><span class="line">• all_squash 所有远程用户(包括root)都变成nfsnobody</span><br><span class="line">• root_squash （默认）远程root映射为nfsnobody,UID为65534，早期版本是4294967294 (nfsnobody)</span><br><span class="line">• no_root_squash 远程root映射成root用户</span><br><span class="line">• anonuid和anongid 指明匿名用户映射为特定用户UID和组GID，而非nfsnobody,可配合all_squash使用</span><br></pre></td></tr></table></figure>
+<h2 id="NFS配置示例"><a href="#NFS配置示例" class="headerlink" title="NFS配置示例"></a>NFS配置示例</h2><p>在/etc/exports文件中定义导出目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">• /myshare server.example.com</span><br><span class="line">• /myshare *.example.com</span><br><span class="line">• /myshare server?.example.com</span><br><span class="line">• /myshare server[0-20].example.com</span><br><span class="line">• /myshare 172.25.11.10</span><br><span class="line">• /myshare 172.25.0.0/16</span><br><span class="line">• /myshare 2000:472:18:b51:c32:a21</span><br><span class="line">• /myshare 2000:472:18:b51::/64</span><br><span class="line">• /myshare *.example.com 172.25.0.0/16</span><br><span class="line">• /myshare desktop.example.com(ro)</span><br><span class="line">• /myshare desktop.example.com(ro) server[0-20].example.com(rw)</span><br><span class="line">• /myshare diskless.example.com(rw,no_root_squash)</span><br></pre></td></tr></table></figure></p>
+<h1 id="NFS工具"><a href="#NFS工具" class="headerlink" title="NFS工具"></a>NFS工具</h1><h2 id="rpcinfo"><a href="#rpcinfo" class="headerlink" title="rpcinfo"></a>rpcinfo</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpcinfo -p hostname</span><br><span class="line">rpcinfo –s hostname 查看RPC注册程序</span><br></pre></td></tr></table></figure>
+<h2 id="exportfs"><a href="#exportfs" class="headerlink" title="exportfs"></a>exportfs</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">–v 查看本机所有NFS共享</span><br><span class="line">–r 重读配置文件，并共享目录</span><br><span class="line">–a 输出本机所有共享</span><br><span class="line">–au 停止本机所有共享</span><br></pre></td></tr></table></figure>
+<pre><code>showmount -e hostname 
+mount.nfs 挂载工具
+NFSv4支持通过挂载NFS服务器的共享“根”，从而浏览NFS服务器上的共享目录列表
+mount nfsserver:/ /mnt/nfs
+基于安全考虑，建议使用nosuid,nodev,noexec挂载选项
+
+NFS相关的挂载选项：
+    fg（默认）前台挂载，bg后台挂载
+    hard（默认）持续请求，soft 非持续请求
+    intr 和hard配合，请求可中断
+    rsize和wsize 一次读和写数据最大字节数，rsize=32768
+    _netdev 无网络不挂载
+示例：
+    mount -o rw,nosuid,fg,hard,intr 172.18.0.1:/testdir /mnt/nfs/
+开机挂载:/etc/fstab
+    172.18.0.1:/public /mnt/nfs nfs defaults 0 0
+</code></pre><h1 id="自动挂载"><a href="#自动挂载" class="headerlink" title="自动挂载"></a>自动挂载</h1><pre><code>可使用autofs按需要挂载NFS共享，在空闲时自动卸载
+由autofs包提供
+系统管理器指定由/etc/auto.master自动挂载器守护进程控制的挂载点
+自动挂载监视器访问这些目录并按要求挂载文件系统
+文件系统在失活的指定间隔5分钟后会自动卸载
+为所有导出到网络中的NFS启用特殊匹配 -host 至“browse”
+参看帮助：man 5 autofs
+支持含通配符的目录名
+     * server:/export/&amp;
+</code></pre><h1 id="直接匹配"><a href="#直接匹配" class="headerlink" title="直接匹配"></a>直接匹配</h1><p>直接匹配包括绝对路径名称,不会影响本地目录结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">示例：</span><br><span class="line">    /etc/auto.master:</span><br><span class="line">    /- /etc/auto.direct</span><br><span class="line"></span><br><span class="line">    /etc/auto.direct:</span><br><span class="line">    /foo server1:/export/foo</span><br><span class="line">    /user/local/ server1:/usr/local</span><br></pre></td></tr></table></figure></p>
+<h1 id="实现NFS服务"><a href="#实现NFS服务" class="headerlink" title="实现NFS服务"></a>实现NFS服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">systemctl start nfs-server</span><br><span class="line">systemctl enable nfs-server</span><br><span class="line">mkdir /nfsshare</span><br><span class="line">chown nfsnobody /nfsshare</span><br><span class="line">vi /etc/exports</span><br><span class="line"> /nfsshare 192.168.50.0/24(rw)</span><br><span class="line">exporfs –r</span><br><span class="line">mkdir /mnt/nfsshare</span><br><span class="line">mount 192.1168.50.7:/nfsshare /mnt/nfsshare</span><br><span class="line">vim /etc/fstab</span><br><span class="line"> 192.168.50.7:/nfsshare /mnt/nfsshare nfs defaults 0 0 </span><br><span class="line">mount -a</span><br></pre></td></tr></table></figure>
+<h1 id="实现NFS伪根"><a href="#实现NFS伪根" class="headerlink" title="实现NFS伪根"></a>实现NFS伪根</h1><p>配置NFS服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/fstab</span><br><span class="line">/data/read /exports/read none bind 0 0 </span><br><span class="line">/data2/write /exports/write none bind 0 0 </span><br><span class="line"></span><br><span class="line">vi /etc/exports</span><br><span class="line">/exports *(fsid=0,ro,crossmnt)</span><br><span class="line">/exports/read 192.168.0.0/24(ro)</span><br><span class="line">/exports/write 192.168.0.0/24(rw)</span><br></pre></td></tr></table></figure></p>
+<p>配置NFS客户端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mount nfsserver:/ /mnt/nfs</span><br><span class="line">vi /etc/fstab</span><br><span class="line">nfsserver:/ /mnt/ nfs4 ro 0 0</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/19/FTP服务/" rel="next" title="FTP服务">
+                <i class="fa fa-chevron-left"></i> FTP服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/19/SAMBA服务/" rel="prev" title="SAMBA服务">
+                SAMBA服务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NFS服务介绍"><span class="nav-number">1.</span> <span class="nav-text">NFS服务介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置防火墙，开放NFS服务"><span class="nav-number">2.</span> <span class="nav-text">配置防火墙，开放NFS服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NFS配置文件"><span class="nav-number">3.</span> <span class="nav-text">NFS配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主机格式："><span class="nav-number">3.1.</span> <span class="nav-text">主机格式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#每个条目指定目录导出到的哪些主机，及相关的权限和选项"><span class="nav-number">3.2.</span> <span class="nav-text">每个条目指定目录导出到的哪些主机，及相关的权限和选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFS配置示例"><span class="nav-number">3.3.</span> <span class="nav-text">NFS配置示例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NFS工具"><span class="nav-number">4.</span> <span class="nav-text">NFS工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rpcinfo"><span class="nav-number">4.1.</span> <span class="nav-text">rpcinfo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exportfs"><span class="nav-number">4.2.</span> <span class="nav-text">exportfs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自动挂载"><span class="nav-number">5.</span> <span class="nav-text">自动挂载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#直接匹配"><span class="nav-number">6.</span> <span class="nav-text">直接匹配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现NFS服务"><span class="nav-number">7.</span> <span class="nav-text">实现NFS服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现NFS伪根"><span class="nav-number">8.</span> <span class="nav-text">实现NFS伪根</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

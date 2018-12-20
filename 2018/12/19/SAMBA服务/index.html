@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="SAMBA服务简介SMB：Server Message Block服务器消息块，IBM发布，最早是DOS网络文件共享协议 Cifs：common internet file system，微软基于SMB发布 SAMBA:1991年Andrew Tridgell,实现windows和UNIX相通 SAMBA的功能： • 共享文件和打印，实现在线编辑 • 实现登录SAMBA用户的身份认证 • 可以进行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SAMBA服务">
+<meta property="og:url" content="http://yoursite.com/2018/12/19/SAMBA服务/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="SAMBA服务简介SMB：Server Message Block服务器消息块，IBM发布，最早是DOS网络文件共享协议 Cifs：common internet file system，微软基于SMB发布 SAMBA:1991年Andrew Tridgell,实现windows和UNIX相通 SAMBA的功能： • 共享文件和打印，实现在线编辑 • 实现登录SAMBA用户的身份认证 • 可以进行">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-20T11:53:34.119Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SAMBA服务">
+<meta name="twitter:description" content="SAMBA服务简介SMB：Server Message Block服务器消息块，IBM发布，最早是DOS网络文件共享协议 Cifs：common internet file system，微软基于SMB发布 SAMBA:1991年Andrew Tridgell,实现windows和UNIX相通 SAMBA的功能： • 共享文件和打印，实现在线编辑 • 实现登录SAMBA用户的身份认证 • 可以进行">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/19/SAMBA服务/"/>
+
+
+
+
+
+  <title>SAMBA服务 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/19/SAMBA服务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SAMBA服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-19T21:02:50+08:00">
+                2018-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/SAMBA服务/" itemprop="url" rel="index">
+                    <span itemprop="name">SAMBA服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="SAMBA服务简介"><a href="#SAMBA服务简介" class="headerlink" title="SAMBA服务简介"></a>SAMBA服务简介</h1><p>SMB：Server Message Block服务器消息块，IBM发布，最早是DOS网络文件共享协议</p>
+<p>Cifs：common internet file system，微软基于SMB发布</p>
+<p>SAMBA:1991年Andrew Tridgell,实现windows和UNIX相通</p>
+<pre><code>SAMBA的功能：
+• 共享文件和打印，实现在线编辑
+• 实现登录SAMBA用户的身份认证
+• 可以进行NetBIOS名称解析
+• 外围设备共享
+
+计算机网络管理模式：
+• 工作组WORKGROUP：计算机对等关系，帐号信息各自管理
+• 域DOMAIN:C/S结构，帐号信息集中管理，DC,AD
+</code></pre><h1 id="SAMBA服务"><a href="#SAMBA服务" class="headerlink" title="SAMBA服务"></a>SAMBA服务</h1><h2 id="相关包："><a href="#相关包：" class="headerlink" title="相关包："></a>相关包：</h2><pre><code>Samba 提供smb服务
+Samba-client 客户端软件
+samba-common 通用软件
+cifs-utils smb客户端工具
+samba-winbind 和AD相关
+</code></pre><h2 id="相关服务进程："><a href="#相关服务进程：" class="headerlink" title="相关服务进程："></a>相关服务进程：</h2><pre><code>smbd 提供smb（cifs）服务 TCP:139,445
+nmbd NetBIOS名称解析 UDP:137,138
+主配置文件：/etc/samba/smb.conf
+帮助参看：man smb.conf
+语法检查： testparm [-v] [/etc/samba/smb.conf]
+客户端工具：smbclient,mount.cifs
+</code></pre><h1 id="SAMBA服务器配置"><a href="#SAMBA服务器配置" class="headerlink" title="SAMBA服务器配置"></a>SAMBA服务器配置</h1><p>smb.conf继承了.ini文件的格式，用[ ] 分成不同的部分</p>
+<p>全局设置：[ global ] 服务器通用或全局设置的部分</p>
+<p>特定共享设置：</p>
+<pre><code>[homes] 用户的家目录共享
+[printers] 定义打印机资源和服务
+[sharename] 自定义的共享目录配置
+</code></pre><p>其中：#和;开头的语句为注释，大小写不敏感</p>
+<p>宏定义：</p>
+<pre><code>%m 客户端主机的NetBIOS名    %M 客户端主机的FQDN
+%H 当前用户家目录路径        %U 当前用户用户名
+%g 当前用户所属组            %h samba服务器的主机名
+%L samba服务器的NetBIOS名   %I 客户端主机的IP
+%T 当前日期和时间            %S 可登录的用户名
+</code></pre><h1 id="SAMBA服务器全局配置"><a href="#SAMBA服务器全局配置" class="headerlink" title="SAMBA服务器全局配置"></a>SAMBA服务器全局配置</h1><pre><code>workgroup 指定工作组名称
+server string 主机注释信息
+netbios name 指定NetBIOS名
+interfaces 指定服务侦听接口和IP
+</code></pre><p>hosts allow 可用“,” ，空格，或tab分隔，默认允许所有主机访问，也可在每个共享独立配置，如在[global]设置，将应用并覆盖所有共享设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">IPv4 network/prefix: 172.25.0.0/24 IPv4前缀: 172.25.0.</span><br><span class="line">IPv4 network/netmask: 172.25.0.0/255.255.255.0</span><br><span class="line">主机名: desktop.example.com </span><br><span class="line">以example.com后缀的主机名: .example.com</span><br><span class="line"> 示例：</span><br><span class="line">hosts allow = 172.25.  #最后.不能省略</span><br><span class="line">hosts allow = 172.25. .example.com</span><br></pre></td></tr></table></figure></p>
+<pre><code>hosts deny 拒绝指定主机访问
+config file=/etc/samba/conf.d/%U 用户独立的配置文件
+Log file=/var/log/samba/log.%m 不同客户机采用不同日志
+log level = 2 日志级别，默认为0，不记录日志
+max log size=50 日志文件达到50K，将轮循rotate,单位KB
+</code></pre><p>Security三种认证方式：<br>        share：匿名(CentOS7不再支持)<br>        user：samba用户（采有linux用户，samba的独立口令）<br>        domain：使用DC（DOMAIN CONTROLLER)认证</p>
+<p>passdb backend = tdbsam 密码数据库格式</p>
+<p>实现samba用户：<br>        包： samba-common-tools<br>        工具：smbpasswd pdbedit<br>        samba用户须是Linux用户，建议使用/sbin/nologin</p>
+<h1 id="管理SAMBA用户"><a href="#管理SAMBA用户" class="headerlink" title="管理SAMBA用户"></a>管理SAMBA用户</h1><p>添加samba用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd -a &lt;user&gt;</span><br><span class="line">pdbedit -a -u &lt;user&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改用户密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd &lt;user&gt;</span><br></pre></td></tr></table></figure></p>
+<p>删除用户和密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">smbpasswd –x &lt;user&gt;</span><br><span class="line">pdbedit –x –u &lt;user&gt;</span><br></pre></td></tr></table></figure></p>
+<p>查看samba用户列表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/lib/samba/private/passdb.tdb</span><br><span class="line">pdbedit –L –v</span><br></pre></td></tr></table></figure></p>
+<p>查看samba服务器状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbstatus</span><br></pre></td></tr></table></figure></p>
+<h1 id="配置目录共享"><a href="#配置目录共享" class="headerlink" title="配置目录共享"></a>配置目录共享</h1><p>每个共享目录应该有独立的[ ]部分</p>
+<pre><code>[ 共享名称 ] 远程网络看到的共享名称
+ comment 注释信息
+ path 所共享的目录路径
+ public 能否被guest访问的共享，默认no，和guest ok 类似
+ browsable 是否允许所有用户浏览此共享,默认为yes,no为隐藏
+ writable=yes 可以被所有用户读写，默认为no
+ read only=no 和writable=yes等价，如与以上设置冲突，放在后面的设置生效，默认只读
+ write list 三种形式：用户，@组名，+组名,用，分隔
+如writable=no，列表中用户或组可读写，不在列表中用户只读
+valid users 特定用户才能访问该共享，如为空，将允许所有用户，用户名之间用空格分隔
+</code></pre><h2 id="基于特定用户和组的共享"><a href="#基于特定用户和组的共享" class="headerlink" title="基于特定用户和组的共享"></a>基于特定用户和组的共享</h2><p>编辑/etc/samba/smb.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[share]</span><br><span class="line">path = /app/dir</span><br><span class="line">valid users=wpy,@admins</span><br><span class="line">writeable = no</span><br><span class="line">browseable = no</span><br></pre></td></tr></table></figure></p>
+<h2 id="SMB客户端访问"><a href="#SMB客户端访问" class="headerlink" title="SMB客户端访问"></a>SMB客户端访问</h2><p>UNC路径: Universal Naming Convention,通用命名规范  格式：\sambaserver\sharename</p>
+<p>终端下使用smbclient登录服务器<br>    smbclient -L instructor.example.com<br>    smbclient -L instructor.example.com -U wang<br>    &gt; cd directory<br>    &gt; get file1<br>    &gt; put file2<br>    smbclient //instructor.example.com/shared -U wang<br>可以使用-U选项来指定用户%密码，或通过设置和导出USER和PASSWD环境变量来指定</p>
+<h1 id="挂载CIFS文件系统"><a href="#挂载CIFS文件系统" class="headerlink" title="挂载CIFS文件系统"></a>挂载CIFS文件系统</h1><p>手动挂载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t cifs -o user=wpy,password=123456 //192.168.50.7/share /mnt/smb</span><br></pre></td></tr></table></figure></p>
+<p>开机自动挂载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/fstab 可以用文件代替用户名和密码的输入</span><br><span class="line">//192.168.50.7/share /mnt cifs credentials=/etc/smb.txt 0 0</span><br><span class="line">cat /etc/smb.txt</span><br><span class="line">username=wang</span><br><span class="line">password=password</span><br><span class="line">chmod 600 /etc/smb.txt</span><br></pre></td></tr></table></figure></p>
+<h1 id="实现SMB共享"><a href="#实现SMB共享" class="headerlink" title="实现SMB共享"></a>实现SMB共享</h1><p>1.在samba服务器上安装samba包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install samba</span><br></pre></td></tr></table></figure></p>
+<p>2.创建samba用户和组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">groupadd -r admins</span><br><span class="line">useradd -s /sbin/nologin -G admins wpy</span><br><span class="line">smbpasswd -a wpy</span><br><span class="line">useradd -s /sbin/nologin wang</span><br><span class="line">smbpasswd -a wang</span><br></pre></td></tr></table></figure></p>
+<p>3.创建samba共享目录,并设置SElinux<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mkdir /testdir/smbshare</span><br><span class="line">chgrp admins /testdir/smbshare</span><br><span class="line">chmod 2775 /testdir/smbshare</span><br><span class="line"></span><br><span class="line">semanage fcontext -a -t samba_share_t &apos;/testdir/smbshare(/.*)?&apos;</span><br><span class="line">restorecon -vvFR /testdir/smbshare</span><br><span class="line"></span><br><span class="line">vim /etc/samba/smb.conf</span><br><span class="line">security = user</span><br><span class="line"> passdb backend = tdbsam</span><br><span class="line"> [share]</span><br><span class="line"> path = /testdir/smbshare</span><br><span class="line"> write list = @admins</span><br><span class="line"></span><br><span class="line">systemctl start smb nmb</span><br><span class="line">systemctl enable smb nmb</span><br><span class="line">firewall-cmd --permanent --add-service=samba</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure></p>
+<p>4.samba客户端访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">安装包</span><br><span class="line">yum -y install cifs-utils</span><br><span class="line"></span><br><span class="line">用wang用户挂载smb共享并访问</span><br><span class="line">mkdir /mnt/wpy</span><br><span class="line">mount -o username=wpy //smbserver/share /mnt/wpy</span><br><span class="line">echo &quot;Hello wpy&quot; &gt;/mnt/wpy/wpyfile.txt</span><br><span class="line"></span><br><span class="line">用wang用户挂载smb共享并访问</span><br><span class="line">mkdir /mnt/wang</span><br><span class="line">mount -o username=wang //smbserver/share /mnt/wang</span><br><span class="line">touch /mnt/wang/wangfile.txt</span><br></pre></td></tr></table></figure></p>
+<h1 id="多用户SMB挂载"><a href="#多用户SMB挂载" class="headerlink" title="多用户SMB挂载"></a>多用户SMB挂载</h1><p>SAMBA共享默认只支持同时用一个用户挂载SMB共享</p>
+<p>CentOS7中可启用多用户挂载功能</p>
+<p>客户端挂载samba共享目录后，在客户端登录的不同用户访问同一个samba的挂载点，可获得不同权限</p>
+<p>1.samba服务器配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">yum install samba</span><br><span class="line">mkdir /multiuser</span><br><span class="line">vim /etc/samba/smb.conf</span><br><span class="line">[smbshare]</span><br><span class="line">path=/multiuser</span><br><span class="line">writable=no</span><br><span class="line">write list= @admins</span><br></pre></td></tr></table></figure></p>
+<p>2.samba服务器创建samba用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">useradd –s /sbin/nologin smbuser</span><br><span class="line"> smbpasswd –a smbuser</span><br><span class="line"> useradd –s /sbin/nologin –G admins wpy</span><br><span class="line"> smbpasswd –a wpy</span><br><span class="line"> useradd –s /sbin/nologin wang </span><br><span class="line"> smbpasswd –a wang</span><br></pre></td></tr></table></figure></p>
+<p>3.samba服务器设置目录权限和SELinux<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">对wang,admins组分配目录读写权限</span><br><span class="line">chmod 777 /testdir/multiuser</span><br><span class="line">或者</span><br><span class="line">setfacl –m u:wang:rwx /testdir/multiuser</span><br><span class="line">setfacl –m g:admins:rwx /testdir/multiuser</span><br><span class="line"></span><br><span class="line">设置SELinux标签：</span><br><span class="line">semanage fcontext -a -t samba_share_t &apos;/testdir/multiuser (/.*)?&apos;</span><br><span class="line">restorecon /testdir/multiuser</span><br></pre></td></tr></table></figure></p>
+<p>4.samba客户端启用多用户挂载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">yum -y install cifs-utils</span><br><span class="line">mkdir /mnt/smb</span><br><span class="line">echo &apos;username=smbuser&apos; &gt;/etc/multiuser</span><br><span class="line">echo &apos;password=centos&apos; &gt;&gt;/etc/multiuser</span><br><span class="line">chmod 600 /etc/multiuser</span><br><span class="line"></span><br><span class="line">以多用户方式挂载：</span><br><span class="line">vim /etc/fstab</span><br><span class="line"> //smbserver/smbshare /mnt/smb cifs credentials=/etc/multiuser,multiuser 0 0</span><br><span class="line">mount -a</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/19/NFS服务/" rel="next" title="NFS服务">
+                <i class="fa fa-chevron-left"></i> NFS服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/20/Inotify和rsync实现数据实时同步/" rel="prev" title="Inotify和rsync实现数据实时同步">
+                Inotify和rsync实现数据实时同步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SAMBA服务简介"><span class="nav-number">1.</span> <span class="nav-text">SAMBA服务简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SAMBA服务"><span class="nav-number">2.</span> <span class="nav-text">SAMBA服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关包："><span class="nav-number">2.1.</span> <span class="nav-text">相关包：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关服务进程："><span class="nav-number">2.2.</span> <span class="nav-text">相关服务进程：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SAMBA服务器配置"><span class="nav-number">3.</span> <span class="nav-text">SAMBA服务器配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SAMBA服务器全局配置"><span class="nav-number">4.</span> <span class="nav-text">SAMBA服务器全局配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#管理SAMBA用户"><span class="nav-number">5.</span> <span class="nav-text">管理SAMBA用户</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置目录共享"><span class="nav-number">6.</span> <span class="nav-text">配置目录共享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于特定用户和组的共享"><span class="nav-number">6.1.</span> <span class="nav-text">基于特定用户和组的共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SMB客户端访问"><span class="nav-number">6.2.</span> <span class="nav-text">SMB客户端访问</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#挂载CIFS文件系统"><span class="nav-number">7.</span> <span class="nav-text">挂载CIFS文件系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现SMB共享"><span class="nav-number">8.</span> <span class="nav-text">实现SMB共享</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多用户SMB挂载"><span class="nav-number">9.</span> <span class="nav-text">多用户SMB挂载</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
