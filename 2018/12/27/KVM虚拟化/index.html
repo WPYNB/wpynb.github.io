@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="KVMKVM（基于内核的虚拟机）【刚开始是一家以色列的公司开发的，后来红帽觉得KVM很有前景，就把KVM收购了】。  kvm: Kernel-based Virtual Machine     Qumranet公司 –&amp;gt; RedHat         (1) X86_64         (2) HVM:             Intel VT             AMD AMD-v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVM虚拟化">
+<meta property="og:url" content="http://yoursite.com/2018/12/27/KVM虚拟化/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="KVMKVM（基于内核的虚拟机）【刚开始是一家以色列的公司开发的，后来红帽觉得KVM很有前景，就把KVM收购了】。  kvm: Kernel-based Virtual Machine     Qumranet公司 –&amp;gt; RedHat         (1) X86_64         (2) HVM:             Intel VT             AMD AMD-v">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/kvm1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/kvm2.png">
+<meta property="og:image" content="http://yoursite.com/images/kvm3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/kvm4.png">
+<meta property="og:image" content="http://yoursite.com/images/kvm5.png">
+<meta property="og:image" content="http://yoursite.com/images/kvm6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/kvm7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/kvm8.jpg">
+<meta property="og:updated_time" content="2018-12-27T03:15:15.644Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVM虚拟化">
+<meta name="twitter:description" content="KVMKVM（基于内核的虚拟机）【刚开始是一家以色列的公司开发的，后来红帽觉得KVM很有前景，就把KVM收购了】。  kvm: Kernel-based Virtual Machine     Qumranet公司 –&amp;gt; RedHat         (1) X86_64         (2) HVM:             Intel VT             AMD AMD-v">
+<meta name="twitter:image" content="http://yoursite.com/images/kvm1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/27/KVM虚拟化/"/>
+
+
+
+
+
+  <title>KVM虚拟化 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/KVM虚拟化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KVM虚拟化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T10:10:16+08:00">
+                2018-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/KVM虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">KVM虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="KVM"><a href="#KVM" class="headerlink" title="KVM"></a>KVM</h1><p>KVM（基于内核的虚拟机）【刚开始是一家以色列的公司开发的，后来红帽觉得KVM很有前景，就把KVM收购了】。 </p>
+<pre><code>kvm: Kernel-based Virtual Machine
+    Qumranet公司 –&gt; RedHat
+        (1) X86_64
+        (2) HVM:
+            Intel VT
+            AMD AMD-v
+
+KVM包含了一个内核加载模块，是一个.ko文件，这个KVM模块只负责的是：1、虚拟机的虚拟CPU也就是vCPU 2、对虚拟内存进行管理和调度。还有一个就是下面说的QEMU-KVM，这个QEMU-KVM就是通过修改QEMU代码而得出的专门用来创建和管理虚拟机的管理工具，是为了KVM能更好的和内核打交道。VM 运行期间，QEMU 会通过 KVM 模块提供的系统调用进入内核，由 KVM 负责将虚拟机置于处理的特殊模式运行
+</code></pre><p>但是我们知道虚拟机只有cpu和内存是完全不够的，他还要有外设，那么如何管理所需要的这些外设呢：<br>    首先这些外设分为真实存在的外设和虚拟的外设，真实的外设需要利用linux系统内核来管理。一般来说我们使用的还是虚拟的外设，而虚拟机要与虚拟的外设交互的话，就需要依靠虚拟化技术的另外一个项目QEMU，很多设备都采用了QEMU的虚拟外设。</p>
+<p>从而我们就会有一个结论：<br>    1、KVM本身只关注虚拟机调度和内存管理这两个方面<br>    2、外设的任务交给我们上面说的linux 内核或者是QEMU。 所以KVM就是一个轻量级的Hypervisor。</p>
+<h2 id="kvm组件"><a href="#kvm组件" class="headerlink" title="kvm组件"></a>kvm组件</h2><pre><code>两类组件：
+    (kvm.ko)/dev/kvm：工作为hypervisor，在用户空间可通过系统调用ioctl()与内核中的kvm模块交互，从而完成虚拟机的创建、启动、停止、删除等各种管理功能；
+    qemu-kvm进程：工作于用户空间，用于实现IO设备模拟；用于实现一个虚拟机实
+
+KVM模块load进内存之后，系统的运行模式：
+    内核模式：GuestOS执行IO类的操作时，或其它的特殊指令操作时的模式；它也被称为“Guest-Kernel”模式
+    用户模式：Host OS的用户空间，用于代为GuestOS发出IO请求；
+    来宾模式：GuestOS的用户模式；所有的非IO类请求；
+
+运行中的一个kvm虚拟机就是一个qemu-kvm进程，运行qemu-kvm程序并传递给它合适的选项及参数即能完成虚拟机启动，终止此进程即能关闭虚拟机；
+</code></pre><h1 id="安装KVM"><a href="#安装KVM" class="headerlink" title="安装KVM"></a>安装KVM</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">安装使用KVM:</span><br><span class="line">			判断CPU是否支持硬件虚拟化：</span><br><span class="line">				# grep -i -E &apos;(vmx|svm|lm)&apos; /proc/cpuinfo</span><br><span class="line">					vmx：Intel VT-x</span><br><span class="line">					svm：AMD AMD-v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">加载kvm模块使得内核支持kvm,并判断是否成功加载此模块</span><br><span class="line">  [root@centos7 ~]# modprobe kvm</span><br><span class="line">  [root@centos7 ~]# lsmod | grep kvm</span><br><span class="line">  kvm_intel             174841  0 </span><br><span class="line">  kvm                   578518  1 kvm_intel</span><br><span class="line">  irqbypass              13503  1 kvm</span><br><span class="line">  [root@centos7 ~]# file /dev/kvm （字符设备）</span><br><span class="line">  /dev/kvm: character special</span><br><span class="line">安装所需包</span><br><span class="line"> yum install libvirt-daemon-kvm qemu-kvm virt-manager libvirt qemu-kvm-tools</span><br><span class="line"></span><br><span class="line">qemu-kvm： /usr/libexec/qemu-kvm   命令行工具被放在了非PATH变量中，红帽防止用户手动创建虚拟主机。此工具很底层</span><br><span class="line"></span><br><span class="line">virt-manager： 管理kvm(libvirt-daemon-kvm守护进程工具 qemu-kvm  virt-manager图形化工具 libvirt库</span><br><span class="line">因为已经安装图形化界面的管理工具，确保宿主机上已经安装图像化相关的库 yum groupinstall GNOME Desktop</span><br><span class="line"></span><br><span class="line">启动</span><br><span class="line">systemctl start libvirtd</span><br><span class="line"></span><br><span class="line">libvirtd安装好默认仅提供了一个net网络</span><br><span class="line">创建桥接网络</span><br><span class="line">    将物理网卡当交换机及使用</span><br><span class="line">    将软交换机当物理网卡使用</span><br><span class="line">创建物理桥（交换机）</span><br><span class="line">  [root@centos7 ~]# cd /etc/sysconfig/network-scripts/</span><br><span class="line">  [root@centos7 network-scripts]# cp ifcfg-ens33 ifcfg-br0</span><br><span class="line"></span><br><span class="line">配置网卡的配置文件，使br0当网卡使用，将ens37当交换机使用</span><br><span class="line">    [root@centos7 network-scripts]# vim ifcfg-ens33</span><br><span class="line">    TYPE=Ethernet</span><br><span class="line">    PROXY_METHOD=none</span><br><span class="line">    BROWSER_ONLY=no</span><br><span class="line">    BOOTPROTO=dhcp</span><br><span class="line">    DEFROUTE=yes</span><br><span class="line">    IPV4_FAILURE_FATAL=no</span><br><span class="line">    NAME=ens33</span><br><span class="line">    DEVICE=ens33</span><br><span class="line">    ONBOOT=yes</span><br><span class="line">    IPV6_PRIVACY=no</span><br><span class="line">    BRIDGE=br0</span><br><span class="line">[root@centos7 network-scripts]# vim ifcfg-br0 </span><br><span class="line">    TYPE=Bridge</span><br><span class="line">    PROXY_METHOD=none</span><br><span class="line">    BROWSER_ONLY=no</span><br><span class="line">    BOOTPROTO=static</span><br><span class="line">    DEFROUTE=yes</span><br><span class="line">    IPV4_FAILURE_FATAL=no</span><br><span class="line">    NAME=br0</span><br><span class="line">    DEVICE=br0</span><br><span class="line">    ONBOOT=yes</span><br><span class="line">    IPV6_PRIVACY=no</span><br><span class="line">    IPADDR=172.18.50.107</span><br><span class="line">    GATEWAY=172.18.0.1</span><br><span class="line">    NETMASK=255.255.0.0</span><br><span class="line">    DNS1=223.6.6.6</span><br><span class="line">    DNS2=114.114.114.114</span><br><span class="line"></span><br><span class="line">systemctl restart network</span><br><span class="line"></span><br><span class="line">此时br0已经是网卡了，ens37变成了交换机</span><br><span class="line">[root@centos7 network-scripts]# ifconfig</span><br><span class="line">br0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.18.50.107  netmask 255.255.0.0  broadcast 172.18.255.255</span><br><span class="line">        inet6 fe80::20c:29ff:fef8:4b5a  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:0c:29:f8:4b:5a  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 157780  bytes 14794850 (14.1 MiB)</span><br><span class="line">        RX errors 0  dropped 10  overruns 0  frame 0</span><br><span class="line">        TX packets 76132  bytes 293221393 (279.6 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        ether 00:0c:29:f8:4b:5a  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 502719  bytes 332069228 (316.6 MiB)</span><br><span class="line">        RX errors 0  dropped 130  overruns 0  frame 0</span><br><span class="line">        TX packets 227543  bytes 505368303 (481.9 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure>
+<h1 id="使用kvm安装虚拟机"><a href="#使用kvm安装虚拟机" class="headerlink" title="使用kvm安装虚拟机"></a>使用kvm安装虚拟机</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">查看网卡已经多了一个virbr0b设备，次接口是libvirtd自动生成的net模式类型的接口</span><br><span class="line">    [root@centos7 ~]# ssh -X 安装kvm的主机地址</span><br><span class="line">    [root@centos7 ~]# systemctl start libvirtd</span><br><span class="line"></span><br><span class="line">检查libvirtd程序是否启动，级运行virt-manager图形化</span><br><span class="line">  [root@centos7 ~]# systemctl status libvirtd</span><br><span class="line">  [root@centos7 ~]# virt-manager</span><br></pre></td></tr></table></figure>
+<p>我这里有pxe安装环境，使用pxe安装测试</p>
+<p><img src="/images/kvm1.jpg" alt="Alt text"></p>
+<p><img src="/images/kvm2.png" alt="Alt text"></p>
+<p><img src="/images/kvm3.jpg" alt="Alt text"></p>
+<p><img src="/images/kvm4.png" alt="Alt text"></p>
+<p><img src="/images/kvm5.png" alt="Alt text"></p>
+<p>使用本地的镜像（导入现有磁盘映像）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]# ls</span><br><span class="line">cirros-0.3.0-x86_64-disk.img</span><br><span class="line">[root@centos7 ~]# mkdir /VMs</span><br><span class="line">[root@centos7 ~]# mv cirros-0.3.0-x86_64-disk.img /VMs/</span><br><span class="line">[root@centos7 ~]# cd /VMs/</span><br><span class="line">[root@centos7 VMs]# ls</span><br><span class="line">cirros-0.3.0-x86_64-disk.img</span><br><span class="line">[root@centos7 VMs]# mkdir vm&#123;1,2,3&#125;</span><br><span class="line">[root@centos7 VMs]# </span><br><span class="line">[root@centos7 VMs]# cp cirros-0.3.0-x86_64-disk.img vm1/vm1.img</span><br><span class="line">[root@centos7 VMs]# cp cirros-0.3.0-x86_64-disk.img vm2/vm2.img</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/kvm6.jpg" alt="Alt text"></p>
+<p><img src="/images/kvm7.jpg" alt="Alt text"></p>
+<p>点击Browse Local本地浏览<br><img src="/images/kvm8.jpg" alt="Alt text"></p>
+<h1 id="使用命令管理虚拟机"><a href="#使用命令管理虚拟机" class="headerlink" title="使用命令管理虚拟机"></a>使用命令管理虚拟机</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">显示正在运行的虚拟机</span><br><span class="line">virsh list</span><br><span class="line">显示所有虚拟机</span><br><span class="line">virsh list --all</span><br><span class="line">启动虚拟机</span><br><span class="line">virsh start 虚拟机名</span><br><span class="line">强制关闭</span><br><span class="line">virsh destroy </span><br><span class="line">移除虚拟机</span><br><span class="line">virsh undefine </span><br><span class="line">开机自启</span><br><span class="line">virsh autostart </span><br><span class="line">挂起服务器</span><br><span class="line">virsh suspend </span><br><span class="line">恢复服务器</span><br><span class="line">virsh resume</span><br><span class="line">停止虚拟机</span><br><span class="line">virsh shutdown</span><br><span class="line">导出虚拟机的配置文件</span><br><span class="line">[root@kvm qemu]# pwd</span><br><span class="line">/etc/libvirt/qemu</span><br><span class="line">virsh dumpxml CentOS6 &gt; test-CentOS6.xml</span><br><span class="line">测试文件格式</span><br><span class="line">virsh define</span><br><span class="line">创建快照</span><br><span class="line">virsh snapshot-create</span><br><span class="line">查看快照</span><br><span class="line">virsh snapshot-list</span><br><span class="line">恢复快照</span><br><span class="line">virsh snapshot-revert</span><br><span class="line">删除快照</span><br><span class="line">virsh snapshot-delete</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/22/iptables/" rel="next" title="Linux防火墙iptables">
+                <i class="fa fa-chevron-left"></i> Linux防火墙iptables
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#KVM"><span class="nav-number">1.</span> <span class="nav-text">KVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kvm组件"><span class="nav-number">1.1.</span> <span class="nav-text">kvm组件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装KVM"><span class="nav-number">2.</span> <span class="nav-text">安装KVM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用kvm安装虚拟机"><span class="nav-number">3.</span> <span class="nav-text">使用kvm安装虚拟机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用命令管理虚拟机"><span class="nav-number">4.</span> <span class="nav-text">使用命令管理虚拟机</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

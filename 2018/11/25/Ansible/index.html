@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="海之子">
 <meta property="og:description" content="Ansible特性1.模块化：调用特定的模块，完成特定任务 2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块 3.支持自定义模块 4.基于Python语言实现 5.部署简单，基于python和SSH(默认已安装)，agentless 6.安全，基于OpenSSH 7.支持playbook编排任务 8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况 9">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-27T09:38:46.896Z">
+<meta property="og:updated_time" content="2018-12-27T03:24:33.028Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ansible">
 <meta name="twitter:description" content="Ansible特性1.模块化：调用特定的模块，完成特定任务 2.有Paramiko，PyYAML，Jinja2（模板语言）三个关键模块 3.支持自定义模块 4.基于Python语言实现 5.部署简单，基于python和SSH(默认已安装)，agentless 6.安全，基于OpenSSH 7.支持playbook编排任务 8.幂等性：一个任务执行1遍和执行n遍效果一样，不因重复执行带来意外情况 9">
@@ -375,7 +375,7 @@
 <h1 id="ansible的Host-pattern"><a href="#ansible的Host-pattern" class="headerlink" title="ansible的Host-pattern"></a>ansible的Host-pattern</h1><p>ALL表示所有清单中的所有主机<br>    ansible all -m ping</p>
 <p><code>*</code>通配符<br>    ansible 192.168.50. *  -m ping</p>
 <p><code>:</code>表示主机清单的中的或的关系<br>    ansible “websrvs:appsrvs” -m ping</p>
-<p><code>:</code>&amp;表示主机清单中与的关系<br>    ansible “websrvs:&amp;dbsrvs” -m ping</p>
+<p><code>:&amp;</code>表示主机清单中与的关系<br>    ansible “websrvs:&amp;dbsrvs” -m ping</p>
 <p><code>:!</code>表示主机清单内非的关系<br>    ansible ‘websrvs:!dbsrvs’ -m ping<br>    在websrvs，但不在dbsrvs的主机列表<br>    注意：单使用非的关系时，需要用单引号</p>
 <h1 id="ansible的常用模块"><a href="#ansible的常用模块" class="headerlink" title="ansible的常用模块"></a>ansible的常用模块</h1><h2 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h2><pre><code>ansible websrvs -m ping
     验证主机该清单内主机的在线与否
@@ -593,7 +593,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">47</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -604,7 +604,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">48</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
