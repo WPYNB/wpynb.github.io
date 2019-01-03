@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="docker：容器使用的前端工具     组件：(彼此间通过http/https协议进行通讯)         Client : 客户端         Daemon ：docker守护进程、服务端         Registry : docker镜像仓库 docker安装123456789101112131415161718192021222324252627282930313233343">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker应用基础">
+<meta property="og:url" content="http://yoursite.com/2019/01/03/Docker应用基础/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="docker：容器使用的前端工具     组件：(彼此间通过http/https协议进行通讯)         Client : 客户端         Daemon ：docker守护进程、服务端         Registry : docker镜像仓库 docker安装123456789101112131415161718192021222324252627282930313233343">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/docker1.png">
+<meta property="og:image" content="http://yoursite.com/images/docker2.png">
+<meta property="og:image" content="http://yoursite.com/images/docker3.png">
+<meta property="og:image" content="http://yoursite.com/images/docker4.png">
+<meta property="og:image" content="http://yoursite.com/images/docker5.png">
+<meta property="og:image" content="http://yoursite.com/images/docker6.png">
+<meta property="og:image" content="http://yoursite.com/images/docker7.png">
+<meta property="og:image" content="http://yoursite.com/images/docker8.png">
+<meta property="og:updated_time" content="2019-01-03T05:57:25.991Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker应用基础">
+<meta name="twitter:description" content="docker：容器使用的前端工具     组件：(彼此间通过http/https协议进行通讯)         Client : 客户端         Daemon ：docker守护进程、服务端         Registry : docker镜像仓库 docker安装123456789101112131415161718192021222324252627282930313233343">
+<meta name="twitter:image" content="http://yoursite.com/images/docker1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/03/Docker应用基础/"/>
+
+
+
+
+
+  <title>Docker应用基础 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/Docker应用基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker应用基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T13:01:01+08:00">
+                2019-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Docker应用基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker应用基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/docker1.png" alt="Alt text"></p>
+<p><img src="/images/docker2.png" alt="Alt text"></p>
+<pre><code>docker：容器使用的前端工具
+    组件：(彼此间通过http/https协议进行通讯)
+        Client : 客户端
+        Daemon ：docker守护进程、服务端
+        Registry : docker镜像仓库
+</code></pre><h1 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 yum.repos.d]# ntpdata ...    #确保时间同步</span><br><span class="line"></span><br><span class="line">下载docker yum源</span><br><span class="line">[root@centos7 yum.repos.d]# pwd</span><br><span class="line">/etc/yum.repos.d</span><br><span class="line">[root@centos7 yum.repos.d]# wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo     #下载的docker源为阿里云</span><br><span class="line"></span><br><span class="line">安装docker-ce社区版</span><br><span class="line">如果有报错</span><br><span class="line">Error: Package: 3:docker-ce-18.09.0-3.el7.x86_64 (docker-ce-stable)</span><br><span class="line">           Requires: container-selinux &gt;= 2.9</span><br><span class="line"> You could try using --skip-broken to work around the problem</span><br><span class="line"> You could try running: rpm -Va --nofiles --nodigest</span><br><span class="line"></span><br><span class="line">更新yum仓库：</span><br><span class="line">[base]</span><br><span class="line">name=cdrom_repo</span><br><span class="line">#baseurl=file:///misc/cd/</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos/$releasever/os/$basearch/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line"></span><br><span class="line">[extras]</span><br><span class="line">name=extras</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos/$releasever/extras/$basearch/</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">或:</span><br><span class="line">yum install http://vault.centos.org/centos/7.3.1611/extras/x86_64/Packages/container-selinux-2.9-4.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line">yum install docker-ce</span><br><span class="line">使用镜像加速:</span><br><span class="line">        方式一：aliyun官网镜像加速</span><br><span class="line">        https://cr.console.aliyun.com</span><br><span class="line">        方式二：docker公共加速器</span><br><span class="line">        http://www.docker-cn.com/registry-mirror</span><br><span class="line">        支持两种方式同时使用</span><br><span class="line">        例：</span><br><span class="line">        mkdir -p /etc/docker</span><br><span class="line">        tee /etc/docker/daemon.json &lt;&lt;-&apos;EOF&apos;</span><br><span class="line">        &gt; &#123;</span><br><span class="line">        &gt;   &quot;registry-mirrors&quot;: [&quot;https://registry.docker-cn.com&quot;,&quot;https://zuc5caah.mirror.aliyuncs.com&quot;]</span><br><span class="line">        &gt; &#125;</span><br><span class="line">        &gt; EOF</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line">查看版本信息</span><br><span class="line">[root@centos7 ~]# docker version</span><br><span class="line">Client: #客户端版本</span><br><span class="line"> Version:           18.09.0</span><br><span class="line"> API version:       1.39</span><br><span class="line"> Go version:        go1.10.4</span><br><span class="line"> Git commit:        4d60db4</span><br><span class="line"> Built:             Wed Nov  7 00:48:22 2018</span><br><span class="line"> OS/Arch:           linux/amd64</span><br><span class="line"> Experimental:      false</span><br><span class="line"></span><br><span class="line">Server: Docker Engine - Community #服务端版本</span><br><span class="line"> Engine:</span><br><span class="line">  Version:          18.09.0</span><br><span class="line">  API version:      1.39 (minimum version 1.12)</span><br><span class="line">  Go version:       go1.10.4</span><br><span class="line">  Git commit:       4d60db4</span><br><span class="line">  Built:            Wed Nov  7 00:19:08 2018</span><br><span class="line">  OS/Arch:          linux/amd64</span><br><span class="line">  Experimental:     false</span><br><span class="line"></span><br><span class="line">查看更详细的docker环境信息</span><br><span class="line">[root@centos7 ~]# docker info</span><br><span class="line">Containers: 0 #系统上总共有多少个容器</span><br><span class="line"> Running: 0 #容器运行态个数</span><br><span class="line"> Paused: 0  #容器暂停态个数</span><br><span class="line"> Stopped: 0 #容器停止态个数</span><br><span class="line">Images: 0 #当前系统上镜像的个数</span><br><span class="line">Server Version: 18.09.0</span><br><span class="line">Storage Driver: overlay2  #存储驱动</span><br><span class="line"> Backing Filesystem: xfs  #放置在本地的文件系统的格式，建议使用xfs</span><br><span class="line"> Supports d_type: true</span><br><span class="line"> Native Overlay Diff: true</span><br><span class="line">Logging Driver: json-file</span><br><span class="line">Cgroup Driver: cgroupfs #资源配额功能，需要的虚拟文件系统格式</span><br><span class="line">Plugins:  #插件</span><br><span class="line"> Volume: local  #存储卷的插件，仅支持本地</span><br><span class="line"> Network: bridge host macvlan null overlay  #网络插件，支持桥接、主机、叠加、不使用等</span><br><span class="line"> Log: awslogs fluentd gcplogs gelf journald  json-file local logentries splunk syslog #日志系统插件</span><br><span class="line">Swarm: inactive #集群管理工具</span><br><span class="line">Runtimes: runc  #运行时环境</span><br><span class="line">Default Runtime: runc</span><br><span class="line">Init Binary: docker-init</span><br><span class="line">containerd version: c4446665cb9c30056f4998ed953e6d4ff22c7c39</span><br><span class="line">runc version: 4fc53a81fb7c994640722ac585fa9ca548971871</span><br><span class="line">init version: fec3683</span><br><span class="line">Security Options:</span><br><span class="line"> seccomp</span><br><span class="line">  Profile: default</span><br><span class="line">Kernel Version: 3.10.0-862.el7.x86_64</span><br><span class="line">Operating System: CentOS Linux 7 (Core)</span><br><span class="line">OSType: linux</span><br><span class="line">Architecture: x86_64</span><br><span class="line">CPUs: 2</span><br><span class="line">Total Memory: 1.779GiB</span><br><span class="line">Name: centos7.com</span><br><span class="line">ID: CUT4:A7LF:QJ4B:OORH:POA7:AZ7I:SWFT:7F4H:YKBQ:YFXH:BBBV:WGNQ</span><br><span class="line">Docker Root Dir: /var/lib/docker</span><br><span class="line">Debug Mode (client): false</span><br><span class="line">Debug Mode (server): false</span><br><span class="line">Registry: https://index.docker.io/v1/</span><br><span class="line">Labels:</span><br><span class="line">Experimental: false</span><br><span class="line">Insecure Registries:</span><br><span class="line"> 127.0.0.0/8</span><br><span class="line">Registry Mirrors: #镜像加速服务</span><br><span class="line"> https://xr8r3tc3.mirror.aliyuncs.com/</span><br><span class="line">Live Restore Enabled: false</span><br><span class="line">Product License: Community Engine</span><br></pre></td></tr></table></figure>
+<h1 id="docker资源管理"><a href="#docker资源管理" class="headerlink" title="docker资源管理"></a>docker资源管理</h1><p>两类资源：images:镜像资源管理（静态）  container：容器管理（动态）</p>
+<h2 id="images-镜像资源管理（静态）"><a href="#images-镜像资源管理（静态）" class="headerlink" title="images:镜像资源管理（静态）"></a>images:镜像资源管理（静态）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">docker image -h</span><br><span class="line">Usage: docker image COMMAND</span><br><span class="line">Commands:</span><br><span class="line">    build</span><br><span class="line">    history</span><br><span class="line">    import</span><br><span class="line">    inspect</span><br><span class="line">    load</span><br><span class="line">    ls</span><br><span class="line">    prune</span><br><span class="line">    pull #从远程下载镜像</span><br><span class="line">    push #将本地的镜像上传</span><br><span class="line">    rm #删除 docker image rm = docker rmi</span><br><span class="line">    save</span><br><span class="line">    tag #给镜像打标签,一个镜像可以有多个标签</span><br></pre></td></tr></table></figure>
+<h2 id="container：容器管理（动态）"><a href="#container：容器管理（动态）" class="headerlink" title="container：容器管理（动态）"></a>container：容器管理（动态）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Usage: docker container COMMAND</span><br><span class="line">Commands:</span><br><span class="line">    attach</span><br><span class="line">    commit #保存镜像</span><br><span class="line">    cp</span><br><span class="line">    create #创建容器</span><br><span class="line">    diff</span><br><span class="line">    exec #执行容器中的命令</span><br><span class="line">    export</span><br><span class="line">    inspect</span><br><span class="line">    kill #杀死容器</span><br><span class="line">    logs</span><br><span class="line">    ls</span><br><span class="line">    pause #暂停容器</span><br><span class="line">    port</span><br><span class="line">    prune</span><br><span class="line">    rename #重命名容器</span><br><span class="line">    restart #重启容器</span><br><span class="line">    rm #删除容器</span><br><span class="line">    run</span><br><span class="line">    start #启动容器</span><br><span class="line">    stats</span><br><span class="line">    stop #停止容器</span><br><span class="line">    top</span><br><span class="line">    unpause #继续容器</span><br><span class="line">    update</span><br><span class="line">    wait</span><br></pre></td></tr></table></figure>
+<h1 id="docker容器状态"><a href="#docker容器状态" class="headerlink" title="docker容器状态"></a>docker容器状态</h1><pre><code>容器的状态docker container ps = docker ps
+        running 运行态
+        stopped 停止态
+        paused 暂停态
+        created 创建态
+        deleted 删除态
+        OOM:内存耗尽
+</code></pre><p><img src="/images/docker3.png" alt="Alt text"></p>
+<h1 id="docker容器命令使用"><a href="#docker容器命令使用" class="headerlink" title="docker容器命令使用"></a>docker容器命令使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">创建容器</span><br><span class="line">    docker create</span><br><span class="line">    docker run</span><br><span class="line">        -t,tty</span><br><span class="line">        -i,–interactive</span><br><span class="line">        –name #容器的名字一定不要同名</span><br><span class="line">docker0 : 桥</span><br><span class="line">        172.17.0.0/16</span><br><span class="line">    –network : 指定网络接口</span><br><span class="line">    –rm : 如果容器停止寓意容器引擎立即将其容器删除 # 适用于临时的容器与-d 选项项抵触</span><br><span class="line">    -d,detach : 守护，运行在后台剥离与当前终端的关系 #与–rm选项相抵触不可同时使用</span><br><span class="line">容器中执行命令 #只有终端id号为1 的进程则此容器才会停止</span><br><span class="line">docker container exec = docker exec</span><br><span class="line">    -i:交互式接口</span><br><span class="line">    -t:分配终端</span><br><span class="line">docker常用命令</span><br><span class="line">    docker stop #停止容器的运行</span><br><span class="line">    docker rm #删除容器，直接删除则容器中的数据也将删除，代表容器内的存储单元也被删除掉，且慎用。</span><br><span class="line">    查看容器的日志信息</span><br><span class="line">    docker container logs = docker logs</span><br><span class="line">    docker日志是直接发往终端控制台</span><br><span class="line">查看容器使用占用的内存空间</span><br><span class="line">    docker container stats = docker stats</span><br><span class="line">    显示容器运行的所有的进程的相关信息</span><br><span class="line">    docker container top = docker top</span><br><span class="line">列出所有的相关镜像</span><br><span class="line">    docker images = docker image ls</span><br><span class="line">    返回容器的终端</span><br><span class="line">    docker container attach = docker attach</span><br><span class="line">    去docker hub中下载nginx镜像时：最后一位数字为奇数数位金丝雀版，非稳定版，开发版。生产中最好使用偶数或者stable</span><br><span class="line"></span><br><span class="line">    某一程序如果运行在容器中，并且id号为1的进程时，此进程必须运行在前台。</span><br></pre></td></tr></table></figure>
+<h1 id="docker镜像"><a href="#docker镜像" class="headerlink" title="docker镜像"></a>docker镜像</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line">###################根据关键字来了解镜像################</span><br><span class="line">[root@centos7 ~]# docker search redis</span><br><span class="line"></span><br><span class="line">###################拖取镜像到本地######################</span><br><span class="line">###################默认从hub.docker.com拖取###########</span><br><span class="line">[root@centos7 ~]# docker image pull centos:7</span><br><span class="line">[root@centos7 ~]# docker pull redis:4-alpine</span><br><span class="line">4-alpine: Pulling from library/redis</span><br><span class="line">cd784148e348: Pull complete   #分层拖下来的，每一个都是一个层</span><br><span class="line">48d4c7155ddc: Pull complete </span><br><span class="line">6d908603dbe8: Pull complete </span><br><span class="line">fd4371c1c78e: Pull complete </span><br><span class="line">e6818dc808c2: Pull complete </span><br><span class="line">f1884d594f6f: Pull complete </span><br><span class="line">Digest: sha256:775bbf766a5b711acce88e4142faf56cd587d63ddc4d57b49f7872f71d56fab6</span><br><span class="line">Status: Downloaded newer image for redis:4-alpine</span><br><span class="line"></span><br><span class="line">###################显示本地镜像########################</span><br><span class="line">REPOSITORY：镜像仓库仓库名</span><br><span class="line">TAG：标签</span><br><span class="line">IMAGE ID: 镜像id</span><br><span class="line">CREATED: 镜像的创建时间</span><br><span class="line">SIZE：镜像存储在本地的大小</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">redis               4-alpine            37abb58bfd68        9 days ago          30MB</span><br><span class="line"></span><br><span class="line">######################删除镜像#########################</span><br><span class="line">[root@centos7 ~]# docker image rm   镜像名称</span><br><span class="line"></span><br><span class="line">#######################查看镜像的详细信息###############</span><br><span class="line">[root@centos7 ~]# docker image inspect redis:4-alpine</span><br><span class="line">#显示一个jesn格式镜像信息</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#########################启动容器######################</span><br><span class="line">docker run = docker container run </span><br><span class="line">- it :交互式，并附加终端</span><br><span class="line">--name:容器名字</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# docker container run -it --name c1 centos:7 /bin/bash</span><br><span class="line">[root@3aee0a6acdfd /]# </span><br><span class="line">[root@3aee0a6acdfd /]# yum install net-tools</span><br><span class="line">[root@3aee0a6acdfd /]# ifconfig</span><br><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255</span><br><span class="line">[root@3aee0a6acdfd /]# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         172.17.0.1      0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 eth0</span><br><span class="line"></span><br><span class="line">如果运行容器主机上默认生成一docker0的桥，默认网段172.17.0.0 ，随后创建的容器都会加载到此桥上，此桥为NET桥</span><br><span class="line">[root@centos7 ~]# ifconfig</span><br><span class="line">docker0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255</span><br><span class="line">        inet6 fe80::42:ddff:fed7:23fb  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 02:42:dd:d7:23:fb  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 14  bytes 1770 (1.7 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">[root@centos7 ~]# brctl show  #容器引擎动态实现</span><br><span class="line">bridge name	bridge id		STP enabled	interfaces</span><br><span class="line">docker0		8000.0242ddd723fb	no	</span><br><span class="line"></span><br><span class="line">启动容器后也会生成默认防火墙规则</span><br><span class="line">  前期使用建议关闭firewalld</span><br><span class="line"></span><br><span class="line">##################查看所有运行状态的容器#####################</span><br><span class="line">- docker ps = docker container ps</span><br><span class="line">[root@centos7 ~]# docker ps -a  #查看容器的所有状态</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">3aee0a6acdfd        centos:7            &quot;/bin/bash&quot;         12 minutes ago      Up 12 minutes                           c1</span><br><span class="line"></span><br><span class="line">#####################显示当前docker支持的网络接口#############</span><br><span class="line">- 默认bridge,代表docker0桥</span><br><span class="line">[root@centos7 ~]# docker network ls</span><br><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br><span class="line">777fc349679b        bridge              bridge              local</span><br><span class="line">9b7ecc0031ef        host                host                local</span><br><span class="line">c0de873b7341        none                null                local</span><br><span class="line"></span><br><span class="line">##################运行redis进程且放到后台不影响当前终端########</span><br><span class="line">[root@centos7 ~]# docker run --name redis -d redis:4-alpine </span><br><span class="line">100f426c23ae6f50e015e7ad5fd13cdee33180c9ac43835f7d6ecef422b38f1c</span><br><span class="line"></span><br><span class="line">- CONTAINER ID：短格式id</span><br><span class="line">- IMAGE :容器启动用的镜像</span><br><span class="line">- COMMAND：容器运行的命令</span><br><span class="line">- CREATED：容器创建的时间</span><br><span class="line">- STATUS：容器运行的状态</span><br><span class="line">- PORTS：容器监听的端口，监听的端口是在容器内部的</span><br><span class="line">- NAMES：容器的名称</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES</span><br><span class="line">100f426c23ae        redis:4-alpine      &quot;docker-entrypoint.s…&quot;   8 seconds ago       Up 6 seconds        6379/tcp            redis</span><br><span class="line"></span><br><span class="line">######################删除正在运行容器#########################</span><br><span class="line">[root@centos7 ~]# docker container stop redis</span><br><span class="line">redis</span><br><span class="line">[root@centos7 ~]# docker container rm redis   #如果容器停止寓意容器引擎立即将其容器删除</span><br><span class="line">redis</span><br><span class="line"></span><br><span class="line">#####################外部在容器中执行命令##################</span><br><span class="line">以交互式接口中运行bash</span><br><span class="line">[root@centos7 ~]# docker container exec -it redis /bin/sh</span><br><span class="line">/data # </span><br><span class="line">/data # ps aux</span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 redis     0:00 redis-server #只有终端id号为1 的进程则此容器才会停止，所以退出交互式终端并非结束了次容器</span><br><span class="line">   17 root      0:00 /bin/sh</span><br><span class="line">   23 root      0:00 ps aux</span><br><span class="line"></span><br><span class="line">#######################w外部终端查看容器运行状态#############</span><br><span class="line">- 在不进入容器的交互式接口，显示的信息为容器内部的运行状态信息</span><br><span class="line">[root@centos7 ~]# docker container exec redis ps aux</span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 redis     0:00 redis-server</span><br><span class="line">   24 root      0:00 ps aux</span><br><span class="line"></span><br><span class="line">######################创建容器在停止状态是自动删除###########</span><br><span class="line">- 拉取一个nginx的镜像</span><br><span class="line">[root@centos7 ~]# docker image pull nginx:1.15-alpine</span><br><span class="line">- 运行执行的/bin/sh,并且退出终端时结束删除此进程</span><br><span class="line">[root@centos7 ~]# docker run --name web -it --rm nginx:1.15-alpine /bin/sh</span><br><span class="line">/ # </span><br><span class="line">/ # exit</span><br><span class="line">[root@centos7 ~]# docker ps -a</span><br><span class="line"></span><br><span class="line">######################以守护进程运行nginx#####################</span><br><span class="line">-d与--rm 选项不可同时使用</span><br><span class="line">[root@centos7 ~]# docker run --name web -d nginx:1.15-alpine </span><br><span class="line">[root@centos7 ~]# docker container exec web ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  </span><br><span class="line">          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">[root@centos7 ~]# curl 172.17.0.2         #外部主机访问容器中的服务</span><br><span class="line">[root@centos7 ~]# wget -O - -q 172.17.0.2</span><br><span class="line">[root@centos7 ~]# elinks -dump 172.17.0.2</span><br><span class="line"></span><br><span class="line">#######################查看容器的日志信息#######################</span><br><span class="line">- docker日志是直接发往终端控制台，</span><br><span class="line">[root@centos7 ~]# docker container logs web</span><br><span class="line"></span><br><span class="line">####################显示容器运行的所有的进程的相关信息###########</span><br><span class="line">- 仅显示指定的容器的运行的进程的相关信息</span><br><span class="line">[root@centos7 ~]# docker  top web</span><br><span class="line">UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD</span><br><span class="line">###########################attach#########################</span><br><span class="line"># 剥离容器当前运行的终端，但是容器仅是退出了运行的终端，但不停止容器</span><br><span class="line"># 剥离终端 ctrl+p ,ctrl+q</span><br><span class="line">[root@centos7 ~]# docker run --name c2 centos:7</span><br><span class="line">[root@centos7 ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES</span><br><span class="line">2b5aa9c9e6ad        centos:7            &quot;/bin/bash&quot;              8 seconds ago       Exited (0) 6 seconds ago                       c2</span><br><span class="line">[root@centos7 ~]# docker rm c2</span><br><span class="line">c2</span><br><span class="line">[root@centos7 ~]# docker run --name c2 -it centos:7</span><br><span class="line">[root@49e278ef42ca /]# [root@centos7 ~]# </span><br><span class="line">[root@centos7 ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                    PORTS               NAMES</span><br><span class="line">49e278ef42ca        centos:7            &quot;/bin/bash&quot;              40 seconds ago      Up 39 seconds                                 c2</span><br><span class="line">[root@centos7 ~]# docker container attach c2  #返回容器</span><br><span class="line">[root@49e278ef42ca /]#</span><br></pre></td></tr></table></figure>
+<h2 id="docker镜像介绍"><a href="#docker镜像介绍" class="headerlink" title="docker镜像介绍"></a>docker镜像介绍</h2><pre><code>About Docker Images
+    Docker镜像含有启动容器所需要的文件系统及其内容，因此，其用 于创建并启动docker容器
+    采用分层构建机制，最底层为bootfs，其之为rootfs
+        bootfs：用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以 节约内存资源；
+        rootfs：位于bootfs之上，表现为docker容器的根文件系统;
+            传统模式中，系统启动之时，内核挂载rootfs时会首先将其挂载为“只读”模式，完整性自检完成 后将其重新挂载为读写模式；
+            docker中，rootfs由内核挂载为“只读”模式，而后通过“联合挂载 ”技术额外挂载一个“可写”层。
+</code></pre><p><img src="/images/docker4.png" alt="Alt text"></p>
+<pre><code>Docker Image Layer（层）
+    位于下层的镜像称为父镜像(parent image)，最底层的称为基础镜像(base image) -
+    最上层为“可读写”层，其下的均为“只读”层
+    wirtable最上面的可写层并非镜像提供，而是容器提供的
+    建构在本地的二级文件系统
+        /var/lib/docker/image/overlay2/
+            distribution imagedb layerdb repositories.json
+</code></pre><p><img src="/images/docker5.png" alt="Alt text"></p>
+<h1 id="Aufs"><a href="#Aufs" class="headerlink" title="Aufs"></a>Aufs</h1><pre><code>advanced multi-layered unification filesystem：高级多层统一文件系统
+用于为Linux文件系统实现“联合挂载”
+aufs是之前的UnionFS的重新实现，2006年由Junjiro Okajima开发；
+Docker最初使用aufs作为容器文件系统层，它目前仍作为存储后端之一来支持；
+aufs的竞争产品是overlayfs，后者自从3.18版本开始被合并到Linux内核；
+docker的分层镜像，除了aufs，docker还支持btrfs, devicemapper和vfs等
+    在Ubuntu系统下，docker默认Ubuntu的 aufs；而在CentOS7上，用的是devicemapper.
+</code></pre><h1 id="Docker-Registry"><a href="#Docker-Registry" class="headerlink" title="Docker Registry"></a>Docker Registry</h1><pre><code>启动容器时，docker daemon会试图从本地获取相关的镜像；本地镜像 不存在时，其将从Registry中下载该镜像并保存到本地。
+</code></pre><p><img src="/images/docker6.png" alt="Alt text"></p>
+<pre><code>分类
+
+    Registry用于保存docker镜像，包括镜像的层次结构和元数据
+    用户可自建Registry，也可使用官方的Docker Hub
+        Sponsor Registry：第三方的registry，供客户和Docker社区使用
+        Mirror Registry：第三方的registry，只让客户使用
+        Vendor Registry：由发布Docker镜像的供应商提供的registry
+        Private Registry：通过设有防火墙和额外的安全层的私有实体提供的registry
+Docker Registry中的镜像通常由开发人员制作，而后推送至“公共”或“ 私有”Registry上保存，供其他人员使用，例如“部署”到生产环境.
+</code></pre><p><img src="/images/docker7.png" alt="Alt text"></p>
+<h1 id="制作docker仓库"><a href="#制作docker仓库" class="headerlink" title="制作docker仓库"></a>制作docker仓库</h1><pre><code>docker Hub
+    https://hub.docker.com
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]# docker image pull busybox:latest</span><br><span class="line">busybox:一个微型的linux发行版</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">busybox             latest              758ec7f3a1ee        4 days ago          1.15M</span><br><span class="line">[root@centos7 ~]# docker run --name box1 -it busybox:latest /bin/sh</span><br><span class="line">/ # ls</span><br><span class="line">bin   dev   etc   home  proc  root  sys   tmp   usr   var</span><br></pre></td></tr></table></figure>
+<p>制作镜像仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">docker container commit –help</span><br><span class="line">Usage: docker container commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</span><br><span class="line">Options:</span><br><span class="line">-a, –author string #指定镜像的作者</span><br><span class="line">-c, –change list #对底层镜像默认运行的程序 进行修改</span><br><span class="line">-m, –message string</span><br><span class="line">-p, –pause #表示制作镜像的时候将容器暂时暂停，避免数据结构不一致</span><br><span class="line"></span><br><span class="line">#########对本地busybox进行修改并推送到自己docker hub镜像仓库#######</span><br><span class="line">[root@centos7 ~]# docker run --name box1 -it busybox:latest /bin/sh</span><br><span class="line">/ # ls</span><br><span class="line">bin   dev   etc   home  proc  root  sys   tmp   usr   var</span><br><span class="line">/ # mkdir /daizhe</span><br><span class="line">/ # ls</span><br><span class="line">bin     dev     home    root    tmp     var</span><br><span class="line">daizhe  etc     proc    sys     usr</span><br><span class="line"></span><br><span class="line">#####################保存修改的镜像并打标签#######################</span><br><span class="line">#确保容器终端不要关闭</span><br><span class="line">[root@centos7 ~]# docker container commit box1 docker19980110/mybox:v0.1</span><br><span class="line">sha256:42956b7e3ff8df5b77abd5b44654aac46bc00fd2ec2e690f1e92847e9879fd99</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">docker19980110/mybox        v0.1                c6a32f929f07        15 seconds ago      1.15MB</span><br><span class="line"></span><br><span class="line">###############本机启动测试查看保存的数据数据结构是否存在#############</span><br><span class="line">[root@centos7 ~]# docker run --name mybox -it docker19980110/mybox:v0.1 </span><br><span class="line">/ # ls</span><br><span class="line">bin     dev     home    root    tmp     var</span><br><span class="line">daizhe  etc     proc    sys     usr</span><br><span class="line"></span><br><span class="line">#####################登陆docker hub###############################</span><br><span class="line">[root@centos7 ~]# docker login</span><br><span class="line">Login with your Docker ID to push and pull images from Docker Hub. If you don&apos;t have a Docker ID, head over to https://hub.docker.com to create one.</span><br><span class="line">Username: weipingyang</span><br><span class="line">Password: </span><br><span class="line">WARNING! Your password will be stored unencrypted in /root/.docker/config.json.</span><br><span class="line">Configure a credential helper to remove this warning. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/#credentials-store</span><br><span class="line"></span><br><span class="line">Login Succeeded</span><br><span class="line"></span><br><span class="line">#####################将本地的镜像推送到docker hub####################</span><br><span class="line">#如果原仓库总有相同的镜像，当推送时，仅推送变化的那一层</span><br><span class="line">[root@centos7 ~]# docker image push weipingyang/test/mybox:v0.1 </span><br><span class="line">The push refers to repository [docker.io/weipingyang/test/mybox]</span><br><span class="line">5190a84cd271: Pushed </span><br><span class="line">23bc2b70b201: Mounted from library/busybox </span><br><span class="line">v0.1: digest: sha256:05ce13e43087ab6249c717c3278e9f2c8d1199310447ac806c527ee85b0dfcb8 size: 734</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/docker8.png" alt="Alt text"></p>
+<h2 id="制作镜像并对底层镜像默认运行的程序-进行修改以及标签设置"><a href="#制作镜像并对底层镜像默认运行的程序-进行修改以及标签设置" class="headerlink" title="制作镜像并对底层镜像默认运行的程序 进行修改以及标签设置"></a>制作镜像并对底层镜像默认运行的程序 进行修改以及标签设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">带有http程序</span><br><span class="line">/ # /bin/httpd -h</span><br><span class="line">/bin/httpd: option requires an argument -- h</span><br><span class="line">BusyBox v1.29.3 (2018-12-24 21:25:20 UTC) multi-call binary.</span><br><span class="line"></span><br><span class="line">Usage: httpd [-ifv[v]] [-c CONFFILE] [-p [IP:]PORT] [-u USER[:GRP]] [-r REALM] [-h HOME]</span><br><span class="line">or httpd -d/-e/-m STRING</span><br><span class="line"></span><br><span class="line">Listen for incoming HTTP requests</span><br><span class="line"></span><br><span class="line">	-i		Inetd mode</span><br><span class="line">	-f		Don&apos;t daemonize</span><br><span class="line">	-v[v]		Verbose</span><br><span class="line">	-p [IP:]PORT	Bind to IP:PORT (default *:80)</span><br><span class="line">	-u USER[:GRP]	Set uid/gid after binding to port</span><br><span class="line">	-r REALM	Authentication Realm for Basic Authentication</span><br><span class="line">	-h HOME		Home directory (default .)</span><br><span class="line">	-c FILE		Configuration file (default &#123;/etc,HOME&#125;/httpd.conf)</span><br><span class="line">	-m STRING	MD5 crypt STRING</span><br><span class="line">	-e STRING	HTML encode STRING</span><br><span class="line">	-d STRING	URL decode STRING</span><br><span class="line"></span><br><span class="line">####################对很忙的盒子进行修改，启动默认运行httpd###########</span><br><span class="line">#保存原有的镜像</span><br><span class="line">#启动运行http</span><br><span class="line">    -f 前台运行，不适用守护进行</span><br><span class="line">    -h 执行家目录</span><br><span class="line">[root@centos7 ~]# docker container commit -p -a &quot;daizhe&lt;daizhe.com&gt;&quot; -c &apos;CMD [&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;/bin/httpd -f -h /data/web/html&quot;]&apos; mybox</span><br><span class="line">sha256:eced8dbd5d14dcb5c4be938d509103a9440cf3d7080620b49dac8fbbbe309974</span><br><span class="line">#保存的镜像未打标签</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">&lt;none&gt;                 &lt;none&gt;              eced8dbd5d14        26 seconds ago      1.15MB</span><br><span class="line"></span><br><span class="line">##########################将保存的镜像添加标签#####################</span><br><span class="line">#使用id号指定镜像来重新添加标签</span><br><span class="line">[root@centos7 ~]# docker image tag eced8dbd5d14 docker19980110/mybox:v0.2</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">docker19980110/mybox   v0.2                eced8dbd5d14        6 minutes ago       1.15MB</span><br><span class="line"></span><br><span class="line">########################将一个镜像打多个标签######################</span><br><span class="line">#latest表示最新的意思</span><br><span class="line">[root@centos7 ~]# docker tag docker19980110/mybox:v0.2 docker19980110/mybox:latest</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">docker19980110/mybox   latest              eced8dbd5d14        8 minutes ago       1.15MB</span><br><span class="line">docker19980110/mybox   v0.2                eced8dbd5d14        8 minutes ago       1.15MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#########################再次将本地的镜像推送到docker hub仓库########</span><br><span class="line">[root@centos7 ~]# docker push docker19980110/mybox:v0.</span><br><span class="line">v0.1  v0.2  </span><br><span class="line">[root@centos7 ~]# docker push docker19980110/mybox:v0.2 </span><br><span class="line">The push refers to repository [docker.io/docker19980110/mybox]</span><br><span class="line">355c5bc17ee9: Pushed </span><br><span class="line">5190a84cd271: Layer already exists </span><br><span class="line">23bc2b70b201: Layer already exists </span><br><span class="line">v0.2: digest: sha256:ab14ea25f1fbcc40a623343dd44a76224568a0200820f1ee5b61dc81c96ca12a size: 941</span><br><span class="line">[root@centos7 ~]# docker push docker19980110/mybox:latest </span><br><span class="line">The push refers to repository [docker.io/docker19980110/mybox]</span><br><span class="line">355c5bc17ee9: Layer already exists </span><br><span class="line">5190a84cd271: Layer already exists </span><br><span class="line">23bc2b70b201: Layer already exists </span><br><span class="line">latest: digest: sha256:ab14ea25f1fbcc40a623343dd44a76224568a0200820f1ee5b61dc81c96ca12a size: 941</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/27/KVM虚拟化/" rel="next" title="KVM虚拟化">
+                <i class="fa fa-chevron-left"></i> KVM虚拟化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装"><span class="nav-number">1.</span> <span class="nav-text">docker安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker资源管理"><span class="nav-number">2.</span> <span class="nav-text">docker资源管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#images-镜像资源管理（静态）"><span class="nav-number">2.1.</span> <span class="nav-text">images:镜像资源管理（静态）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#container：容器管理（动态）"><span class="nav-number">2.2.</span> <span class="nav-text">container：容器管理（动态）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker容器状态"><span class="nav-number">3.</span> <span class="nav-text">docker容器状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker容器命令使用"><span class="nav-number">4.</span> <span class="nav-text">docker容器命令使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker镜像"><span class="nav-number">5.</span> <span class="nav-text">docker镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker镜像介绍"><span class="nav-number">5.1.</span> <span class="nav-text">docker镜像介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Aufs"><span class="nav-number">6.</span> <span class="nav-text">Aufs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-Registry"><span class="nav-number">7.</span> <span class="nav-text">Docker Registry</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#制作docker仓库"><span class="nav-number">8.</span> <span class="nav-text">制作docker仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#制作镜像并对底层镜像默认运行的程序-进行修改以及标签设置"><span class="nav-number">8.1.</span> <span class="nav-text">制作镜像并对底层镜像默认运行的程序 进行修改以及标签设置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
