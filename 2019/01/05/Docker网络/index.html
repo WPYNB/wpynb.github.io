@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Docker网络模型四种网络：     桥网络bridge：         默认docker0 NET桥     共享桥、共享接口：（共享网络名称空间）         联盟式网络     容器直接使用宿主机网络的共享：         host网络     空网络、无网络、none网络 123456查看docker可以使用的网络类型[root@centos7 ~]# docker networ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker网络">
+<meta property="og:url" content="http://yoursite.com/2019/01/05/Docker网络/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="Docker网络模型四种网络：     桥网络bridge：         默认docker0 NET桥     共享桥、共享接口：（共享网络名称空间）         联盟式网络     容器直接使用宿主机网络的共享：         host网络     空网络、无网络、none网络 123456查看docker可以使用的网络类型[root@centos7 ~]# docker networ">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/dnet1.png">
+<meta property="og:updated_time" content="2019-01-05T07:45:09.637Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker网络">
+<meta name="twitter:description" content="Docker网络模型四种网络：     桥网络bridge：         默认docker0 NET桥     共享桥、共享接口：（共享网络名称空间）         联盟式网络     容器直接使用宿主机网络的共享：         host网络     空网络、无网络、none网络 123456查看docker可以使用的网络类型[root@centos7 ~]# docker networ">
+<meta name="twitter:image" content="http://yoursite.com/images/dnet1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/05/Docker网络/"/>
+
+
+
+
+
+  <title>Docker网络 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/05/Docker网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker网络</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T15:07:29+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Docker网络/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Docker网络模型"><a href="#Docker网络模型" class="headerlink" title="Docker网络模型"></a>Docker网络模型</h1><pre><code>四种网络：
+    桥网络bridge：
+        默认docker0 NET桥
+    共享桥、共享接口：（共享网络名称空间）
+        联盟式网络
+    容器直接使用宿主机网络的共享：
+        host网络
+    空网络、无网络、none网络
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">查看docker可以使用的网络类型</span><br><span class="line">[root@centos7 ~]# docker network ls</span><br><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br><span class="line">38c0658bea06        bridge              bridge              local</span><br><span class="line">9b7ecc0031ef        host                host                local</span><br><span class="line">c0de873b7341        none                null                local</span><br></pre></td></tr></table></figure>
+<p><img src="/images/dnet1.png" alt="Alt text"></p>
+<pre><code>无网络：仅lo,仅自己通讯
+    –network none
+桥网络 (详情查看 dacker network inspact brige)
+    –network brige (默认)
+容器间共享网络（联盟式网络）
+    –network contariner:指定已有网容器（相同主机名，不同容器，但是网络是共享，仅共享网络，可以基于127.0.0.1通讯）
+共享主机网络
+    –network host
+</code></pre><h1 id="无网络"><a href="#无网络" class="headerlink" title="无网络"></a>无网络</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]# docker run --name pc1 -it --rm --network none busybox:latest</span><br><span class="line">/ # ifconfig</span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:65536  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br></pre></td></tr></table></figure>
+<h1 id="桥网络"><a href="#桥网络" class="headerlink" title="桥网络"></a>桥网络</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># (默认docker0 NET桥,详情查看 dacker network inspact brige)</span><br><span class="line">[root@centos7 ~]# docker run --name pc2 -it --rm --network bridge busybox:latest</span><br><span class="line">/ # ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  </span><br><span class="line">          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:6 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:508 (508.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line"></span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:65536  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line"></span><br><span class="line">#查看默认的net桥的详情</span><br><span class="line">[root@centos7 ~]# docker network inspect bridge</span><br></pre></td></tr></table></figure>
+<h1 id="容器间共享网络"><a href="#容器间共享网络" class="headerlink" title="容器间共享网络"></a>容器间共享网络</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#容器间共享：NET,IPC,UTS</span><br><span class="line"></span><br><span class="line">第一个容器</span><br><span class="line">  [root@centos7 ~]# docker run --name pc2 -it --rm --network bridge busybox:latest</span><br><span class="line">  / # ifconfig</span><br><span class="line">  eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  </span><br><span class="line">          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:7 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:578 (578.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line"></span><br><span class="line">  lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:65536  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line">  / # hostname</span><br><span class="line">  45ec3fb534cd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">第二个容器（共享第一个容器的地址）</span><br><span class="line">  [root@centos7 ~]# docker run --name pc3 -it --rm --network container:pc2 busybox:latest</span><br><span class="line">  / # ifconfig</span><br><span class="line">  eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  </span><br><span class="line">          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:8 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:648 (648.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line"></span><br><span class="line">  lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:65536  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line">  / # hostname</span><br><span class="line">  45ec3fb534cd</span><br></pre></td></tr></table></figure>
+<h1 id="共享宿主机网络"><a href="#共享宿主机网络" class="headerlink" title="共享宿主机网络"></a>共享宿主机网络</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"> [root@centos7 ~]# docker run --name pc4 -it --rm --network host  busybox:latest</span><br><span class="line">  / # ifconfig</span><br><span class="line">  docker0   Link encap:Ethernet  HWaddr 02:42:D4:BB:AF:CF  </span><br><span class="line">          inet addr:172.17.0.1  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">          inet6 addr: fe80::42:d4ff:febb:afcf/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:21 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:41 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:3522 (3.4 KiB)  TX bytes:3758 (3.6 KiB)</span><br><span class="line"></span><br><span class="line">  ens33     Link encap:Ethernet  HWaddr 00:0C:29:14:4D:62  </span><br><span class="line">          inet addr:192.168.52.1  Bcast:192.168.52.255  Mask:255.255.255.0</span><br><span class="line">          inet6 addr: fe80::bbfd:d184:6a67:3c45/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:264 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:38 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:29263 (28.5 KiB)  TX bytes:4779 (4.6 KiB)</span><br><span class="line"></span><br><span class="line">  ens37     Link encap:Ethernet  HWaddr 00:0C:29:14:4D:6C  </span><br><span class="line">          inet addr:172.18.135.1  Bcast:172.18.135.255  Mask:255.255.255.0</span><br><span class="line">          inet6 addr: fe80::4587:5c47:4c05:570b/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:33565 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:8191 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:14694609 (14.0 MiB)  TX bytes:1013772 (990.0 KiB)</span><br><span class="line"></span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</span><br><span class="line">          inet6 addr: ::1/128 Scope:Host</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:65536  Metric:1</span><br><span class="line">          RX packets:98 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:98 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:10996 (10.7 KiB)  TX bytes:10996 (10.7 KiB)</span><br><span class="line"></span><br><span class="line">  veth7ff20ba Link encap:Ethernet  HWaddr C2:81:A1:34:BA:5F  </span><br><span class="line">          inet6 addr: fe80::c081:a1ff:fe34:ba5f/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:648 (648.0 B)</span><br><span class="line"></span><br><span class="line">  virbr0    Link encap:Ethernet  HWaddr 52:54:00:FF:0B:1F  </span><br><span class="line">          inet addr:192.168.122.1  Bcast:192.168.122.255  Mask:255.255.255.0</span><br><span class="line">          UP BROADCAST MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:0 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000 </span><br><span class="line">          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line">  </span><br><span class="line">  / # hostname</span><br><span class="line">  centos7.com</span><br></pre></td></tr></table></figure>
+<h1 id="其他网络相关命令"><a href="#其他网络相关命令" class="headerlink" title="其他网络相关命令"></a>其他网络相关命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">#指定主机名</span><br><span class="line">  -h, --hostname string                </span><br><span class="line">      Container host name</span><br><span class="line">#默认的主机名是docker容器对应的id</span><br><span class="line">[root@centos7 ~]# docker run --name p1 -it --rm --hostname p1.com busybox:latest </span><br><span class="line">/ # hostname</span><br><span class="line">p1.com</span><br><span class="line"></span><br><span class="line">#外部指定host文件以及文件的内容</span><br><span class="line"> --add-host list                  </span><br><span class="line">      Add a custom host-to-IP mapping (host:ip)</span><br><span class="line">#适用于容器间使用主机名通信，可多次使用</span><br><span class="line">[root@centos7 ~]# docker run --name p1 -it --rm --hostname p1.com --add-host wg.p1.com:172.18.0.1 busybox:latest </span><br><span class="line">/ # cat /etc/hosts</span><br><span class="line">127.0.0.1	localhost</span><br><span class="line">::1	localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0	ip6-localnet</span><br><span class="line">ff00::0	ip6-mcastprefix</span><br><span class="line">ff02::1	ip6-allnodes</span><br><span class="line">ff02::2	ip6-allrouters</span><br><span class="line">172.18.0.1	wg.p1.com</span><br><span class="line">172.17.0.2	p1.com p1</span><br><span class="line">[root@centos7 ~]# docker run --name p1 -it --rm --hostname p1.com --add-host wg.p1.com:172.18.0.1 --add-host www.p1.com:8.8.8.8 busybox:latest </span><br><span class="line"></span><br><span class="line">#创建容器时指定NDS服务器地址以及搜索域</span><br><span class="line">  --dns list                       Set custom DNS servers</span><br><span class="line">  --dns-search list                Set custom DNS search domains</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# docker run --name pc1 -it --rm --hostname pc1.com --add-host www.pc1.com:1.1.1.1 --dns 8.8.8.8 --dns 114.114.114.114 --dns-search com busybox</span><br><span class="line">/ # cat /etc/hosts </span><br><span class="line">127.0.0.1	localhost</span><br><span class="line">::1	localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0	ip6-localnet</span><br><span class="line">ff00::0	ip6-mcastprefix</span><br><span class="line">ff02::1	ip6-allnodes</span><br><span class="line">ff02::2	ip6-allrouters</span><br><span class="line">1.1.1.1	www.pc1.com</span><br><span class="line">172.17.0.2	pc1.com pc1</span><br><span class="line">/ # cat /etc/resolv.conf </span><br><span class="line">search com</span><br><span class="line">nameserver 8.8.8.8</span><br><span class="line">nameserver 114.114.114.114</span><br></pre></td></tr></table></figure>
+<h1 id="容器网络暴露"><a href="#容器网络暴露" class="headerlink" title="容器网络暴露"></a>容器网络暴露</h1><p>expose,public</p>
+<p>让私有网络中的主机上的服务被外部主机访问到—DNAT</p>
+<pre><code>-p选项的使用格式
+
+    -p &lt;containerPort&gt;
+        将指定的容器端口映射至宿主机所有地址的一个动态端口
+    -p &lt;hostPort&gt;:&lt;containerPort&gt;
+        将容器端口&lt;containerPort&gt;映射至宿主机上指定的主机端口&lt;hostPort&gt;（宿主机上所有地址的此端口）
+    -p &lt;ip&gt;::&lt;containerPort&gt;
+        将指定的容器端口&lt;containerPort&gt;映射至宿主机指定&lt;ip&gt;的动态端口
+    -p &lt;ip&gt;:&lt;hostPort&gt;:&lt;containerPort&gt;
+        将指定的容器端口&lt;containerPort&gt;映射至宿主机指定&lt;ip&gt;的端口&lt;hostPort&gt;
+        “动态端口”指随机端口，具体的映射结果可使用docker port命令查看
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">-p选项的使用演示，可重复使用多次</span><br><span class="line">#docker容器的80端口映射宿主机上的随机端口</span><br><span class="line">[root@centos7 ~]# docker container run --name pc5 -it -p 80 busybox</span><br><span class="line">#ctrl + p ctrl + q  剥离当前容器</span><br><span class="line">#宿主机查看防火墙</span><br><span class="line">[root@centos7 ~]# iptables -t nat -vnL</span><br><span class="line">Chain PREROUTING (policy ACCEPT 214 packets, 20360 bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 DOCKER     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL</span><br><span class="line">Chain DOCKER (2 references)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0           </span><br><span class="line">    0     0 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:32770 to:172.17.0.2:80</span><br><span class="line"></span><br><span class="line">#可以访问宿主机的映射的端口从而访问容器的httpd服务</span><br><span class="line">[root@centos7 ~]# docker exec -it  pc5  /bin/sh</span><br><span class="line">/ # /bin/httpd -h /etc</span><br><span class="line">/ # ps</span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 root      0:00 sh</span><br><span class="line">    7 root      0:00 /bin/sh</span><br><span class="line">   13 root      0:00 /bin/httpd -h /etc</span><br><span class="line">   14 root      0:00 ps</span><br><span class="line">/ # read escape sequence</span><br><span class="line">[root@centos7 ~]# curl 172.18.50.7:32770</span><br><span class="line">&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;404 Not Found&lt;/TITLE&gt;&lt;/HEAD&gt;</span><br><span class="line">&lt;BODY&gt;&lt;H1&gt;404 Not Found&lt;/H1&gt;</span><br><span class="line">The requested URL was not found</span><br><span class="line">&lt;/BODY&gt;&lt;/HTML&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="docker容器的80端口映射宿主机上的所有地址的80端口"><a href="#docker容器的80端口映射宿主机上的所有地址的80端口" class="headerlink" title="docker容器的80端口映射宿主机上的所有地址的80端口"></a>docker容器的80端口映射宿主机上的所有地址的80端口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]# docker run --name pc2 -it --network bridge -p 80:80 busybox</span><br><span class="line">/ # </span><br><span class="line"></span><br><span class="line">#查看防火墙</span><br><span class="line">[root@centos7 ~]# iptables -t nat -vnL</span><br><span class="line">Chain PREROUTING (policy ACCEPT 42 packets, 3276 bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 DOCKER     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL</span><br><span class="line">Chain DOCKER (2 references)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0           </span><br><span class="line">    0     0 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:172.17.0.2:80</span><br><span class="line">[root@centos7 ~]# docker container ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7e622f638dba        busybox             &quot;sh&quot;                3 minutes ago       Up 3 minutes        0.0.0.0:80-&gt;80/tcp   pc2</span><br></pre></td></tr></table></figure>
+<h2 id="docker容器的80端口映射宿主机上的指定地址的80端口"><a href="#docker容器的80端口映射宿主机上的指定地址的80端口" class="headerlink" title="docker容器的80端口映射宿主机上的指定地址的80端口"></a>docker容器的80端口映射宿主机上的指定地址的80端口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#第一个端口为宿主机的端口，第二个端口为容器的端口</span><br><span class="line">[root@centos7 ~]# docker container run --name pc1 -it --rm --network bridge -p 172.18.50.7:80:80 busybox</span><br><span class="line">/ # </span><br><span class="line"></span><br><span class="line">#容器的80地址绑定到宿主机的50.7地址的80端口</span><br><span class="line">[root@centos7 ~]# iptables -t nat -vnL</span><br><span class="line">Chain PREROUTING (policy ACCEPT 9 packets, 702 bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 DOCKER     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL</span><br><span class="line">Chain DOCKER (2 references)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0           </span><br><span class="line">    0     0 DNAT       tcp  --  !docker0 *       0.0.0.0/0            172.18.50.7         tcp dpt:80 to:172.17.0.2:80</span><br><span class="line">[root@centos7 ~]# docker container ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS              PORTS                     NAMES</span><br><span class="line">e87a037e4348        busybox             &quot;sh&quot;                About a minute ago   Up About a minute   172.18.135.1:80-&gt;80/tcp   pc1</span><br></pre></td></tr></table></figure>
+<h2 id="docker容器的80端口映射宿主机上的指定地址的随机端口"><a href="#docker容器的80端口映射宿主机上的指定地址的随机端口" class="headerlink" title="docker容器的80端口映射宿主机上的指定地址的随机端口"></a>docker容器的80端口映射宿主机上的指定地址的随机端口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]# docker container run --name pc1 -it --rm --network bridge -p 172.18.50.7::80 busybox</span><br><span class="line">/ # [root@centos7 ~]# </span><br><span class="line"></span><br><span class="line">#宿主机检验</span><br><span class="line">[root@centos7 ~]# iptables -t nat -vnL</span><br><span class="line">Chain PREROUTING (policy ACCEPT 15 packets, 1151 bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 DOCKER     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL</span><br><span class="line">Chain DOCKER (2 references)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination         </span><br><span class="line">    0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0           </span><br><span class="line">    0     0 DNAT       tcp  --  !docker0 *       0.0.0.0/0            172.18.50.7         tcp dpt:32768 to:172.17.0.2:80</span><br><span class="line">[root@centos7 ~]# docker container ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS              PORTS                        NAMES</span><br><span class="line">8dd54f2321cd        busybox             &quot;sh&quot;                About a minute ago   Up About a minute   172.18.135.1:32768-&gt;80/tcp   pc1</span><br><span class="line"></span><br><span class="line">#端口映射关系查看</span><br><span class="line">[root@centos7 ~]# docker container port pc2</span><br><span class="line">443/tcp -&gt; 192.168.50.7:443</span><br><span class="line">80/tcp -&gt; 172.18.50.7:80</span><br></pre></td></tr></table></figure>
+<h2 id="范例：-p-选项多重复使用"><a href="#范例：-p-选项多重复使用" class="headerlink" title="范例：-p 选项多重复使用"></a>范例：-p 选项多重复使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@centos7 ~]# docker container run --name pc2 -it --rm --network bridge -p 172.18.50.7:80:80 -p 192.168.50.7:443:443 busybox</span><br><span class="line">/ # [root@centos7 ~]# </span><br><span class="line">[root@centos7 ~]# </span><br><span class="line">[root@centos7 ~]# docker container ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                                                NAMES</span><br><span class="line">028e3e9f581f        busybox             &quot;sh&quot;                13 seconds ago      Up 13 seconds       172.18.135.1:80-&gt;80/tcp, 192.168.52.1:443-&gt;443/tcp   pc2</span><br><span class="line">8dd54f2321cd        busybox             &quot;sh&quot;                5 minutes ago       Up 5 minutes</span><br></pre></td></tr></table></figure>
+<h1 id="自建网络类型"><a href="#自建网络类型" class="headerlink" title="自建网络类型"></a>自建网络类型</h1><pre><code>docker network create [OPTIONS] NETWORK
+    -d, –driver string #指定网络类型，默认为bridge，NET
+    –subnet strings #指定子网地址，默认第一个地址设置为桥接口（网关）的地址
+    –gateway strings #不使用默认的手动指定网关
+    –ip-range strings #指定网络分配的地址，如果不指定则除网关外全部分配
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">#自建网络地址</span><br><span class="line">[root@centos7 ~]# docker network create -d bridge --subnet 192.168.2.0/24 mybr1</span><br><span class="line">9902c4e06158ac6bcbabd2aa917b421e3b90d10100c7c457214da834268946e2</span><br><span class="line">[root@centos7 ~]# docker network ls</span><br><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br><span class="line">499e8e1a5fe6        bridge              bridge              local</span><br><span class="line">9b7ecc0031ef        host                host                local</span><br><span class="line">9902c4e06158        mybr1               bridge              local</span><br><span class="line">c0de873b7341        none                null                local</span><br><span class="line">[root@centos7 ~]# ifconfig</span><br><span class="line">br-9902c4e06158: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.2.1  netmask 255.255.255.0  broadcast 10.0.0.255</span><br><span class="line">        ether 02:42:c9:35:05:ce  txqueuelen 0  (Ethernet)</span><br><span class="line">        RX packets 384  bytes 43480 (42.4 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 38  bytes 4779 (4.6 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">#将新创建的容器添加到自建的网络中</span><br><span class="line">[root@centos7 ~]# docker run --name pc1 --rm -it --network mybr1  busybox</span><br><span class="line">[root@centos7 ~]# docker exec -it pc1 /bin/sh</span><br><span class="line">[root@centos7 ~]# docker exec pc1 ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:C0:A8:02:02  </span><br><span class="line">          inet addr:192.168.2.1  Bcast:192.168.2.255  Mask:255.255.255.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:24 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:2650 (2.5 KiB)  TX bytes:0 (0.0 B)</span><br><span class="line">#可以自己修改网卡名字</span><br><span class="line">[root@centos7 ~]# ifconfig br-9902c4e06158 down</span><br><span class="line">[root@centos7 ~]# ip link set br-9902c4e06158 name mybr0</span><br><span class="line">[root@centos7 ~]# ifconfig mybr0 up</span><br><span class="line">#但是要重新启动docker</span><br><span class="line">[root@centos7 ~]# systemctl daemon-reload </span><br><span class="line">[root@centos7 ~]# systemctl restart docker</span><br><span class="line"></span><br><span class="line">#将此容器连接到bridge网络中</span><br><span class="line">[root@centos7 ~]# docker network connect bridge pc1</span><br><span class="line">[root@centos7 ~]# docker exec pc1 ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:C0:A8:02:02  </span><br><span class="line">          inet addr:192.168.2.1  Bcast:192.168.2.255  Mask:255.255.255.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:24 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:2650 (2.5 KiB)  TX bytes:0 (0.0 B)</span><br><span class="line"></span><br><span class="line">eth1      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  </span><br><span class="line">          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:7 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:578 (578.0 B)  TX bytes:0 (0.0 B)</span><br><span class="line">#将一个网络接口从此容器中拆除</span><br><span class="line">[root@centos7 ~]# docker network disconnect bridge pc1</span><br><span class="line">[root@centos7 ~]# docker exec pc1 ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 02:42:C0:A8:02:02  </span><br><span class="line">          inet addr:192.168.2.1  Bcast:192.168.2.255  Mask:255.255.255.0</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:24 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:2650 (2.5 KiB)  TX bytes:0 (0.0 B)</span><br></pre></td></tr></table></figure>
+<h1 id="修改默认docker0桥"><a href="#修改默认docker0桥" class="headerlink" title="修改默认docker0桥"></a>修改默认docker0桥</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">自定义docker0桥的网络属性信息：/etc/docker/daemon.json文件</span><br><span class="line">[root@centos7 ~]# vim /etc/docker/daemon.json </span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://xr8r3tc3.mirror.aliyuncs.com&quot;],</span><br><span class="line">            &quot;bip&quot;: &quot;192.168.1.5/24&quot;,</span><br><span class="line">            &quot;fixed-cidr&quot;: &quot;10.20.0.0/16&quot;,</span><br><span class="line">            &quot;fixed-cidr-v6&quot;: &quot;2001:db8::/64&quot;,</span><br><span class="line">            &quot;mtu&quot;: 1500,</span><br><span class="line">            &quot;default-gateway&quot;: &quot;10.20.1.1&quot;,</span><br><span class="line">            &quot;default-gateway-v6&quot;: &quot;2001:db8:abcd::89&quot;,</span><br><span class="line">            &quot;dns&quot;: [&quot;10.20.1.2&quot;,&quot;10.20.1.3&quot;]</span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        核心选项为bip，即bridge ip之意，用于指定docker0桥自身的IP地址；其它选项可通过此地址计算得出。</span><br><span class="line">[root@centos7 ~]# systemctl daemon-reload </span><br><span class="line">[root@centos7 ~]# systemctl restart docker		</span><br><span class="line"></span><br><span class="line">		文档路径：</span><br><span class="line">            https://docs.docker.com/engine/userguide/networking/default_network/custom-docker0/</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/03/Docker应用基础/" rel="next" title="Docker应用基础">
+                <i class="fa fa-chevron-left"></i> Docker应用基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/05/Docker存储卷/" rel="prev" title="Docker存储卷">
+                Docker存储卷 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker网络模型"><span class="nav-number">1.</span> <span class="nav-text">Docker网络模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#无网络"><span class="nav-number">2.</span> <span class="nav-text">无网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#桥网络"><span class="nav-number">3.</span> <span class="nav-text">桥网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器间共享网络"><span class="nav-number">4.</span> <span class="nav-text">容器间共享网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#共享宿主机网络"><span class="nav-number">5.</span> <span class="nav-text">共享宿主机网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他网络相关命令"><span class="nav-number">6.</span> <span class="nav-text">其他网络相关命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器网络暴露"><span class="nav-number">7.</span> <span class="nav-text">容器网络暴露</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker容器的80端口映射宿主机上的所有地址的80端口"><span class="nav-number">7.1.</span> <span class="nav-text">docker容器的80端口映射宿主机上的所有地址的80端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker容器的80端口映射宿主机上的指定地址的80端口"><span class="nav-number">7.2.</span> <span class="nav-text">docker容器的80端口映射宿主机上的指定地址的80端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker容器的80端口映射宿主机上的指定地址的随机端口"><span class="nav-number">7.3.</span> <span class="nav-text">docker容器的80端口映射宿主机上的指定地址的随机端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例：-p-选项多重复使用"><span class="nav-number">7.4.</span> <span class="nav-text">范例：-p 选项多重复使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自建网络类型"><span class="nav-number">8.</span> <span class="nav-text">自建网络类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改默认docker0桥"><span class="nav-number">9.</span> <span class="nav-text">修改默认docker0桥</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

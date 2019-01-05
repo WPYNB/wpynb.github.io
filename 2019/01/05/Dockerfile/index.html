@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="docker的镜像分层分层      Cow     联合挂载     base image ,app image = base image docker里的镜像绝大部分都是在别的镜像的基础上去进行创建的，也就是使用镜像的分层结构。  那么为什么会有两个镜像呢？这是由于docker的镜像分层结构所导致的. 如下图所示: 一个docker镜像由多个可读的镜像层组成，然后运行的容器会在这个docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile">
+<meta property="og:url" content="http://yoursite.com/2019/01/05/Dockerfile/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="docker的镜像分层分层      Cow     联合挂载     base image ,app image = base image docker里的镜像绝大部分都是在别的镜像的基础上去进行创建的，也就是使用镜像的分层结构。  那么为什么会有两个镜像呢？这是由于docker的镜像分层结构所导致的. 如下图所示: 一个docker镜像由多个可读的镜像层组成，然后运行的容器会在这个docker">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/dfile3.png">
+<meta property="og:image" content="http://yoursite.com/images/dfile4.png">
+<meta property="og:image" content="http://yoursite.com/images/dfile5.png">
+<meta property="og:image" content="http://yoursite.com/images/drun.png">
+<meta property="og:updated_time" content="2019-01-05T09:49:34.015Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dockerfile">
+<meta name="twitter:description" content="docker的镜像分层分层      Cow     联合挂载     base image ,app image = base image docker里的镜像绝大部分都是在别的镜像的基础上去进行创建的，也就是使用镜像的分层结构。  那么为什么会有两个镜像呢？这是由于docker的镜像分层结构所导致的. 如下图所示: 一个docker镜像由多个可读的镜像层组成，然后运行的容器会在这个docker">
+<meta name="twitter:image" content="http://yoursite.com/images/dfile3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/05/Dockerfile/"/>
+
+
+
+
+
+  <title>Dockerfile | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/05/Dockerfile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dockerfile</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T16:21:57+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Dockerfile/" itemprop="url" rel="index">
+                    <span itemprop="name">Dockerfile</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="docker的镜像分层"><a href="#docker的镜像分层" class="headerlink" title="docker的镜像分层"></a>docker的镜像分层</h1><pre><code>分层
+
+    Cow
+    联合挂载
+    base image ,app image = base image
+docker里的镜像绝大部分都是在别的镜像的基础上去进行创建的，也就是使用镜像的分层结构。
+
+那么为什么会有两个镜像呢？这是由于docker的镜像分层结构所导致的.
+</code></pre><p>如下图所示:<br><img src="/images/dfile3.png" alt="Alt text"></p>
+<p>一个docker镜像由多个可读的镜像层组成，然后运行的容器会在这个docker的镜像上面多加一层可写的容器层，任何的对文件的更改都只存在此容器层。因此任何对容器的操作均不会影响到镜像。</p>
+<p>至于容器如何获取镜像层文件而又不影响到是镜像层的呢？docker是这样实现的？</p>
+<p>如果需要获取某个文件，那么容器曾会从上到下去下一层的镜像层去获取文件，如果该层文件不存在，那么就会去下一镜像层去寻找，直到最后一层。</p>
+<p>对于用户而言，用户面向的是一个叠加后的文件系统。</p>
+<p>而任何对于文件的操作都会记录在容器层，例如说修改文件，容器层会把在镜像层找到的文件拷贝到容器层然后进行修改，删除文件则会在容器层内记录删除文件的记录。</p>
+<h1 id="About-Dockerfile"><a href="#About-Dockerfile" class="headerlink" title="About Dockerfile"></a>About Dockerfile</h1><p>Dockerfile只不过是建造码头工人的源代码自动图像码头工人可以构建图像读取指令从Dockerfile。</p>
+<p>Dockerfile是一个文本文件,包含所有的命令在命令行用户可以叫组装一个图像型码头工人建立用户可以创建一个自动构建执行一些命令行指令</p>
+<p><img src="/images/dfile4.png" alt="Alt text"></p>
+<h1 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h1><p>Dockerfile其实可以看做一个命令集。每行均为一条命令。每行的第一个单词，就是命令command。</p>
+<p>后面的字符串是该命令所要接收的参数。</p>
+<p>比如ENTRYPOINT /bin/bash。ENTRYPOINT命令的作用就是将后面的参数设置为镜像的entrypoint。</p>
+<p>DockOne上有很多的介绍。</p>
+<h2 id="Docker-Image-building"><a href="#Docker-Image-building" class="headerlink" title="Docker Image building"></a>Docker Image building</h2><p>宿主机指定工作目录：</p>
+<pre><code>1.此文件中仅用于放置Dockerfile以及Dockerfile文件中指定要被依赖到的文件，不要放置其他文件或目录。
+2.此宿主机的工作目录相当于隐式运行的容器的卷，仅能从此卷中复制文件到容器中。
+</code></pre><p>Dockerfile的文件名也只能叫做Dockerfile，放置在宿主机上的工作目录中。</p>
+<h2 id="Dockerfile文件格式"><a href="#Dockerfile文件格式" class="headerlink" title="Dockerfile文件格式"></a>Dockerfile文件格式</h2><pre><code>格式（Format）
+    #注释
+    指令参数
+该指令本身不区分字符大小
+    惯例要求的指令要写成纯大写
+    以便更容易地与参数区分开来
+dockerfile文件本身没有循环、选择等分支，也没有跳转语句
+    一般来讲在dockerfile文件中的第一条指令是“FROM”（新版的dockerfile有松动，早期的dockerfile把第一条执行的第一条指令必须是“FROM”），因为“FROM”就是我们用来指定基础镜像的。
+</code></pre><h2 id="Dockerfile的镜像层构建"><a href="#Dockerfile的镜像层构建" class="headerlink" title="Dockerfile的镜像层构建"></a>Dockerfile的镜像层构建</h2><pre><code>在dockerfile中构建镜像，与我们手动的显式的启动一个容器构建镜像不同的是dockerfile文件中的每一条指令都会生成一个新的单有的镜像层。
+
+    分层过多会导致在读写访问过程中的效率降低，因为首次访问镜像一定是Cow机制完成
+
+    镜像分的过于精细的好处是可以其他让镜像让享同一层底层的镜像即镜像层越精细越多越容易共享，越容易共享代表在镜像仓库与客户端和dockerhost之间传输时可以单独传输，传输的过程越易控，起码在打包、分发。
+
+    应该把关系比较紧密的操作放置在一层操作当中。
+</code></pre><h2 id="docker镜像制作的两种运行场景"><a href="#docker镜像制作的两种运行场景" class="headerlink" title="docker镜像制作的两种运行场景"></a>docker镜像制作的两种运行场景</h2><p>1.制作新镜像的过程</p>
+<p>2.运行新镜像的阶段<br><img src="/images/dfile5.png" alt="Alt text"></p>
+<h2 id="dockerfile环境变量"><a href="#dockerfile环境变量" class="headerlink" title="dockerfile环境变量"></a>dockerfile环境变量</h2><p>环境变量(用ENV语句声明)也可以在某些指令中使用，因为Dockerfile将解释的变量在Dockerfile中以$variable名或${variable_name标记</p>
+<pre><code>${variable_name} 语法还支持一些标准的bash修饰符
+    $ivariable:-word} 表示如果设置了变量，则结果将是该值。 如果变量没有设置，那么结果将是word
+    ${variable:+word} 表示如果设置了变量，则word为结果，否则结果为空字符串
+</code></pre><p>.dockerignore file</p>
+<p>在docker CLI将上下文发送给docker守护进程之前，它将查找一个名为.dockerignore的文件。如果该文件存在，CLI将修改该上下文以排除与其模式匹配的文件和目录。dockerignore file是一个以新行分隔的模式列表，类似于Unix shell的文件全局</p>
+<h2 id="Dockerfile指令"><a href="#Dockerfile指令" class="headerlink" title="Dockerfile指令"></a>Dockerfile指令</h2><p>build阶段：做很多设定以便于在目标镜像文件中可以打包进入所期望的文件或者程序文件</p>
+<h3 id="from"><a href="#from" class="headerlink" title="from"></a>from</h3><pre><code>FROM指令是最重的一个且必须为Dockerfile文件开篇的第一个非注释行，用于 为映像文件构建过程指定基准镜像，后续的指令运行于此基准镜像所提供的运 行环境
+
+实践中，基准镜像可以是任何可用镜像文件，默认情况下，docker build会在 docker主机上查找指定的镜像文件，在其不存在时，则会从Docker Hub Registry 上拉取所需的镜像文件
+    如果找不到指定的镜像文件，docker build会返回一个错误信息
+
+Syntax(语法)(repository仓库、tag标签、digest唯一标识id即镜像校验码)
+    FROM &lt;repository&gt;[:&lt;tag&gt;] 或
+    FROM &lt;resository&gt;@&lt;digest&gt;
+        &lt;reposotiry&gt;：指定作为base image的名称；
+        &lt;tag&gt;：base image的标签，为可选项，省略时默认为latest；
+</code></pre><h3 id="LABEL"><a href="#LABEL" class="headerlink" title="LABEL"></a>LABEL</h3><p>用于让Dockerfile制作者提供本人的详细信息(支持提供此镜像的任何制作的附加介绍信息以及附加的元数据)</p>
+<pre><code>Syntax: LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; ...
+</code></pre><h3 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h3><pre><code>用于从Docker主机复制文件至创建的新映像文件
+
+Syntax(语法)
+    COPY &lt;src&gt; ... &lt;dest&gt; 或
+    COPY [&quot;&lt;src&gt;&quot;,... &quot;&lt;dest&gt;&quot;]
+        &lt;src&gt;：要复制的源文件或目录，支持使用通配符
+        &lt;dest&gt;：目标路径，即正在创建的image的文件系统路径；建议为&lt;dest&gt;使用绝对路径，否则， COPY指定则以WORKDIR为其起始路径；
+注意：在路径中有空白字符时，通常使用第二种格式
+
+文件复制准则
+    &lt;src&gt;必须是build上下文中的路径，不能是其父目录中的文件
+    如果&lt;src&gt;是目录，则其内部文件或子目录会被递归复制，但&lt;src&gt;目录自身不会被复制
+    如果指定了多个&lt;src&gt;，或在&lt;src&gt;中使用了通配符，则&lt;dest&gt;必须是一个目录，且必须以/ 结尾
+    如果&lt;dest&gt;事先不存在，它将会被自动创建，这包括其父目录路径
+</code></pre><h3 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h3><pre><code>ADD指令类似于COPY指令，ADD支持使用TAR文件和URL路径
+    Syntax
+        ADD &lt;src&gt; ... &lt;dest&gt; 或
+        ADD [&quot;&lt;src&gt;&quot;,... &quot;&lt;dest&gt;&quot;]
+
+操作准则
+    同COPY指令
+    如果&lt;src&gt;为URL且&lt;dest&gt;不以/结尾，则&lt;src&gt;指定的文件将被下载并直接被创建为&lt;dest&gt; ；如果&lt;dest&gt;以/结尾，则文件名URL指定的文件将被直接下载并保存为&lt;dest&gt;/&lt;filename&gt;
+
+    如果&lt;src&gt;是一个本地系统上的压缩格式的tar文件，它将被展开为一个目录，其行为类似于 “tar -x”命令；然而，通过URL获取到的tar文件将不会自动展开；
+
+    如果&lt;src&gt;有多个，或其间接或直接使用了通配符，则&lt;dest&gt;必须是一个以/结尾的目录路径 ；如果&lt;dest&gt;不以/结尾，则其被视作一个普通文件，&lt;src&gt;的内容将被直接写入到&lt;dest&gt;；
+</code></pre><h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><pre><code>用于为Dockerfile中所有的RUN、CMD、ENTRYPOINT、COPY和ADD指定 设定工作目录
+
+Syntax
+    WORKDIR &lt;dirpath&gt;
+    在Dockerfile文件中，WORKDIR指令可出现多次，其路径也可以为相对路径，不过，其是相对此前 一个WORKDIR指令指定的路径
+    另外，WORKDIR也可调用由ENV指定定义的变量
+
+例如
+    WORKDIR /var/log
+    WORKDIR $STATEPATH
+</code></pre><h3 id="volume存储卷"><a href="#volume存储卷" class="headerlink" title="volume存储卷"></a>volume存储卷</h3><pre><code>用于在image中创建一个挂载点目录，以挂载Docker host上的卷或其它容器上的 卷
+
+Syntax
+    VOLUME &lt;mountpoint&gt; 或
+    VOLUME [&quot;&lt;mountpoint&gt;&quot;]
+
+如果挂载点目录路径下此前在文件存在，docker run命令会在卷挂载完成后将此 前的所有文件复制到新挂载的卷中
+</code></pre><h3 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h3><pre><code>用于为容器打开指定要监听的端口以实现与外部通信
+
+Syntax
+    EXPOSE &lt;port&gt;[/&lt;protocol&gt;] [&lt;port&gt;[/&lt;protocol&gt;] ...]
+        &lt;protocol&gt;用于指定传输层协议，可为tcp或udp二者之一，默认为TCP协议,空格分隔可以创建多个
+
+EXPOSE指令可一次指定多个端口，
+    例如
+    EXPOSE 11211/udp 11211/tcp
+</code></pre><h3 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h3><pre><code>用于为镜像定义所需的环境变量，并可被Dockerfile文件中位于其后的其它指令 （如ENV、ADD、COPY等）所调用
+
+调用格式为$variable_name或${variable_name}
+Syntax
+    ENV &lt;key&gt; &lt;value&gt; 或
+    ENV &lt;key&gt;=&lt;value&gt; ...
+    第一种格式中，&lt;key&gt;之后的所有内容均会被视作其&lt;value&gt;的组成部分，因此，一次只 能设置一个变量；
+    第二种格式可用一次设置多个变量，每个变量为一个&quot;&lt;key&gt;=&lt;value&gt;&quot;的键值对，如果 &lt;value&gt;中包含空格，可以以反斜线(\)进行转义，也可通过对&lt;value&gt;加引号进行标识；另 外，反斜线也可用于续行；
+    定义多个变量时，建议使用第二种方式，以便在同一层中完成所有功能
+</code></pre><h3 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h3><pre><code>ARG指令定义了一个变量，用户可以在构建时将该变量传递给然后使用 `–bulis-arg= flag
+如果用户指定了一个没有在dockerfile中定义的构建参数,构建输出一个警告.`
+
+syntax
+    ARG&lt;name&gt;[&lt;default value&gt;]
+</code></pre><h2 id="使用FROM、LABEL、COPY制作镜像"><a href="#使用FROM、LABEL、COPY制作镜像" class="headerlink" title="使用FROM、LABEL、COPY制作镜像"></a>使用FROM、LABEL、COPY制作镜像</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">#创建docker的工作目录</span><br><span class="line">[root@centos7 ~]# mkdir /docker/</span><br><span class="line">[root@centos7 ~]# cd /docker/</span><br><span class="line"></span><br><span class="line">#编写dockerfile</span><br><span class="line">[root@centos7 docker]# vim Dockerfile</span><br><span class="line"></span><br><span class="line">FROM     busybox:latest             #对宿主机上已有的哪个镜像进行创建</span><br><span class="line"></span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingynag@5788.top&gt;&quot;  #作者描述</span><br><span class="line"></span><br><span class="line">COPY    index.html /data/web/html/       #将宿主机上docker目录下的index.html文件复制到容器中的/data/web/html/目录。如果写为/data/web/html则代表将 index.html改名为html，在容器中的/data/web/html/获取并未存在，可以自动创建。</span><br><span class="line"></span><br><span class="line">#查看宿主机上的dockerfile的工作目录</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# cd /docker/</span><br><span class="line">[root@centos7 docker]# echo &quot;123456&quot; &gt; index.html</span><br><span class="line">[root@centos7 docker]# ls</span><br><span class="line">index.html</span><br><span class="line"></span><br><span class="line">#构建新的镜像</span><br><span class="line">dicker image build = docker build</span><br><span class="line">[root@centos7 docker]# docker image build -h</span><br><span class="line">Usage:	docker image build [OPTIONS] PATH | URL | -</span><br><span class="line">Options:</span><br><span class="line">      --add-host list           添加自定义主机到ip映射(主机:ip)</span><br><span class="line">      --build-arg list          设置构建时变量</span><br><span class="line">      --cache-from strings      将图像视为缓存源</span><br><span class="line">      --rm                      成功构建后删除中间容器(默认为true)</span><br><span class="line">  -t, --tag list                制定的新的镜像设置新的仓库名和标签&apos;name:tag&apos; </span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.1        #执行命令的目录，要求在dockerfile文件所在的目录中执行</span><br><span class="line">Sending build context to Docker daemon  3.072kB</span><br><span class="line">Step 1/3 : FROM	 busybox:latest</span><br><span class="line"> ---&gt; 3a093384ac30</span><br><span class="line">Step 2/3 : LABEL 	maintainer=&quot;wpy&lt;weipingynag@5788.top&gt;&quot;</span><br><span class="line"> ---&gt; Running in 746880c7205c</span><br><span class="line">Removing intermediate container 746880c7205c</span><br><span class="line"> ---&gt; 7ccdca9907ce</span><br><span class="line">Step 3/3 : COPY	index.html /data/web/html/</span><br><span class="line"> ---&gt; 7062cd4f08e0</span><br><span class="line">Successfully built 7062cd4f08e0</span><br><span class="line">Successfully tagged mybox:v0.1</span><br><span class="line">    </span><br><span class="line">[root@centos7 docker]# docker image ls</span><br><span class="line">REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">mybox                    v0.1                7062cd4f08e0 </span><br><span class="line"></span><br><span class="line">#基于创建的镜像启动容器查看COPY的文件是否存在</span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm mybox:v0.1 /bin/sh</span><br><span class="line">/ # cat /data/web/html/index.html </span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+<h2 id="dockerignore限制copy的文件"><a href="#dockerignore限制copy的文件" class="headerlink" title=".dockerignore限制copy的文件"></a>.dockerignore限制copy的文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#使用.dockerignore限制copy的文件</span><br><span class="line">[root@centos7 docker]# pwd</span><br><span class="line">/docker</span><br><span class="line">[root@centos7 docker]# mkdir /docker/data/</span><br><span class="line">[root@centos7 docker]# cd !$</span><br><span class="line">cd /docker/data/</span><br><span class="line">[root@centos7 data]# echo &quot;123&quot; &gt; test1.html</span><br><span class="line">[root@centos7 data]# echo &quot;123&quot; &gt; test2.html</span><br><span class="line">[root@centos7 data]# echo &quot;123&quot; &gt; test3.html</span><br><span class="line">[root@centos7 docker]# tree</span><br><span class="line">.</span><br><span class="line">├── data</span><br><span class="line">│   ├── test1.html</span><br><span class="line">│   ├── test2.html</span><br><span class="line">│   └── test3.html</span><br><span class="line">└── Dockerfile</span><br><span class="line"></span><br><span class="line">##打算将/docker/data/目录下的文件全部复制到容器中排除test3.html文件</span><br><span class="line">[root@centos7 docker]# vim .dockerignore    #定义的.dockerignore 文件要写Dockerfile的相对路径，文件内也支持通配符</span><br><span class="line">data/test3.html</span><br><span class="line"></span><br><span class="line">#编辑Dockerfile文件</span><br><span class="line">[root@centos7 docker]# vim /docker/Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingynag@5788.top&gt;&quot;</span><br><span class="line">COPY    data /data/web/html/                #如果源是目录会cp源目录下的文件不会cp目录本身</span><br><span class="line"></span><br><span class="line">#创建新的镜像</span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.4</span><br><span class="line">Sending build context to Docker daemon  5.632kB</span><br><span class="line">Step 1/3 : FROM	 busybox:latest</span><br><span class="line"> ---&gt; 3a093384ac30</span><br><span class="line">Step 2/3 : LABEL 	maintainer=&quot;wpy&lt;weipingynag@5788.top&gt;&quot;</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 7ccdca9907ce</span><br><span class="line">Step 3/3 : COPY	data /data/web/html/</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 5b5cd427fb81</span><br><span class="line">Successfully built 5b5cd427fb81</span><br><span class="line">Successfully tagged mybox:v0.4</span><br><span class="line"></span><br><span class="line">#创建容器查看</span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm mybox:v0.4 /bin/sh</span><br><span class="line">/ # ls /data/web/html/*</span><br><span class="line">/data/web/html/test1.html  /data/web/html/test2.html</span><br></pre></td></tr></table></figure>
+<h2 id="ADD指令"><a href="#ADD指令" class="headerlink" title="ADD指令"></a>ADD指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 docker]# pwd</span><br><span class="line">/docker</span><br><span class="line">[root@centos7 docker]# ls</span><br><span class="line">Dockerfile  wordpress-4.9-zh_CN.tar.gz</span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingynag@5788.top&gt;&quot;</span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz /data/ #将网上的url打入镜像中，并运行容器是自动下载此压缩包放置在容器中的/data目录中</span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz /data2/  #此压缩包是放置在docker的工作目录中，会在容器运行时解压到容器中/data2目录中。</span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.3</span><br><span class="line">Sending build context to Docker daemon  10.13MB</span><br><span class="line">Step 1/4 : FROM	 busybox:latest</span><br><span class="line"> ---&gt; 3a093384ac30</span><br><span class="line">Step 2/4 : LABEL 	maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 7ccdca9907ce</span><br><span class="line">Step 3/4 : ADD http://nginx.org/download/nginx-1.14.2.tar.gz /data/</span><br><span class="line">Downloading  1.015MB/1.015MB</span><br><span class="line"> ---&gt; 62b1d80179e4</span><br><span class="line">Step 4/4 : ADD wordpress-4.9-zh_CN.tar.gz /data2/</span><br><span class="line"> ---&gt; 6bfaa9b46d21</span><br><span class="line">Successfully built 6bfaa9b46d21</span><br><span class="line">Successfully tagged mybox:v0.3</span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm mybox:v0.3 /bin/sh</span><br><span class="line">/ # ls /data</span><br><span class="line">data/   data2/</span><br><span class="line">/ # ls /data</span><br><span class="line">nginx-1.14.2.tar.gz</span><br><span class="line">/ # ls /data2</span><br><span class="line">wordpress</span><br></pre></td></tr></table></figure>
+<h2 id="WORKDIR指令"><a href="#WORKDIR指令" class="headerlink" title="WORKDIR指令"></a>WORKDIR指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">#定义工作目录</span><br><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">WORKDIR /         #定义工作目录，表示/data/</span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz data/</span><br><span class="line">WORKDIR /data/    #定义工作目录，表示/data/haha/</span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz haha/</span><br><span class="line"></span><br><span class="line">#制作镜像并运行查看</span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.4</span><br><span class="line">Sending build context to Docker daemon  10.13MB</span><br><span class="line">Step 1/6 : FROM	 busybox:latest</span><br><span class="line"> ---&gt; 3a093384ac30</span><br><span class="line">Step 2/6 : LABEL 	maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 7ccdca9907ce</span><br><span class="line">Step 3/6 : WORKDIR /</span><br><span class="line"> ---&gt; Running in a9ef74256526</span><br><span class="line">Removing intermediate container a9ef74256526</span><br><span class="line"> ---&gt; 89e2798cf96c</span><br><span class="line">Step 4/6 : ADD http://nginx.org/download/nginx-1.14.2.tar.gz data/</span><br><span class="line">Downloading  1.015MB/1.015MB</span><br><span class="line"> ---&gt; 653df7aeb99b</span><br><span class="line">Step 5/6 : WORKDIR /data/</span><br><span class="line"> ---&gt; Running in 55e4223e543c</span><br><span class="line">Removing intermediate container 55e4223e543c</span><br><span class="line"> ---&gt; 471c356643dc</span><br><span class="line">Step 6/6 : ADD wordpress-4.9-zh_CN.tar.gz haha/</span><br><span class="line"> ---&gt; c1d30647ca27</span><br><span class="line">Successfully built c1d30647ca27</span><br><span class="line">Successfully tagged mybox:v0.4</span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm  mybox:v0.4 /bin/sh</span><br><span class="line">/data # ls /data/</span><br><span class="line">haha                 nginx-1.14.2.tar.gz</span><br><span class="line">/data # ls /data/haha/</span><br><span class="line">wordpress</span><br></pre></td></tr></table></figure>
+<h2 id="VOLUME指定存储卷指令"><a href="#VOLUME指定存储卷指令" class="headerlink" title="VOLUME指定存储卷指令"></a>VOLUME指定存储卷指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">docker管理的卷（要是想要指定绑定在宿主机的某个目录进行映射关联关系的存储卷继续使用-v选项指定）</span><br><span class="line">#docker管理的卷</span><br><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">WORKDIR /</span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz data/</span><br><span class="line">WORKDIR /data/</span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz haha/</span><br><span class="line">VOLUME /data/web/html          #指定容器中的此目录与宿主机上的某一个目录做存储卷映射关系</span><br><span class="line"></span><br><span class="line">#打镜像--运行容器</span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.5</span><br><span class="line">Sending build context to Docker daemon  10.15MB</span><br><span class="line">Step 1/7 : FROM	 busybox:latest</span><br><span class="line"> ---&gt; 3a093384ac30</span><br><span class="line">Step 2/7 : LABEL 	maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 7ccdca9907ce</span><br><span class="line">Step 3/7 : WORKDIR /</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 89e2798cf96c</span><br><span class="line">Step 4/7 : ADD http://nginx.org/download/nginx-1.14.2.tar.gz data/</span><br><span class="line">Downloading  1.015MB/1.015MB</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 653df7aeb99b</span><br><span class="line">Step 5/7 : WORKDIR /data/</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 471c356643dc</span><br><span class="line">Step 6/7 : ADD wordpress-4.9-zh_CN.tar.gz haha/</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; c1d30647ca27</span><br><span class="line">Step 7/7 : VOLUME /data/web/html</span><br><span class="line"> ---&gt; Running in 388c0312f897</span><br><span class="line">Removing intermediate container 388c0312f897</span><br><span class="line"> ---&gt; 54cf9694d119</span><br><span class="line">Successfully built 54cf9694d119</span><br><span class="line">Successfully tagged mybox:v0.5</span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm  mybox:v0.5 /bin/sh</span><br><span class="line">/data # ls /data/web/html/</span><br><span class="line">/data # </span><br><span class="line"></span><br><span class="line">#宿主机上查看对应的随机的存储卷</span><br><span class="line">[root@centos7 ~]# docker image inspect mybox:v0.5</span><br><span class="line">            &quot;Volumes&quot;: &#123;</span><br><span class="line">                &quot;/data/web/html/&quot;: &#123;&#125;</span><br><span class="line">            &#125;,</span><br><span class="line">[root@centos7 ~]# docker container inspect pc1</span><br><span class="line">        &quot;Mounts&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;Type&quot;: &quot;volume&quot;,</span><br><span class="line">                &quot;Name&quot;: &quot;177fd037174ad4af75866df8d07c575f1e4dbee2ee65613c6e36842b4e6de49e&quot;,</span><br><span class="line">                &quot;Source&quot;: &quot;/var/lib/docker/volumes/177fd037174ad4af75866df8d07c575f1e4dbee2ee65613c6e36842b4e6de49e/_data&quot;,</span><br><span class="line">                &quot;Destination&quot;: &quot;/data/web/html&quot;,</span><br><span class="line">                &quot;Driver&quot;: &quot;local&quot;,</span><br><span class="line">                &quot;Mode&quot;: &quot;&quot;,</span><br><span class="line">                &quot;RW&quot;: true,</span><br><span class="line">                &quot;Propagation&quot;: &quot;&quot;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="EXPOSE指令"><a href="#EXPOSE指令" class="headerlink" title="EXPOSE指令"></a>EXPOSE指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#编写Dockerfile端口暴露tcp80</span><br><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">WORKDIR /</span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz data/</span><br><span class="line">WORKDIR /data/</span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz haha/</span><br><span class="line">VOLUME /data/web/html</span><br><span class="line">EXPOSE 80/tcp</span><br><span class="line"></span><br><span class="line">#创建镜像并运行查看端口是否暴露</span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.6</span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it --rm  mybox:v0.6 /bin/sh</span><br><span class="line">[root@centos7 ~]# docker container inspect pc1</span><br><span class="line">        &quot;Config&quot;: &#123;</span><br><span class="line">            &quot;Hostname&quot;: &quot;b8bb78bbe2fb&quot;,</span><br><span class="line">            &quot;Domainname&quot;: &quot;&quot;,</span><br><span class="line">            &quot;User&quot;: &quot;&quot;,</span><br><span class="line">            &quot;AttachStdin&quot;: true,</span><br><span class="line">            &quot;AttachStdout&quot;: true,</span><br><span class="line">            &quot;AttachStderr&quot;: true,</span><br><span class="line">            &quot;ExposedPorts&quot;: &#123;</span><br><span class="line">                &quot;80/tcp&quot;: &#123;&#125;</span><br><span class="line">            &#125;,</span><br><span class="line">[root@centos7 _data]# docker container port pc1</span><br><span class="line">#默认没有端口暴露，虽然在Dockerfile文件中已经定义，由于网络风险需要在启动容器是指定端口暴露</span><br><span class="line">这种暴露和存储卷相同，都是宿主机随机动态</span><br><span class="line"></span><br><span class="line">#此时可以手动指定开始端口暴漏</span><br><span class="line">[root@centos7 docker]# docker run --name pc1 -it -P --rm  mybox:v0.6 /bin/sh</span><br><span class="line">[root@centos7 ~]# docker container port pc1</span><br><span class="line">80/tcp -&gt; 0.0.0.0:32768</span><br></pre></td></tr></table></figure>
+<h2 id="ENV指令"><a href="#ENV指令" class="headerlink" title="ENV指令"></a>ENV指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">ENV     webhome=&quot;/data/web/html/&quot;</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">WORKDIR $&#123;webhome&#125;</span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz $&#123;webhome&#125;</span><br><span class="line">WORKDIR $&#123;webhome&#125;      </span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz ./       </span><br><span class="line">VOLUME $&#123;webhome&#125;</span><br><span class="line">EXPOSE 80/tcp</span><br><span class="line"></span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.7</span><br><span class="line">[root@centos7 docker]# docker run --name pc2 -it --rm mybox:v0.7 /bin/sh</span><br></pre></td></tr></table></figure>
+<h2 id="ARG指令"><a href="#ARG指令" class="headerlink" title="ARG指令"></a>ARG指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">build的时对变量传值的做法</span><br><span class="line">#Dockerfile中定义了创建容器时的变量参数。如果想临时修改参数可以在命令行中使用ARG定义变量，--build-arg,在执行docker image buil 命令命令行选项可以改变变量的值（docker新版本中支持）</span><br><span class="line">#使用ARG定义变量</span><br><span class="line">[root@centos7 ~]# cd /docker/</span><br><span class="line">[root@centos7 docker]# vim Dockerfile </span><br><span class="line">FROM     busybox:latest</span><br><span class="line">ARG     webhome=&quot;/data/web/html/&quot;</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">WORKDIR $&#123;webhome&#125;         </span><br><span class="line">ADD http://nginx.org/download/nginx-1.14.2.tar.gz $&#123;webhome&#125;                 </span><br><span class="line">WORKDIR $&#123;webhome&#125;</span><br><span class="line">ADD wordpress-4.9-zh_CN.tar.gz ./     </span><br><span class="line">VOLUME $&#123;webhome&#125;</span><br><span class="line">EXPOSE 80/tcp</span><br><span class="line"></span><br><span class="line">#打镜像，并使用--build-arg指定新的便令再次打镜像</span><br><span class="line">[root@centos7 docker]# docker image build /docker/ -t mybox:v0.8</span><br><span class="line">#这个镜像执行与EVN执行的镜像一样</span><br><span class="line">#使用--build-arg指定新的变量的值</span><br><span class="line">[root@centos7 docker]# docker image build --build-arg webhome=&quot;/var/www/html&quot; /docker/ -t mybox:v0.7</span><br><span class="line">[root@centos7 docker]# docker run --name pc2 -it --rm mybox:v0.7 /bin/sh</span><br><span class="line">/var/www/html #</span><br></pre></td></tr></table></figure>
+<h1 id="run阶段Dockerfile文件中的指令"><a href="#run阶段Dockerfile文件中的指令" class="headerlink" title="run阶段Dockerfile文件中的指令"></a>run阶段Dockerfile文件中的指令</h1><p><img src="/images/drun.png" alt="Alt text"></p>
+<p>(run阶段：指明在bulid时做一些通过运行shell命令来达到去设定目标镜像的目的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">RUN</span><br><span class="line"></span><br><span class="line">    用于指定docker build过程中运行的程序，其可以是任何命令（run的任何命令代表基础镜像支持的命令）</span><br><span class="line">    Syntax</span><br><span class="line">        RUN &lt;command&gt; 或 #以shell解释运行</span><br><span class="line">        RUN [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;] #不以shell解释运行</span><br><span class="line">    </span><br><span class="line">    第一种格式中，&lt;command&gt;通常是一个shell命令，且以“/bin/sh -c”来运行它，这意味着此进程 在容器中的PID不为1，不能接收Unix信号，因此，当使用docker stop &lt;container&gt;命令停止容器 时，此进程接收不到SIGTERM信号；</span><br><span class="line">    </span><br><span class="line">    第二种语法格式中的参数是一个JSON格式的数组，其中&lt;executable&gt;为要运行的命令，后面的 &lt;paramN&gt;为传递给命令的选项或参数；然而，此种格式指定的命令不会以“/bin/sh -c”来发起 ，因此常见的shell操作如变量替换以及通配符(?,*等)替换将不会进行；不过，如果要运行的命令 依赖于此shell特性的话，可以将其替换为类似下面的格式。</span><br><span class="line">        RUN [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;]</span><br><span class="line">            注意：json数组中，要使用双引号</span><br><span class="line"></span><br><span class="line">CMD</span><br><span class="line"></span><br><span class="line">    类似于RUN指令，CMD指令也可用于运行任何命令或应用程序，不过，二者 的运行时间点不同</span><br><span class="line">        RUN指令运行于映像文件构建过程中，而CMD指令运行于基于Dockerfile构建出的新映像 文件启动一个容器时</span><br><span class="line">        CMD指令的首要目的在于为启动的容器指定默认要运行的程序，且其运行结束后，容器也 将终止；不过，CMD指定的命令其可以被docker run的命令行选项所覆盖</span><br><span class="line">        在Dockerfile中可以存在多个CMD指令，但仅最后一个会生效</span><br><span class="line"></span><br><span class="line">    Syntax</span><br><span class="line">        CMD &lt;command&gt; 或 #以shell运行</span><br><span class="line">        CMD [“&lt;executable&gt;”, “&lt;param1&gt;”, “&lt;param2&gt;”] 或 #不以shell解释运行</span><br><span class="line">        CMD [&quot;&lt;param1&gt;&quot;,&quot;&lt;param2&gt;&quot;]</span><br><span class="line">    前两种语法格式的意义同RUN</span><br><span class="line">    第三种则用于为ENTRYPOINT指令提供默认参数</span><br><span class="line"></span><br><span class="line">ENTRYPOINT</span><br><span class="line"></span><br><span class="line">    类似CMD指令的功能，用于为容器指定默认运行程序，从而使得容器像是一个 单独的可执行程序</span><br><span class="line">    与CMD不同的是，由ENTRYPOINT启动的程序不会被docker run命令行指定的 参数所覆盖，而且，这些命令行参数会被当作参数传递给ENTRYPOINT指定 指定的程序</span><br><span class="line">        不过，docker run命令的–entrypoint选项的参数可覆盖ENTRYPOINT指令指定的程序</span><br><span class="line">            Syntax</span><br><span class="line">        ENTRYPOINT &lt;command&gt;</span><br><span class="line">        ENTRYPOINT [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]</span><br><span class="line">        docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到 ENTRYPOINT命令最后做为其参数使用</span><br><span class="line">        Dockerfile文件中也可以存在多个ENTRYPOINT指令，但仅有最后一个会生效</span><br></pre></td></tr></table></figure></p>
+<h3 id="RUN指令"><a href="#RUN指令" class="headerlink" title="RUN指令"></a>RUN指令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#运行起来的命令还是shell</span><br><span class="line">[root@centos7 dockerlamp]# pwd</span><br><span class="line">/dockerlamp</span><br><span class="line">[root@centos7 dockerlamp]# cat Dockerfile </span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN 	 yum makecache &amp;&amp; \</span><br><span class="line">	yum -y install httpd php php-mysql &amp;&amp; \</span><br><span class="line">	yum clean all &amp;&amp; \</span><br><span class="line">	rm -rf /var/cache/yum/* #删除yum生成的缓存不免刻录至镜像中</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 --rm -it lamp:v0.1 /bin/sh</span><br><span class="line">sh-4.2# rpm -q httpd php</span><br><span class="line">httpd-2.4.6-88.el7.centos.x86_64</span><br><span class="line">php-5.4.16-46.el7.x86_64</span><br></pre></td></tr></table></figure>
+<h2 id="CMD指令"><a href="#CMD指令" class="headerlink" title="CMD指令"></a>CMD指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#RUN在bulid阶段</span><br><span class="line">#CMD在run阶段</span><br><span class="line">#实现容器运行起来不是shell而是httpd，实现httpd运行在前台</span><br><span class="line"></span><br><span class="line">如何实现将httpd实现前台运行</span><br><span class="line">cat /usr/lib/systemd/system/httpd.service </span><br><span class="line">ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND</span><br><span class="line"></span><br><span class="line">[root@centos7 ~]# cd /dockerlamp/</span><br><span class="line">[root@centos7 dockerlamp]# cat Dockerfile </span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN 	 yum makecache &amp;&amp; \</span><br><span class="line">	yum -y install httpd php php-mysql &amp;&amp; \</span><br><span class="line">	yum clean all &amp;&amp; \</span><br><span class="line">	rm -rf /var/cache/yum/*</span><br><span class="line">CMD [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# docker image build /dockerlamp/ -t lamp:v0.2</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc2 -it --rm lamp:v0.2 </span><br><span class="line"></span><br><span class="line">#烟验证</span><br><span class="line">[root@centos7 ~]# docker container ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES</span><br><span class="line">f6b5dd3c9664        lamp:v0.2           &quot;usr/sbin/httpd -DFO…&quot;   About a minute ago   Up About a minute                       pc2</span><br><span class="line">[root@centos7 dockerlamp]# docker exec -it pc2  /bin/bash</span><br><span class="line">[root@f6b5dd3c9664 /]# netstat -tnl</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">改进</span><br><span class="line">#制作Dockerfile文件并添加测试页打包至镜像</span><br><span class="line">[root@centos7 dockerlamp]# pwd</span><br><span class="line">/dockerlamp</span><br><span class="line">[root@centos7 dockerlamp]# vim php.php</span><br><span class="line">&lt;?php</span><br><span class="line">        phpinfo();</span><br><span class="line">?&gt;</span><br><span class="line">[root@centos7 dockerlamp]# vim Dockerfile </span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN      yum makecache &amp;&amp; \</span><br><span class="line">        yum -y install httpd php php-mysql &amp;&amp; \</span><br><span class="line">        yum clean all &amp;&amp; \</span><br><span class="line">        rm -rf /var/cache/yum/*</span><br><span class="line">ADD php.php $&#123;root&#125;</span><br><span class="line">CMD [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]</span><br><span class="line"></span><br><span class="line">#打镜像并运行容器测试</span><br><span class="line">[root@centos7 dockerlamp]# docker image build /dockerlamp/ -t lamp:v0.3</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc3 -it --rm lamp:v0.3 </span><br><span class="line"></span><br><span class="line">#测试</span><br><span class="line">[root@centos7 dockerlamp]# docker exec -it pc3 /bin/bash</span><br><span class="line">[root@b1da3c0ce6d8 /]# curl 172.17.0.2</span><br><span class="line"></span><br><span class="line">#说明</span><br><span class="line">此时也可以用户在命令行中运行指定使用/bin/bash运行的</span><br><span class="line">##可以手动指定命令来覆盖镜像Dockerfile文件中CMD的</span><br><span class="line">##上一个镜像文件中默认已经定义运行容器默认运行的进程为httpd的，可以手动运行/bin/bash</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc3 -it --rm lamp:v0.3 /bin/bash</span><br><span class="line">[root@97ef0a13d4fc /]# </span><br><span class="line">[root@97ef0a13d4fc /]# ps aux</span><br><span class="line">USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root          1  0.1  0.1  11820  1884 pts/0    Ss   07:48   0:00 /bin/bash</span><br><span class="line">root         16  0.0  0.0  51740  1732 pts/0    R+   07:49   0:00 ps aux</span><br><span class="line"></span><br><span class="line">#Dokcerfile文件中定义的运行httpd已经被覆盖，查看进程httpd进程未被启动，如果想要CMD不被覆盖则此时应该用到ENTRYPOINT</span><br></pre></td></tr></table></figure>
+<h2 id="ENTRYPOINT指令-–entrypoint"><a href="#ENTRYPOINT指令-–entrypoint" class="headerlink" title="ENTRYPOINT指令( –entrypoint )"></a>ENTRYPOINT指令( –entrypoint )</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#ENTRYPOINT单独使用情况下作用于CMD大致相同除了不可被用户命令行运行容器时任意被覆盖</span><br><span class="line">#常见Dockerfile文件</span><br><span class="line">[root@centos7 dockerlamp]# pwd</span><br><span class="line">/dockerlamp</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# vim Dockerfile </span><br><span class="line"></span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN      yum makecache &amp;&amp; \</span><br><span class="line">        yum -y install httpd php php-mysql &amp;&amp; \</span><br><span class="line">        yum clean all &amp;&amp; \</span><br><span class="line">        rm -rf /var/cache/yum/*</span><br><span class="line">ADD php.php $&#123;root&#125;</span><br><span class="line">EXPOSE 80/tcp</span><br><span class="line">VOLUME $&#123;root&#125;</span><br><span class="line">ENTRYPOINT [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# ls</span><br><span class="line">Dockerfile  php.php</span><br><span class="line"></span><br><span class="line">#打镜像运行容器</span><br><span class="line">[root@centos7 dockerlamp]# docker image build /dockerlamp/ -t lamp:v0.4</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -it -P --rm lamp:v0.4</span><br><span class="line"></span><br><span class="line">#宿主机检测</span><br><span class="line">[root@centos7 dockerlamp]# docker container  ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES</span><br><span class="line">0031f963fce6        lamp:v0.4           &quot;usr/sbin/httpd -DFO…&quot;   41 seconds ago      Up 41 seconds       80/tcp              pc1</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# docker container port pc1</span><br><span class="line">80/tcp -&gt; 0.0.0.0:32769</span><br><span class="line">[root@centos7 dockerlamp]# curl 172.18.50.7:32769</span><br><span class="line"></span><br><span class="line">#测试试图覆盖Docker文件中定义的执行的ENTRYPOINT指令</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -P -it --rm lamp:v0.4 /bin/bash</span><br><span class="line">Usage: usr/sbin/httpd [-D name] [-d directory] [-f file]</span><br><span class="line"></span><br><span class="line">#报错拒绝覆盖Docker文件中定义的执行的ENTRYPOINT指令</span><br><span class="line">#命令行运行时添加的/bin/bash则当作了Docker文件中定义的执行的ENTRYPOINT指令后面的参数（httpd不支持/bin/bash当作参数）</span><br><span class="line"></span><br><span class="line">#用户执行命令时如何指明强制覆盖Docker文件中定义的执行的ENTRYPOINT指令</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -P -it --rm --entrypoint &quot;/bin/bash&quot; lamp:v0.4</span><br><span class="line">[root@5de1663077eb /]#</span><br></pre></td></tr></table></figure>
+<h2 id="ENTRYPOINT指令于CMD指令同时使用"><a href="#ENTRYPOINT指令于CMD指令同时使用" class="headerlink" title="ENTRYPOINT指令于CMD指令同时使用"></a>ENTRYPOINT指令于CMD指令同时使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">#CMD定义的命令都要统统作为ENTRYPOINT的参数</span><br><span class="line">#一下两种格式意义相同</span><br><span class="line">CMD [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]   #CMD作为ENTRYPOINT的参数执行</span><br><span class="line">ENTRYPOINT [&quot;/bin/bash&quot;,&quot;-c&quot;]</span><br><span class="line">=========================================================================</span><br><span class="line">CMD /usr/bin/httpd -DFOREGROUD</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ENTRYPOINT与CMD分隔开来写的意义：</span><br><span class="line">    在ENTRYPOINT运行一个脚本，CMD的指令会被当作脚本的参数传递给脚本，脚本作为传统应用程序和容器化运行的中间层，来处理配置文件的，同时此配置文件是可以接受环境变量为参数来设置配置文件。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#Dockerfile文件中ENTRYPOINT指令于CMD指令同时使用</span><br><span class="line">[root@centos7 dockerlamp]# vim Dockerfile </span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN      yum makecache &amp;&amp; \</span><br><span class="line">        yum -y install httpd php php-mysql &amp;&amp; \</span><br><span class="line">        yum clean all &amp;&amp; \</span><br><span class="line">        rm -rf /var/cache/yum/*</span><br><span class="line">ADD php.php $&#123;root&#125;</span><br><span class="line">ADD ent.sh /bin/</span><br><span class="line">EXPOSE 8080/tcp</span><br><span class="line">VOLUME $&#123;root&#125;</span><br><span class="line">CMD [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]</span><br><span class="line">ENTRYPOINT [&quot;/bin/ent.sh&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#编写的脚本的解释器一定是基础镜像中所被支持解释的类型</span><br><span class="line">[root@centos7 dockerlamp]# vim ent.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">#如果用户没定义此为默认的变量</span><br><span class="line">listen_port=$&#123;LISTEN_PORT:-8080&#125;</span><br><span class="line">server_name=$&#123;SERVER_NAME:-localhost&#125;</span><br><span class="line">doc_root=$&#123;DOC_ROOT:-/var/www/html&#125;</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/httpd/conf.d/myweb.conf &lt;&lt;EOF</span><br><span class="line">listen $listen_port</span><br><span class="line">&lt;VirtualHost *:$&#123;listen_port&#125;&gt;</span><br><span class="line">        ServerName &quot;$server_name&quot;</span><br><span class="line">        DocumentRoot &quot;$doc_root&quot;</span><br><span class="line">        &lt;Directory &quot;$doc_root&quot;&gt;</span><br><span class="line">                Options none</span><br><span class="line">                AllowOverride none</span><br><span class="line">                Require all granted</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line">&lt;/Virtualhost&gt;</span><br><span class="line">EOF</span><br><span class="line">#引用一个脚本的所有参数,默认的httpd进程/bin/bash的子进程&gt;，要想使得httpd作为init下的一级进程则如下写法(目标进程替换shell进程,让shell自动退出)</span><br><span class="line">exec &quot;$@&quot;</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# chmod +x /dockerlamp/ent.sh </span><br><span class="line">[root@centos7 dockerlamp]# docker image build /dockerlamp/ -t lamp:v0.5</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -it --rm lamp:v0.5(可以在命令行中使用-e选项对容器中的环境变量传值 使用printenv命令可以查看传入变量的值 </span><br><span class="line">)</span><br><span class="line">[root@centos7 ~]# docker container port pc1</span><br><span class="line">[root@centos7 ~]# curl 172.18.135.1:32777</span><br><span class="line">[root@centos7 ~]# docker exec -it pc1 /bin/bash</span><br><span class="line">[root@5b32b59d73ef /]# cat /etc/httpd/conf.d/myweb.conf </span><br><span class="line">listen 8080</span><br><span class="line">&lt;VirtualHost *:8080&gt;</span><br><span class="line">        ServerName &quot;localhost&quot;</span><br><span class="line">        DocumentRoot &quot;/var/www/html&quot;</span><br><span class="line">        &lt;Directory &quot;/var/www/html&quot;&gt;</span><br><span class="line">                Options none</span><br><span class="line">                AllowOverride none</span><br><span class="line">                Require all granted</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line">&lt;/Virtualhost&gt;</span><br><span class="line">#httpd的进程号为1</span><br><span class="line">[root@2967451fc4a9 /]# ps aux</span><br><span class="line">USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root          1  0.0  0.7 408092 13436 pts/0    Ss+  09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache        8  0.0  0.3 408092  6748 pts/0    S+   09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache        9  0.0  0.3 408092  6748 pts/0    S+   09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache       10  0.0  0.3 408092  6748 pts/0    S+   09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache       11  0.0  0.3 408092  6748 pts/0    S+   09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache       12  0.0  0.3 408092  6748 pts/0    S+   09:19   0:00 usr/sbin/httpd -DFOREGROUND</span><br><span class="line"></span><br><span class="line">#run是使用-e选项对容器进行变量复制</span><br><span class="line">(可以在命令行中使用-e选项对容器中的环境变量传值 使用printenv命令可以查看传入变量的值 )</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -it --rm -P -e LISTEN_PORT=1010 lamp:v0.10</span><br><span class="line">[root@centos7 ~]# docker exec -it pc1 /bin/bash</span><br><span class="line">[root@067566aa1878 /]# printenv </span><br><span class="line">    LISTEN_PORT=1010</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -it --rm -P -e hi=hehe  lamp:v0.10</span><br><span class="line">[root@centos7 ~]# docker exec -it pc1 /bin/bash</span><br><span class="line">[root@2967451fc4a9 /]# echo $hi</span><br><span class="line">    hehe</span><br></pre></td></tr></table></figure>
+<h2 id="USER"><a href="#USER" class="headerlink" title="USER"></a>USER</h2><pre><code>用于指定运行image时的或运行Dockerfile中任何RUN、CMD或ENTRYPOINT 指令指定的程序时的用户名或UID
+默认情况下，container的运行身份为root用户
+    Syntax
+        USER |
+        需要注意的是，可以为任意数字，但实践中其必须为/etc/passwd中某用户的有效 UID，否则，docker run命令将运行失败
+</code></pre><h2 id="HEALTHCHECK健康状态检测（新版支持）"><a href="#HEALTHCHECK健康状态检测（新版支持）" class="headerlink" title="HEALTHCHECK健康状态检测（新版支持）"></a>HEALTHCHECK健康状态检测（新版支持）</h2><pre><code>HEALTHCHECK指令告诉Docker如何测试一个容器，以检查它是否仍在工作。这可以检测出一些情况，比如web服务器陷入无限循环，无法处理新连接，即使服务器进程仍在运行。
+HEALTHCHECK指令有两种形式:
+
+    HEALTHCHECK [OPTIONS] CMD命令(通过在容器内运行命令来检查容器的健康状况)
+    HEALTHCHECK NONE(不做任何健康检测)
+HEALTHCHECK(2)
+
+    在CMD之前可以出现的选项有:
+    –interval=DURATION (default: 30s) #每隔多久检测一次，检测频率默认为30秒
+    –timeout=DURATION (default: 30s) #相对方发起检测请求，等待超时时长默认为30秒
+    –start-period=DURATION (default: 0s) #在什么时间开始进程健康检测，0表示容易以启动立刻做第一次健康检测
+    –retries=N (default: 3) #检测失败，重试检测多少吃后失败再判定为失败，默认为检测3次
+
+命令的退出状态指示容器的健康状态。可能的值是:
+    0: success 成功
+    1: unhealthy 不健康
+    2: reserved 保留
+范例：
+    HEALTHCHECK –interval=5m –timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">#定制健康检查计划</span><br><span class="line">[root@centos7 ~]# vim /dockerlamp/Dockerfile </span><br><span class="line">FROM centos:7</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">ARG root=/var/www/html/</span><br><span class="line">RUN      yum makecache &amp;&amp; \</span><br><span class="line">        yum -y install httpd php php-mysql curl &amp;&amp; \</span><br><span class="line">        yum clean all &amp;&amp; \</span><br><span class="line">        rm -rf /var/cache/yum/*</span><br><span class="line">ADD ok.html php.php $&#123;root&#125;</span><br><span class="line">ADD ent.sh /bin/</span><br><span class="line">EXPOSE 8080/tcp</span><br><span class="line">VOLUME $&#123;root&#125;</span><br><span class="line">HEALTHCHECK --interval=3s --timeout=3s --start-period=2s CMD curl -f http://localhost/ok.html || exit 1</span><br><span class="line">CMD [&quot;usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]</span><br><span class="line">ENTRYPOINT [&quot;/bin/ent.sh&quot;]</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# ls</span><br><span class="line">Dockerfile  ent.sh  php.php</span><br><span class="line">[root@centos7 dockerlamp]# echo &quot;ok&quot; &gt; ok.html</span><br><span class="line"></span><br><span class="line">#打镜像测试健康计划</span><br><span class="line">[root@centos7 dockerlamp]# docker image build /dockerlamp/ -t lamp:v1.0</span><br><span class="line">[root@centos7 dockerlamp]# docker run --name pc1 -it --rm lamp:v1.0 </span><br><span class="line">#查看状态健康的</span><br><span class="line">[root@centos7 ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                   PORTS               NAMES</span><br><span class="line">763a1536b62d        lamp:v1.0           &quot;/bin/ent.sh usr/sbi…&quot;   6 seconds ago       Up 5 seconds (healthy)   8080/tcp            pc1</span><br><span class="line"></span><br><span class="line">#删除文件查看是否不健康</span><br><span class="line">[root@centos7 ~]# docker exec -it pc1 /bin/bash</span><br><span class="line">[root@763a1536b62d /]# rm -rf /var/www/html/ok.html </span><br><span class="line">[root@centos7 dockerlamp]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES</span><br><span class="line">763a1536b62d        lamp:v1.0           &quot;/bin/ent.sh usr/sbi…&quot;   3 minutes ago       Up 3 minutes (unhealthy)   8080/tcp            pc1</span><br><span class="line"></span><br><span class="line">#一旦发现容器出错时，手动将容器杀死重新构建，此功能是容器引擎做不到的，需要借助容器编排工具</span><br><span class="line"></span><br><span class="line">#如果再构建镜像的时候未构建也可以再运行命令行运行容器时手动指定（人为的在外部定义）</span><br><span class="line"></span><br><span class="line">[root@centos7 dockerlamp]# docker run --help</span><br><span class="line"></span><br><span class="line">Usage:	docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br><span class="line">      --health-cmd string              Command to run to check health</span><br><span class="line">      --health-interval duration       Time between running the check (ms|s|m|h)</span><br><span class="line">                                       (default 0s)</span><br><span class="line">      --health-retries int             Consecutive failures needed to report unhealthy</span><br><span class="line">      --health-start-period duration   Start period for the container to initialize</span><br><span class="line">                                       before starting health-retries countdown</span><br><span class="line">                                       (ms|s|m|h) (default 0s)</span><br><span class="line">      --health-timeout duration        Maximum time to allow one check to run</span><br></pre></td></tr></table></figure>
+<h2 id="SHELL"><a href="#SHELL" class="headerlink" title="SHELL"></a>SHELL</h2><pre><code>指令允许覆盖命令的SHELL形式所使用的默认SHELL。
+Linux上的默认shell是[“/bin/sh”， “-c”]
+Windows上的默认shell是[“cmd”， “/S”， “/C”]
+SHELL指令必须以JSON格式写入Dockerfile中
+语法:SHELL[“可执行”，”参数”]
+外壳指令可以出现多次。每个SHELL指令覆盖前面的所有SHELL指令，并影响后面的所有指令。
+</code></pre><h2 id="STOPSIGNAL"><a href="#STOPSIGNAL" class="headerlink" title="STOPSIGNAL"></a>STOPSIGNAL</h2><pre><code>指令设置将发送到容器的系统调用信号以退出
+这个信号可以是一个有效的无符号数字
+它匹配内核的syscall表中的一个位置，例如9
+也可以是SIGNAME格式的一个信号名，例如SIGKILL。
+    Syntax:
+        STOPSIGNAL signal
+</code></pre><h2 id="ONBUILD"><a href="#ONBUILD" class="headerlink" title="ONBUILD"></a>ONBUILD</h2><pre><code>用于在Dockerfile中定义一个触发器
+Dockerfile用于build映像文件，此映像文件亦可作为base image被另一个Dockerfile 用作FROM指令的参数，并以之构建新的映像文件
+在后面的这个Dockerfile中的FROM指令在build过程中被执行时，将会“触发”创 建其base image的Dockerfile文件中的ONBUILD指令定义的触发器
+
+Syntax
+    ONBUILD
+    尽管任何指令都可注册成为触发器指令，但ONBUILD不能自我嵌套，且不会触发FROM和 MAINTAINER指令
+    使用包含ONBUILD指令的Dockerfile构建的镜像应该使用特殊的标签，例如ruby:2.0-onbuild
+    在ONBUILD指令中使用ADD或COPY指令应该格外小心，因为新构建过程的上下文在缺少指 定的源文件时会失败
+</code></pre><h2 id="ONBUILD指令"><a href="#ONBUILD指令" class="headerlink" title="ONBUILD指令"></a>ONBUILD指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">当别人利用自己的镜像做基础镜像</span><br><span class="line">你自己先前定义好的dockerfile，当别人拿自己镜像做基础镜像再次创建的dockerfile文件，自己填写的ONBUILD指令在自己run的时候不会运行，当别人拿自己镜像在此基础上创建的dockerfile执行的时候才会运行自己定义的ONBUILD指令。</span><br><span class="line"></span><br><span class="line">#定义ONBUILD，当别人拿自己的镜像做基础镜像再次做dockerfile执行时则在/data/data目录中下载URL，自己run时则不执行</span><br><span class="line">[root@centos7 ~]# mkdir /test</span><br><span class="line">[root@centos7 ~]# cd /test/</span><br><span class="line">[root@centos7 test]# vim Dockerfile</span><br><span class="line"></span><br><span class="line">FROM busybox:latest</span><br><span class="line">LABEL   maintainer=&quot;wpy&lt;weipingyang@5788.top&gt;&quot;</span><br><span class="line">RUN mkdir -p /data/data</span><br><span class="line">ONBUILD ADD http://nginx.org/download/nginx-1.2.9.tar.gz /data/data</span><br><span class="line">#打镜像</span><br><span class="line">[root@centos7 test]# docker image build /test/ -t haha:v0.1</span><br><span class="line"></span><br><span class="line">#在自己制作的基础上再次制作</span><br><span class="line">[root@centos7 ~]# mkdir /test1</span><br><span class="line">[root@centos7 ~]# cd !$</span><br><span class="line">cd /test1</span><br><span class="line">[root@centos7 test1]# vim Dockerfile</span><br><span class="line">FROM  haha:v0.1</span><br><span class="line">RUN mkdir -p /data/haha</span><br><span class="line"></span><br><span class="line">#此时第一次制作的镜像定义的ONBUILD 会执行</span><br><span class="line">[root@centos7 test1]# docker image build /test1/ -t hehe:v0.1</span><br></pre></td></tr></table></figure>
+<h1 id="本地制作的镜像分享给别人"><a href="#本地制作的镜像分享给别人" class="headerlink" title="本地制作的镜像分享给别人"></a>本地制作的镜像分享给别人</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">此场景适用于内部临时是使用、本地间的节点间共享</span><br><span class="line"></span><br><span class="line">将本地的镜像文件打包，剥离远程镜像仓库的格式，打包未tar文件，实现节点共享</span><br><span class="line"></span><br><span class="line">#抽取本地上的镜像</span><br><span class="line">[root@centos7 ~]# docker image ls</span><br><span class="line">REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">hehe                     v0.1                e75cb1954996        7 minutes ago       1.93M</span><br><span class="line">[root@centos7 ~]# docker image save hehe:v0.1 -o ./jingxiang.tar</span><br><span class="line">[root@centos7 ~]# ls</span><br><span class="line">jingxiang.tar</span><br><span class="line"></span><br><span class="line">#复制到其他节点，使用此镜像</span><br><span class="line">[root@centos7 ~]# docker image load -i jingxiang.tar</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/05/Docker存储卷/" rel="next" title="Docker存储卷">
+                <i class="fa fa-chevron-left"></i> Docker存储卷
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker的镜像分层"><span class="nav-number">1.</span> <span class="nav-text">docker的镜像分层</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About-Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">About Dockerfile</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile"><span class="nav-number">3.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Image-building"><span class="nav-number">3.1.</span> <span class="nav-text">Docker Image building</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile文件格式"><span class="nav-number">3.2.</span> <span class="nav-text">Dockerfile文件格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile的镜像层构建"><span class="nav-number">3.3.</span> <span class="nav-text">Dockerfile的镜像层构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker镜像制作的两种运行场景"><span class="nav-number">3.4.</span> <span class="nav-text">docker镜像制作的两种运行场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile环境变量"><span class="nav-number">3.5.</span> <span class="nav-text">dockerfile环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile指令"><span class="nav-number">3.6.</span> <span class="nav-text">Dockerfile指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#from"><span class="nav-number">3.6.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LABEL"><span class="nav-number">3.6.2.</span> <span class="nav-text">LABEL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COPY"><span class="nav-number">3.6.3.</span> <span class="nav-text">COPY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ADD"><span class="nav-number">3.6.4.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WORKDIR"><span class="nav-number">3.6.5.</span> <span class="nav-text">WORKDIR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volume存储卷"><span class="nav-number">3.6.6.</span> <span class="nav-text">volume存储卷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EXPOSE"><span class="nav-number">3.6.7.</span> <span class="nav-text">EXPOSE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ENV"><span class="nav-number">3.6.8.</span> <span class="nav-text">ENV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARG"><span class="nav-number">3.6.9.</span> <span class="nav-text">ARG</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用FROM、LABEL、COPY制作镜像"><span class="nav-number">3.7.</span> <span class="nav-text">使用FROM、LABEL、COPY制作镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerignore限制copy的文件"><span class="nav-number">3.8.</span> <span class="nav-text">.dockerignore限制copy的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ADD指令"><span class="nav-number">3.9.</span> <span class="nav-text">ADD指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WORKDIR指令"><span class="nav-number">3.10.</span> <span class="nav-text">WORKDIR指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VOLUME指定存储卷指令"><span class="nav-number">3.11.</span> <span class="nav-text">VOLUME指定存储卷指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EXPOSE指令"><span class="nav-number">3.12.</span> <span class="nav-text">EXPOSE指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENV指令"><span class="nav-number">3.13.</span> <span class="nav-text">ENV指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARG指令"><span class="nav-number">3.14.</span> <span class="nav-text">ARG指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#run阶段Dockerfile文件中的指令"><span class="nav-number">4.</span> <span class="nav-text">run阶段Dockerfile文件中的指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RUN指令"><span class="nav-number">4.0.1.</span> <span class="nav-text">RUN指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD指令"><span class="nav-number">4.1.</span> <span class="nav-text">CMD指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENTRYPOINT指令-–entrypoint"><span class="nav-number">4.2.</span> <span class="nav-text">ENTRYPOINT指令( –entrypoint )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENTRYPOINT指令于CMD指令同时使用"><span class="nav-number">4.3.</span> <span class="nav-text">ENTRYPOINT指令于CMD指令同时使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USER"><span class="nav-number">4.4.</span> <span class="nav-text">USER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HEALTHCHECK健康状态检测（新版支持）"><span class="nav-number">4.5.</span> <span class="nav-text">HEALTHCHECK健康状态检测（新版支持）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SHELL"><span class="nav-number">4.6.</span> <span class="nav-text">SHELL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STOPSIGNAL"><span class="nav-number">4.7.</span> <span class="nav-text">STOPSIGNAL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ONBUILD"><span class="nav-number">4.8.</span> <span class="nav-text">ONBUILD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ONBUILD指令"><span class="nav-number">4.9.</span> <span class="nav-text">ONBUILD指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本地制作的镜像分享给别人"><span class="nav-number">5.</span> <span class="nav-text">本地制作的镜像分享给别人</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
