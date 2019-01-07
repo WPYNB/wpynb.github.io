@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="LVSLVS：Linux Virtual Server，是以“软件”、通过“四层”调度、实现“负载均衡”。 软件方式实现集群： lvs软件是Linux内核中的一个框架，以模块方式加载。 四层调度： lvs工作于通信子网（内核中），即可检测“请求报文”中各层“首部”获取“目标物理地址”、“目标逻辑地址”、“目标传输层协议类型及端口”。但对于“应用层”无能为力。 负载均衡： lvs实现的是负载均衡集群">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVS负载均衡">
+<meta property="og:url" content="http://yoursite.com/2019/01/06/LVS负载均衡/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="LVSLVS：Linux Virtual Server，是以“软件”、通过“四层”调度、实现“负载均衡”。 软件方式实现集群： lvs软件是Linux内核中的一个框架，以模块方式加载。 四层调度： lvs工作于通信子网（内核中），即可检测“请求报文”中各层“首部”获取“目标物理地址”、“目标逻辑地址”、“目标传输层协议类型及端口”。但对于“应用层”无能为力。 负载均衡： lvs实现的是负载均衡集群">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/lvs1.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs2.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs3.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs4.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs5.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs6.png">
+<meta property="og:image" content="http://yoursite.com/images/lvs7.png">
+<meta property="og:updated_time" content="2019-01-06T13:19:58.552Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LVS负载均衡">
+<meta name="twitter:description" content="LVSLVS：Linux Virtual Server，是以“软件”、通过“四层”调度、实现“负载均衡”。 软件方式实现集群： lvs软件是Linux内核中的一个框架，以模块方式加载。 四层调度： lvs工作于通信子网（内核中），即可检测“请求报文”中各层“首部”获取“目标物理地址”、“目标逻辑地址”、“目标传输层协议类型及端口”。但对于“应用层”无能为力。 负载均衡： lvs实现的是负载均衡集群">
+<meta name="twitter:image" content="http://yoursite.com/images/lvs1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/06/LVS负载均衡/"/>
+
+
+
+
+
+  <title>LVS负载均衡 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/LVS负载均衡/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LVS负载均衡</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T20:00:21+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/LVS负载均衡/" itemprop="url" rel="index">
+                    <span itemprop="name">LVS负载均衡</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="LVS"><a href="#LVS" class="headerlink" title="LVS"></a>LVS</h1><p>LVS：Linux Virtual Server，是以“软件”、通过“四层”调度、实现“负载均衡”。</p>
+<p>软件方式实现集群： lvs软件是Linux内核中的一个框架，以模块方式加载。</p>
+<p>四层调度： lvs工作于通信子网（内核中），即可检测“请求报文”中各层“首部”获取“目标物理地址”、“目标逻辑地址”、“目标传输层协议类型及端口”。但对于“应用层”无能为力。</p>
+<p>负载均衡： lvs实现的是负载均衡集群，即将收到的“请求报文”使用“调度算法”计算，再发送至后端的RS服务器。</p>
+<h1 id="调度算法"><a href="#调度算法" class="headerlink" title="调度算法"></a>调度算法</h1><p>一共10种，又根据是否考虑后端RS的“负载情况”，分为“静态方法”和“动态方法”。</p>
+<p>静态算法：仅根据算法本身和请求报文特征进行调度，起点公平</p>
+<p>动态算法：需要额外考虑后端各RS的当前的负载状态，结果公平</p>
+<h2 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h2><p>rr ：round-robin，轮替，轮询。</p>
+<pre><code>调度器将RS列个表（数组），依次将收到的请求报文发送至RS。
+
+举个例子吧：一个老师（lvs），12颗糖（请求报文），3个孩子（RS），每个孩子一个碗（数组元素）。老师怎发糖呢？RS1的碗发一颗，RS2的碗发一颗，RS3的碗发一颗。还有糖，继续按照上面的顺序发。
+</code></pre><p>wrr ：weighted rr，加权轮询。</p>
+<pre><code>方法同rr，并根据RS的性能赋予不同的权重。依据权重，RS在列表（数组）中出现不同的次数。
+
+还是举个例子：还是老师发糖，还是发到碗。但是有个孩子有3个碗，所以他就到了3颗糖。
+</code></pre><p>SH ：Source Hashing，源地址哈希。</p>
+<pre><code>将源地址进行哈希运算后取模，以确定发送至哪个RS。实现了session sticky，将来自于同一个IP地址的请求始终发往第一次挑中的RS，从而实现会话绑定。
+</code></pre><p>DH ：Destination Hashing，目标地址哈希。</p>
+<pre><code>将目标地址进行哈希运算后取模，以确定发送至哪个RS。将发往同一个目标地址的请求始终转发至第一次挑中的RS，典型使用场景是正向代理缓存场景中的负载均衡。
+</code></pre><h2 id="动态方法"><a href="#动态方法" class="headerlink" title="动态方法"></a>动态方法</h2><p>LC ：least connections，最少链接</p>
+<pre><code>根据连接数计算负载。
+Overhead=activeconns*256+inactiveconns
+活动链接非活动连接的负载肯定不同。默认活动链接的负载是非活动连接的256倍
+</code></pre><p>WLC ：Weighted LC，加权的最少链接</p>
+<pre><code>同LC，并根据RS服务器性能赋予权重。
+
+Overhead=(activeconns*256+inactiveconns)/weight
+问题：虽然加权，但还是会出现负载一样的情况，导致调度时将请求发送至权重小的RS。例如：刚开启服务，连接数均为0，计算结果为0。
+</code></pre><p>SED ：Shortest Expection Delay，最短期望延迟</p>
+<pre><code>为了克服WLC的缺点。不考虑非活动链接数，活动链接数+1。避免了连接数为0时，负载一样。
+
+Overhead=(activeconns+1)*256/weight
+新的bug：当各RS权重差距非常大时，请求报文会一直被调度至权重大的RS，因为计算得到的负载小。例如：2台RS权重比1:9，
+
+RS1的负载：(0+1)*256/1 = 1/256
+RS2的负载：(8+1)*256/9 = 1/256
+当RS2被分得8个请求后，2个RS的负载才一样，此前RS1一直处于空闲。
+</code></pre><p>NQ ：Never Queue，永不排队</p>
+<pre><code>先每个RS分一个请求，再SED。改进的sed。
+</code></pre><p>LBLC ：Locality-Based LC，基于局部性的最少连接</p>
+<pre><code>动态的DH算法，DH+LC
+
+此算法是根据请求报文的目标ip地址的负载均衡调度，将相同的目标ip地址的请求调度到同一个服务器。若该rs可用，将发送请求；若该服务器不可用，则用最少连接的原则选出一台可用服务器来进行匹配。
+</code></pre><p>LBLCR ：LBLC with Replication，带复制功能的LBLC</p>
+<pre><code>此种算法是针对目标ip地址的负载均衡，该算法根据请求的目标地址ip找出该地址对应的服务组，按最少连接的原则从服务组中选出一台服务器。
+
+若服务器没有超载，则发送请求到该服务器；若该服务器超载或者不可用，则按照最小连接的原则从这个集群中选出一台服务器。
+
+将该服务器添加到服务组中，在将请求发送到该服务器，同时当该服务器组中有一段时间没有被修改，将最忙的服务器从组中剔除，以降低复制的程度。
+</code></pre><h1 id="LVS集群"><a href="#LVS集群" class="headerlink" title="LVS集群"></a>LVS集群</h1><h2 id="术语："><a href="#术语：" class="headerlink" title="术语："></a>术语：</h2><pre><code>LVS集群术语            说明
+vs                Virtual Server、Director、Dispatcher、Balancer
+rs                Real Server、upstream server、backend server
+CIP                Client IP
+VIP                Virtual serve IP
+RIP                Real server IP
+DIP                Director IP
+
+CIP ←-&gt; VIP == DIP ←-&gt; RIP
+</code></pre><p><img src="/images/lvs1.png" alt="Alt text"></p>
+<h2 id="集群类型"><a href="#集群类型" class="headerlink" title="集群类型"></a>集群类型</h2><pre><code>LVS集群的类型     说明
+lvs-nat            多目标DNAT。通过修改请求的目标IP和（或）Port为经由调度算法挑选出的某后端RS的RIP和PORT。
+lvs-dr            封装新的MAC地址。通过在原IP报文外封装帧首部（源MAC、目标MAC），目标MAC是由调度算法挑选出的某后端RS的MAC地址。
+lvs-tun            IP隧道。通过在源IP报文（CIP VIP）外再封装一个新IP首部（DIP RIP）完成调度。
+lvs-fullnat        修改请求报文的源和目标IP。通过修改请求的源IP（CIP --&gt; DIP）目标IP（VIP --&gt; RIP）完成调度。
+</code></pre><h3 id="lvs-nat"><a href="#lvs-nat" class="headerlink" title="lvs-nat"></a>lvs-nat</h3><p>多目标IP的DNAT，通过将请求报文中的目标地址和目标端口修改为某挑出的RS的RIP和PORT实现转发；</p>
+<p>特性:</p>
+<pre><code>1.RIP和DIP必须在同一个IP网络，且应该使用私网地址；RS的网关要指向DIP；
+
+2.请求报文和响应报文都必须经由Director转发；Director易于成为系统瓶颈；
+
+3.支持端口映射，可修改请求报文的目标PORT；
+
+4.vs必须是Linux系统，rs可以是任意系统；
+</code></pre><p><img src="/images/lvs2.png" alt="Alt text"></p>
+<h3 id="lvs-dr"><a href="#lvs-dr" class="headerlink" title="lvs-dr"></a>lvs-dr</h3><p>Direct Routing，直接路由；</p>
+<p>通过为请求报文重新封装一个MAC首部进行转发，源MAC是DIP所在的接口的MAC，目标MAC是某挑选出的RS的RIP所在接口的MAC地址；源IP/PORT，以及目标IP/PORT均保持不变；</p>
+<p>Director和各RS都得配置使用VIP；</p>
+<p>特性</p>
+<pre><code>1.确保前端路由器将目标IP为VIP的请求报文发往Director：
+
+    (a) 在前端网关做静态绑定；
+
+    (b) 在RS上使用arptables；
+
+    (c) 在RS上修改内核参数以限制arp通告及应答级别；
+        /proc/sys/net/ipv4/conf/ens33/arp_ignore
+        /proc/sys/net/ipv4/conf/ens33/arp_announce
+
+2.RS的RIP可以使用私网地址，也可以是公网地址；RIP与DIP在同一IP网络；RIP的网关不能指向DIP，以确保响应报文不会经由Director；
+
+3.RS跟Director要在同一个物理网络；
+
+4.请求报文要经由Director，但响应不能经由Director，而是由RS直接发往Client；
+
+5.不支持端口映射；
+</code></pre><p><img src="/images/lvs3.png" alt="Alt text"></p>
+<p><img src="/images/lvs4.png" alt="Alt text"></p>
+<h3 id="lvs-tun"><a href="#lvs-tun" class="headerlink" title="lvs-tun"></a>lvs-tun</h3><p>转发方式：不修改请求报文的IP首部（源IP为CIP，目标IP为VIP），而是在原IP报文之外再封装一个IP首部（源IP是DIP，目标IP是RIP），将报文发往挑选出的目标RS；RS直接响应给客户端（源IP是VIP，目标IP是CIP）；</p>
+<p>特性</p>
+<pre><code>1.DIP, VIP, RIP都应该是公网地址；
+
+2.RS的网关不能，也不可能指向DIP；
+
+3.请求报文要经由Director，但响应不能经由Director；
+
+4.不支持端口映射；
+
+5.RS的OS得支持隧道功能；
+</code></pre><p><img src="/images/lvs5.png" alt="Alt text"></p>
+<p><img src="/images/lvs6.png" alt="Alt text"></p>
+<p>缺陷：因在IP报文外面再封装IP头，会造成帧大于MTU，导致分片。</p>
+<h3 id="lvs-fullnat"><a href="#lvs-fullnat" class="headerlink" title="lvs-fullnat"></a>lvs-fullnat</h3><p>通过同时修改请求报文的源IP地址和目标IP地址进行转发；</p>
+<pre><code>CIP &lt;--&gt; DIP 
+VIP &lt;--&gt; RIP 
+</code></pre><p>特性</p>
+<pre><code>1.VIP是公网地址，RIP和DIP是私网地址，且通常不在同一IP网络；因此，RIP的网关一般不会指向DIP；
+
+2.RS收到的请求报文源地址是DIP，因此，只能响应给DIP；但Director还要将其发往Client；
+
+3.请求和响应报文都经由Director；
+
+4.支持端口映射；
+</code></pre><p>注意：此类型默认不支持</p>
+<p><img src="/images/lvs7.png" alt="Alt text"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>lvs-nat, lvs-fullnat：请求和响应报文都经由Director；</p>
+<pre><code>lvs-nat：RIP的网关要指向DIP；
+lvs-fullnat：RIP和DIP未必在同一IP网络，但要能通信;
+</code></pre><p>lvs-dr, lvs-tun：请求报文要经由Director，但响应报文由RS直接发往Client；</p>
+<pre><code>lvs-dr：通过封装新的MAC首部实现，通过MAC网络转发；
+lvs-tun：通过在原IP报文之外封装新的IP首部实现转发，支持远距离通信；
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/06/docker私有仓库/" rel="next" title="docker私有仓库">
+                <i class="fa fa-chevron-left"></i> docker私有仓库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LVS"><span class="nav-number">1.</span> <span class="nav-text">LVS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#调度算法"><span class="nav-number">2.</span> <span class="nav-text">调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态方法"><span class="nav-number">2.1.</span> <span class="nav-text">静态方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态方法"><span class="nav-number">2.2.</span> <span class="nav-text">动态方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVS集群"><span class="nav-number">3.</span> <span class="nav-text">LVS集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#术语："><span class="nav-number">3.1.</span> <span class="nav-text">术语：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群类型"><span class="nav-number">3.2.</span> <span class="nav-text">集群类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lvs-nat"><span class="nav-number">3.2.1.</span> <span class="nav-text">lvs-nat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lvs-dr"><span class="nav-number">3.2.2.</span> <span class="nav-text">lvs-dr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lvs-tun"><span class="nav-number">3.2.3.</span> <span class="nav-text">lvs-tun</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lvs-fullnat"><span class="nav-number">3.2.4.</span> <span class="nav-text">lvs-fullnat</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
