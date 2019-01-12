@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Nginx配置结构nginx配置文件中主要包括六块：main，events，http，server，location，upstream 如图： main块：主要控制nginx子进程的所属用户/用户组、派生子进程数、错误日志位置/级别、pid位置、子进程优先级、进程对应cpu、进程能够打开的文件描述符数目等 events块：控制nginx处理连接的方式 http块：是nginx处理http请求的主要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx基本配置">
+<meta property="og:url" content="http://yoursite.com/2019/01/12/Nginx基本配置/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="Nginx配置结构nginx配置文件中主要包括六块：main，events，http，server，location，upstream 如图： main块：主要控制nginx子进程的所属用户/用户组、派生子进程数、错误日志位置/级别、pid位置、子进程优先级、进程对应cpu、进程能够打开的文件描述符数目等 events块：控制nginx处理连接的方式 http块：是nginx处理http请求的主要">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/nginx1.png">
+<meta property="og:image" content="http://yoursite.com/images/nginx2.png">
+<meta property="og:updated_time" content="2019-01-12T10:05:33.880Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nginx基本配置">
+<meta name="twitter:description" content="Nginx配置结构nginx配置文件中主要包括六块：main，events，http，server，location，upstream 如图： main块：主要控制nginx子进程的所属用户/用户组、派生子进程数、错误日志位置/级别、pid位置、子进程优先级、进程对应cpu、进程能够打开的文件描述符数目等 events块：控制nginx处理连接的方式 http块：是nginx处理http请求的主要">
+<meta name="twitter:image" content="http://yoursite.com/images/nginx1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/12/Nginx基本配置/"/>
+
+
+
+
+
+  <title>Nginx基本配置 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/12/Nginx基本配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Nginx基本配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-12T15:39:10+08:00">
+                2019-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Nginx基本配置/" itemprop="url" rel="index">
+                    <span itemprop="name">Nginx基本配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Nginx配置结构"><a href="#Nginx配置结构" class="headerlink" title="Nginx配置结构"></a>Nginx配置结构</h1><p>nginx配置文件中主要包括六块：main，events，http，server，location，upstream</p>
+<p>如图：<br><img src="/images/nginx1.png" alt="Alt text"></p>
+<p>main块：主要控制nginx子进程的所属用户/用户组、派生子进程数、错误日志位置/级别、pid位置、子进程优先级、进程对应cpu、进程能够打开的文件描述符数目等</p>
+<p>events块：控制nginx处理连接的方式</p>
+<p>http块：是nginx处理http请求的主要配置模块，大多数配置都在这里面进行</p>
+<p>server块：是nginx中主机的配置块，可以配置多个虚拟主机</p>
+<p>location块：是server中对应的目录级别的控制块，可以有多个</p>
+<p>upstream块：是nginx做反向代理和负载均衡的配置块，可以有多个</p>
+<h1 id="配置命令解释"><a href="#配置命令解释" class="headerlink" title="配置命令解释"></a>配置命令解释</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">nginx中每条配置命令都必须要以分号“;”结束！</span><br><span class="line"></span><br><span class="line">user  nobody;  //配置nginx 子进程使用的用户和组</span><br><span class="line"></span><br><span class="line">worker_processes  1; //配置nginx衍生的工作进程数，一般值为CPU总核数或者总核数的两倍</span><br><span class="line"></span><br><span class="line">error_log  logs/error.log   notice; //配置错误日志的存放位置，错误日志的级别有：debug，info，notice，warn，error，crit</span><br><span class="line"></span><br><span class="line">pid  logs/nginx.pid;  //指定nginx  pid的存放路径</span><br><span class="line"></span><br><span class="line">worker_rlimit_nofile   51200; //配置文件描述符数量</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">use  epoll; //使用网络I/O模型，linux系统推荐使用epoll，FreeBSD推荐使用kqueue</span><br><span class="line">worker_connections  1024; //允许并发连接的最大请求数</span><br><span class="line">#multi_accept on;  //暂时还没了解其作用</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types; //包含指定的文件（可以含路径）</span><br><span class="line">    default_type  application/octet-stream; </span><br><span class="line">    #charset   utf-8;  //默认的字符编码集</span><br><span class="line">    client_max_body_size  8m; //配置客户端能够上传的文件大小</span><br><span class="line">    keepalive_timeout  65;  //连接超时时间</span><br><span class="line">    #gzip  on; //是否开启gzip压缩（还需要和其它配置项共同起作用）</span><br><span class="line">    //配置访问日志格式</span><br><span class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                                &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                                &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">    access_log  logs/host.access.log  main;  //启用访问日志，并且指定日志采用的格式</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80; //主机监听端口（可以是ip:port格式，默认监听127.0.0.1）</span><br><span class="line">        server_name  localhost; //主机域名</span><br><span class="line">        index  index.php  index.html; //默认索引文件</span><br><span class="line">        root  /html; //主机站点跟目录地址</span><br><span class="line">        #error_page   404    /404.html;  //404页面地址（可以配置其它错误页面地址如500等，格式一样）</span><br><span class="line">            location / &#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            location ~ .*\.(js|css)?$ &#123;</span><br><span class="line">            expires   1h;  //配置所有的js,css文件缓存1小时</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="nginx-Rewrite语法分析"><a href="#nginx-Rewrite语法分析" class="headerlink" title="nginx Rewrite语法分析"></a>nginx Rewrite语法分析</h1><p>nginx Rewrite 相关的指令有：if，rewrite，set，return，break，uninitalized_variable_warn等。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">break指令：</span><br><span class="line">    语法：break;</span><br><span class="line">    默认值：none</span><br><span class="line">    使用范围：if，server，location</span><br><span class="line">    作用：完成当前的规则集，不再处理rewrite指令，需要和last加以区分</span><br><span class="line"></span><br><span class="line">if指令：</span><br><span class="line">    语法：if ( condition ) &#123; ... &#125;</span><br><span class="line">    默认值：none</span><br><span class="line">    使用范围：server，location</span><br><span class="line">    作用：用于检测一个条件是否符合，符合则执行大括号内的语句。不支持嵌套，不支持多个条件&amp;&amp;或||处理</span><br><span class="line"></span><br><span class="line">condition的范围：</span><br><span class="line">     变量名，但是不包括空字符串“”，或者任何以0开始的字符串</span><br><span class="line">    变量可以比较，用“=”或者“!=”</span><br><span class="line">    变量可以匹配正则表达式，用“~*”（不区分大小写）或者“~”（区分大小写），可以采用“!”来表示取反，如“!~”或者“!~*”</span><br><span class="line">    “!-f”和“-f”用来判断文件是否存在</span><br><span class="line">    “-e”和“!-e”用来文件或者目录是否存在</span><br><span class="line">    “-d”和“!-d”用来判断目录是否存在</span><br><span class="line">    “-x”和“!-x”用来判断文件是否可执行</span><br><span class="line">    正则表达式中支持“()”分组，分组的值在后面可以通过$1~$9来引用</span><br><span class="line"></span><br><span class="line">return指令：</span><br><span class="line">    语法：return code;</span><br><span class="line">    默认值：none</span><br><span class="line">    使用范围：server，if，location</span><br><span class="line">    作用：用于结束规则的执行和返回状态码给客户端。状态码的值可以是：204,400,402~406,408,410,411,413,416以及500~504，另外非标准状态码444，表示以不发送任何的Header头来结束连接。</span><br><span class="line"></span><br><span class="line">    status(状态码)：告诉客户端的请求发生的结果：</span><br><span class="line">    1XX：100-101，信息提示</span><br><span class="line">    2XX：200-206，成功类型信息</span><br><span class="line">    3XX：300-305，重定向的资源</span><br><span class="line">    4XX：400-415，错误类型的信息，客户端的错误，</span><br><span class="line">    5XX：500-505，错误类型错误，服务器端错误</span><br><span class="line">    常用的状态码：</span><br><span class="line">    200：:成功响应，请求的所有数据通过相应报文的entity-body部分发送，OK</span><br><span class="line">    301：请求的URL执行的资源已经被删除；但在相应报文中通过首部Location指明了资源的所在位置；Moved Permanently （永久重定向）</span><br><span class="line">    302：与301相似，但在相应报文中通过首部Location指明了资源现在所处临时新位置；Found （临时重定向）</span><br><span class="line">    304：客户端发出了条件式请求，但服务器的资源为曾发生改变，则通过相应此响应状态码通知客户端，Not Modified</span><br><span class="line">    401：需要输入账号和密码认证方能访问资源：Unauthorized</span><br><span class="line">    403：请求被禁止：Forbidden</span><br><span class="line">    404：服务器无法找到客户端请求的资源：Not Found</span><br><span class="line">    500：服务器内部错误：InternalServerError</span><br><span class="line">    502：:代理服务器从后端服务器中收到的一条伪响应：Bad Gateway</span><br><span class="line"></span><br><span class="line">    redirect 返回302临时重定向 地址栏会显示跳转后的地址</span><br><span class="line">    permanent 返回301永久重定向 地址栏会显示跳转后的地址</span><br></pre></td></tr></table></figure></p>
+<p>状态码解释，如下图：<br><img src="/images/nginx2.png" alt="Alt text"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">rewrite指令：</span><br><span class="line">    语法：rewrite  regex  replacement  flag;</span><br><span class="line">    默认值：none</span><br><span class="line">    使用范围：server，if，location</span><br><span class="line">    作用：该指令用于重定向URI或者更改字符串的内容，指令根据配置文件中的顺序来执行。注意：rewrite只针对相对路径，即匹配的是URL地址中主机名之后的内容。如果你想匹配主机名，则需要使用 if 语句</span><br><span class="line"></span><br><span class="line">flag标记：</span><br><span class="line">    last --- 相当于Apache中的[L]标记，表示该条是最后一条规则，后面的规则不继续匹配，但是要重新发起请求</span><br><span class="line">    break --- 本条规则匹配完成后，终止匹配，不再匹配后面的规则</span><br><span class="line">    redirect --- 返回302重定向地址，浏览器地址栏会显示跳转后的地址</span><br><span class="line">    premanent --- 返回301永久重定向，浏览器地址栏会显示跳转后的地址</span><br><span class="line"></span><br><span class="line">    说明：last 和 break 作用类似，但是它们之间有一定的区别。在使用 alias 指令时必须要用 last 标记，在使用 proxy_pass 指令时则要使用 break 标记。last 标记表示，在本条rewrite规则执行完成之后需要对其所在的 server 段重新发起请求，而 break 则在本条规则匹配完成之后，终止匹配，不再对后面的的规则匹配。通常情况下，在“根location”中，如：location / &#123; ... &#125;  或者在 server 中直接编写的 rewrite 指令，推荐使用 last ，而在其它块儿中则推荐使用 break。</span><br><span class="line"></span><br><span class="line">    最后：如果匹配到的URI中含有参数即类似于/app/test.php?id=5之类，默认情况下，rewrite之后参数会被附加到替换串的后面，那么你可以通过在替换串的后面增加“?”来取消这个动作！</span><br><span class="line"></span><br><span class="line">set指令：</span><br><span class="line">    语法：set  variable  value;</span><br><span class="line">    默认值：none</span><br><span class="line">    使用范围：server，location，if</span><br><span class="line">    作用：该指令用于定义一个变量，并且给变量进行赋值。变量的值可以是文本、一个变量或者变量和文本的联合，文本需要用引号引起来。</span><br><span class="line"></span><br><span class="line">uninitalized_variable_warn指令：</span><br><span class="line">    语法：uninitalized_variable_warn   on|off;</span><br><span class="line">    默认值： on </span><br><span class="line">    使用范围：http，server，location，if</span><br><span class="line">    作用：用于开启或者关闭记录关于未初始化变量的警告信息</span><br><span class="line"></span><br><span class="line">    nginx Rewrite 中可以使用的全局变量：$args，$content_lenght，$content_type，$document_root，$document_uri，$host，$http_user_agent，$http_cookie，$limit_rate，$request_body_file，$request_method，$remote_addr，$remote_port，$remote_user，$request_filename，$request_uri，$query_string，$scheme，$server_protocol，$server_addr，$server_name，$server_port，$uri。</span><br><span class="line"></span><br><span class="line">    nginx Rewrite 中遵循PCRE的正则表达式规范，这个可以自行去参照PHP中的正则表达式规范。</span><br></pre></td></tr></table></figure>
+<h1 id="虚拟主机配置"><a href="#虚拟主机配置" class="headerlink" title="虚拟主机配置"></a>虚拟主机配置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">nginx虚拟机的配置和apache虚拟主机配置方式类似，只是个人感觉还稍简单一些，不像apache那么“抽”。</span><br><span class="line"></span><br><span class="line">首先在nginx.conf的http端中增加一个server段，因为在nginx的配置文件中每一个server段都是一个虚拟机，我们配置的是“基于域名的虚拟主机”，增加的server段如下:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen  80; //配置虚拟机监听的端口，默认ip为127.0.0.1，也可以写成ip：port格式来显式指定</span><br><span class="line">    server_name  www.wpyblog.com;  //配置虚拟机的server name 可以指定多个，用空格隔开</span><br><span class="line">    root  /web/nginx/html; //配置虚拟机的根目录</span><br><span class="line">    index  index.php  index.html; //配置默认的索引文件</span><br><span class="line"></span><br><span class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line"></span><br><span class="line">    access_log   logs/test.access.log  main;  //配置虚拟机的访问日志并指定日志格式采用“main”</span><br><span class="line"></span><br><span class="line">    error_page  404  /404.html; //配置虚拟机的404页面</span><br><span class="line">    </span><br><span class="line">    解析php方法一：</span><br><span class="line">    location ~ \.php$ &#123;</span><br><span class="line">            root          /web/nginx/html/;</span><br><span class="line">            fastcgi_pass   127.0.0.1:9000;</span><br><span class="line">            fastcgi_index  index.php;</span><br><span class="line">			fastcgi_index  index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</span><br><span class="line">            include        fastcgi_params;</span><br><span class="line">        &#125;</span><br><span class="line">    解析php方法二：</span><br><span class="line">    location ~ .+\.php($|/) &#123;  //用来支持解析php页面</span><br><span class="line">                fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">                fastcgi_index  index.php?IF_REWRITE=1;</span><br><span class="line">                include fastcgi_params;</span><br><span class="line">                set $script $uri;</span><br><span class="line">                set $path_info  &quot;/&quot;;</span><br><span class="line">                if ($uri ~ &quot;^(.+\.php)(/.+)&quot;) &#123;</span><br><span class="line">                    set $script     $1;</span><br><span class="line">                    set $path_info  $2;</span><br><span class="line">                &#125;</span><br><span class="line">                fastcgi_param PATH_INFO $path_info;</span><br><span class="line">                fastcgi_param SCRIPT_FILENAME  $document_root/$script;</span><br><span class="line">                fastcgi_param SCRIPT_NAME $script;</span><br><span class="line">                access_log off;</span><br><span class="line">            &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">FastCGI相关参数是为了改善网站的性能：减少资源占用，提高访问速度。下面参数看字面意思都能理解。</span><br><span class="line">    fastcgi_connect_timeout 300;</span><br><span class="line">    fastcgi_send_timeout 300;</span><br><span class="line">    fastcgi_read_timeout 300;</span><br><span class="line">    fastcgi_buffer_size 64k;</span><br><span class="line">    fastcgi_buffers 4 64k;</span><br><span class="line">    fastcgi_busy_buffers_size 128k;</span><br><span class="line">    fastcgi_temp_file_write_size 128k;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">修改好nginx的配置文件之后，接着修改hosts文件，增加如下一行：</span><br><span class="line">127.0.0.1   www.test.com</span><br><span class="line"></span><br><span class="line">然后重启 nginx 和 php-fpm 之后，在浏览器中输入www.test.com查看到对应的内容就表示配置成功！</span><br></pre></td></tr></table></figure>
+<h1 id="nginx-conf配置概括"><a href="#nginx-conf配置概括" class="headerlink" title="nginx.conf配置概括"></a>nginx.conf配置概括</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">#进程文件</span><br><span class="line">pid /var/run/nginx.pid;</span><br><span class="line"></span><br><span class="line">#一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（系统的值ulimit -n）与nginx进程数相除，但是nginx分配请求并不均匀，所以建议与ulimit -n的值保持一致。</span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line">#工作模式与连接数上限</span><br><span class="line"></span><br><span class="line">events</span><br><span class="line">    &#123;</span><br><span class="line">    #参考事件模型，use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是Linux 2.6以上版本内核中的高性能网络I/O模型，如果跑在FreeBSD上面，就用kqueue模型。</span><br><span class="line">    use epoll;</span><br><span class="line">    #单个进程最大连接数（最大连接数=连接数*进程数）</span><br><span class="line">    worker_connections 65535;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include mime.types; #文件扩展名与文件类型映射表</span><br><span class="line">    default_type application/octet-stream; #默认文件类型</span><br><span class="line">    #charset utf-8; #默认编码</span><br><span class="line">    server_names_hash_bucket_size 128; #服务器名字的hash表大小</span><br><span class="line">    client_header_buffer_size 32k; #上传文件大小限制</span><br><span class="line">    large_client_header_buffers 4 64k; #设定请求缓</span><br><span class="line">    client_max_body_size 8m; #设定请求缓</span><br><span class="line">    sendfile on; #开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改成off。</span><br><span class="line">    autoindex on; #开启目录列表访问，合适下载服务器，默认关闭。</span><br><span class="line">    tcp_nopush on; #防止网络阻塞</span><br><span class="line">    tcp_nodelay on; #防止网络阻塞</span><br><span class="line">    keepalive_timeout 120; #长连接超时时间，单位是秒</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">limit_rate rate;</span><br><span class="line">限制响应给客户端的传输速率，单位是bytes/second，0表示无限制；</span><br><span class="line">limit_except method … &#123; … &#125;</span><br><span class="line">限制对指定的请求方法之外的其它方法的使用客户端</span><br><span class="line">    例：</span><br><span class="line">        limit_except GET &#123;</span><br><span class="line">        allow 192.168.1.0/24;</span><br><span class="line">        deny  all;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">#图片缓存时间设置</span><br><span class="line">    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</span><br><span class="line">    &#123;</span><br><span class="line">    expires 10d;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#JS和CSS缓存时间设置</span><br><span class="line">    location ~ .*\.(js|css)?$</span><br><span class="line">    &#123;</span><br><span class="line">    expires 1h;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">压缩输出配置:</span><br><span class="line"></span><br><span class="line">    gzip on; #开启gzip压缩输出</span><br><span class="line">    gzip_min_length 1k; #最小压缩文件大小</span><br><span class="line">    gzip_buffers 4 16k; #压缩缓冲区</span><br><span class="line">    gzip_http_version 1.0; #压缩版本（默认1.1，前端如果是squid2.5请使用1.0）</span><br><span class="line">    gzip_comp_level 2; #压缩等级</span><br><span class="line">    gzip_types text/plain application/x-javascript text/css application/xml;</span><br><span class="line">    #压缩类型，默认就已经包含text/html，所以下面就不用再写了，写上去也不会有问题，但是会有一个warn。</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    #limit_zone crawler $binary_remote_addr 10m; #开启限制IP连接数的时候需要使用</span><br><span class="line"></span><br><span class="line">    配置指令如上，查看是否起作用，请查看http的响应头信息查看是否含有Accept-Encoding: gzip; 也可以通过比较Content-Length 来对比。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#本地动静分离反向代理配置</span><br><span class="line">#所有jsp的页面均交由tomcat或resin处理</span><br><span class="line"></span><br><span class="line">    location ~ .(jsp|jspx|do)?$ &#123;</span><br><span class="line">    proxy_set_header Host $host;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_pass http://127.0.0.1:8080;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#所有静态文件由nginx直接读取不经过tomcat或resin</span><br><span class="line">    </span><br><span class="line">    location ~ .*.(htm|html|gif|jpg|jpeg|png|bmp|swf|ioc|rar|zip|txt|flv|mid|doc|ppt|pdf|xls|mp3|wma)$ &#123;</span><br><span class="line">    &#123; expires 15d; &#125;</span><br><span class="line">    </span><br><span class="line">    location ~ .*.(js|css)?$</span><br><span class="line">    &#123; expires 1h; &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Nginx反向代理"><a href="#Nginx反向代理" class="headerlink" title="Nginx反向代理"></a>Nginx反向代理</h1><p>stream模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">短连接适用轮询算法：即round-robin</span><br><span class="line">weight       #权重</span><br><span class="line">max_fails    #失败连接数</span><br><span class="line">fail_timeout #失败超时时长</span><br><span class="line">max——conns   #最大并发连接数</span><br><span class="line">down         #人为down掉一台机器</span><br><span class="line">backup       #备用服务，只要有一个服务上线，自己就不会上线，若其他服务down机，自己将立刻上线提供服务.so sorry</span><br><span class="line">keepalive connections;   #保持连接</span><br><span class="line"></span><br><span class="line">反向代理调度器nginx:</span><br><span class="line">upstream blog&#123;</span><br><span class="line">		#least_connt;#最少连接</span><br><span class="line">        server 172.18.50.107:80 weight=1 max_fails=3 fail_timeout=10s;</span><br><span class="line">        server 172.18.50.108:80 weight=1 max_fails=3 fail_timeout=10s;</span><br><span class="line">		#round-robin; #默认算法</span><br><span class="line">        #ip_hash;#源地址哈希，绑定一个地址。</span><br><span class="line">		hash $remote_addr consistent;#依然对原地址哈希,提升到一致性哈希.</span><br><span class="line">		hash $request_uri consistent;#对uri进行哈希,进行绑定.</span><br><span class="line">		&#125;</span><br><span class="line">		例:http://www.wpyblog.com/images/logo.jpg   #images/logo.jpg为uri</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name www.wpyblog.com;</span><br><span class="line">        index index.html index.php;</span><br><span class="line">        location / &#123;</span><br><span class="line">                proxy_pass http://www.wpyblog.com;</span><br><span class="line">                proxy_set_header HOST $host;</span><br><span class="line">                proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">                proxy_next_upstream http_502 http_504 error timeout invalid_header;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">#后端的Web服务器可以通过X-Forwarded-For获取用户真实IP</span><br><span class="line">proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">#以下是一些反向代理的配置，可选。</span><br><span class="line">proxy_set_header Host $host;</span><br><span class="line">client_max_body_size 10m; #允许客户端请求的最大单文件字节数</span><br><span class="line">client_body_buffer_size 128k; #缓冲区代理缓冲用户端请求的最大字节数，</span><br><span class="line">proxy_connect_timeout 90; #nginx跟后端服务器连接超时时间(代理连接超时)</span><br><span class="line">proxy_send_timeout 90; #后端服务器数据回传时间(代理发送超时)</span><br><span class="line">proxy_read_timeout 90; #连接成功后，后端服务器响应时间(代理接收超时)</span><br><span class="line">proxy_buffer_size 4k; #设置代理服务器（nginx）保存用户头信息的缓冲区大小</span><br><span class="line">proxy_buffers 4 32k; #proxy_buffers缓冲区，网页平均在32k以下的设置</span><br><span class="line">proxy_busy_buffers_size 64k; #高负荷下缓冲大小（proxy_buffers*2）</span><br><span class="line">proxy_temp_file_write_size 64k;</span><br><span class="line">#设定缓存文件夹大小，大于这个值，将从upstream服务器传</span><br></pre></td></tr></table></figure></p>
+<h1 id="location正则表达式"><a href="#location正则表达式" class="headerlink" title="location正则表达式"></a>location正则表达式</h1><p>正则表达式：</p>
+<pre><code>1）变量名，错误的值包括：空字符串“”，或者任何以0开始的字符串。
+
+（2）变量比较可以使用“=”和“！=”（等于和不等于）运算符
+
+（3）正则表达式模式匹配可以使用“~”和“~*”符号
+
+（4）~  为区分大小写匹配 
+
+（5）~* 为不区分大小写匹配 
+
+文件以及目录匹配：
+
+（6）!~和!~*分别为区分大小写不匹配及不区分大小写不匹配
+
+（7）-f和!-f用来判断是否存在文件 
+
+（8）-d和!-d用来判断是否存在目录 
+
+（9）-e和!-e用来判断是否存在文件或目录 
+
+（10）-x和!-x用来判断文件是否可执行:
+
+location = / {
+# matches the query / only.
+# 只匹配 / 查询。
+}
+</code></pre><p>匹配任何查询，因为所有请求都已 /  开头。但是正则表达式规则和长的块规则将被优先和查询匹配</p>
+<pre><code>location ^~ /images/ {
+# matches any query beginning with /images/ and halts searching,
+# so regular expressions will not be checked.
+# 匹配任何已 /images/ 开头的任何查询并且停止搜索。任何正则表达式将不会被测试。
+}
+
+location ~* \.(gif|jpg|jpeg)$ {
+# matches any request ending in gif, jpg, or jpeg. However, all
+# requests to the /images/ directory will be handled by
+}
+
+匹配.php代理到后端
+location ~ .*.PHP?$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    include        fcgi.conf;
+}
+
+# 根据文件类型
+location ~* \.(js|css|jpg|jpeg|gif|png|swf)$ {
+    if (-f $request_filename) {
+    root /html/web/bbs;
+    expires 1d;
+    break;
+    }
+}
+
+#根据目录类型
+location ~ ^/(images|javascript|js|css|flash|media|static)/ {
+root /html/web;
+expires 30d;
+}
+</code></pre><h1 id="Nginx禁止访问下载某类型的文件"><a href="#Nginx禁止访问下载某类型的文件" class="headerlink" title="Nginx禁止访问下载某类型的文件"></a>Nginx禁止访问下载某类型的文件</h1><p>Nginx 下禁止访问*.txt 文件，配置方法如下.代码:</p>
+<pre><code>location ~* \.(txt|doc)$ {
+    if (-f $request_filename) {
+    root /html/test;
+    break;
+    }
+}
+</code></pre><p>禁止访问某个目录</p>
+<pre><code>location ~ ^/(tomcat)/ {
+deny all;
+}
+</code></pre><p>禁止下载以点开头的文件：如 .freeke；.dat；.exe</p>
+<pre><code>location ~ /\..+ {
+deny all;
+}
+</code></pre><h1 id="nginx防盗链"><a href="#nginx防盗链" class="headerlink" title="nginx防盗链"></a>nginx防盗链</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">    location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$ &#123;</span><br><span class="line">        valid_referers none blocked server_names *.wpyblog.com;</span><br><span class="line">        if ($invalid_referer) &#123;</span><br><span class="line">        rewrite ^/ http://www.wpyblog.com/static/images/404.jpg;</span><br><span class="line">        # return 403;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">第一行： location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$</span><br><span class="line"></span><br><span class="line">其中“gif|jpg|png|swf|flv|rar|zip”设置防盗链文件类型，自行修改，每个后缀用“|”符号分开！</span><br><span class="line"></span><br><span class="line">第三行：valid_referers none blocked server_names *.wpyblog.com;</span><br><span class="line"></span><br><span class="line">就是白名单，允许文件链出的域名白名单，自行修改成您的域名！*.wpyblog.com这个指的是子域名，域名与域名之间使用空格隔开！</span><br><span class="line"></span><br><span class="line">第五行：rewrite ^/ http://www.wpyblog.com/static/images/404.jpg;</span><br><span class="line"></span><br><span class="line">这个图片是盗链返回的图片，也就是替换盗链网站所有盗链的图片。这个图片要放在没有设置防盗链的网站上，因为防盗链的作用，这个图片如果也放在防盗链网站上就会被当作防盗链显示不出来了，盗链者的网站所盗链图片会显示X符号。</span><br><span class="line"></span><br><span class="line">也可以改成自己网站链接，比如把第五行改成：</span><br><span class="line">rewrite ^/ http://www.wpyblog.com;</span><br><span class="line"></span><br><span class="line">这样，当别人输入文件下载地址，由于防盗链下载的作用就会跳转到您设置的这个链接！为自己的网站增加了个访问量。</span><br></pre></td></tr></table></figure>
+<h1 id="实现基于用户的访问控制"><a href="#实现基于用户的访问控制" class="headerlink" title="实现基于用户的访问控制"></a>实现基于用户的访问控制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">ngx_http_auth_basic_module模块:实现基于用户的访问控制，使用basic机制进行用户认证；</span><br><span class="line">auth_basic string | off;</span><br><span class="line">auth_basic_user_file file;</span><br><span class="line"></span><br><span class="line">location /admin/ &#123;</span><br><span class="line">	alias /webapps/app1/data/;</span><br><span class="line">	auth_basic &quot;Admin Area&quot;;   </span><br><span class="line">	auth_basic_user_file /etc/nginx/.ngxpasswd;   #放置授权加密可以访问的用户名密码文件路径</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	注意：htpasswd命令由httpd-tools所提供；</span><br><span class="line"></span><br><span class="line">配置nginx实现basic加密认证访问</span><br><span class="line">vim /etc/nginx/nginx.conf</span><br><span class="line">          server &#123;</span><br><span class="line">        listen 8080;</span><br><span class="line">        server_name www.centos.com;</span><br><span class="line">        root &quot;/ngx/html&quot;;</span><br><span class="line">        location / &#123;</span><br><span class="line">        auth_basic &quot;prvate images&quot;;</span><br><span class="line">        auth_basic_user_file &quot;/etc/nginx/.ngxpasswd&quot;;	#存放用户名密码的文件定义</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">安装htpasswd命令</span><br><span class="line">htpasswd命令由httpd-tools所提供</span><br><span class="line">yum install httpd-tools -y</span><br><span class="line"></span><br><span class="line">创建存放实现加密的用户名和密码文件</span><br><span class="line">  -c 仅用于第一次创建用户时使用</span><br><span class="line">  -m 指定MD5加密算法</span><br><span class="line">  -b 直接给定密码，不使用交互式</span><br><span class="line"></span><br><span class="line">htpasswd -c -m /etc/nginx/.ngxpasswd weipingyang</span><br><span class="line">  New password: centos</span><br><span class="line">  Re-type new password: centos</span><br><span class="line">  Adding password for user weipingyang #创建weipingyang用户</span><br><span class="line"></span><br><span class="line">  ~]# htpasswd -m -b /etc/nginx/.ngxpasswd nn centos</span><br><span class="line">  Adding password for user nn</span><br><span class="line"></span><br><span class="line">查看创建的加密的账号以及测试访问</span><br><span class="line">  ~]# cat /etc/nginx/.ngxpasswd </span><br><span class="line">  weipingyang:$apr1$5kVocZ7d$KIumQtuh5wGySn0iUomd30</span><br><span class="line">  nn:$apr1$ayW.DtQE$sN5QCmC4enr.a1rUkTHHK0</span><br><span class="line"></span><br><span class="line">nginx -t</span><br><span class="line">nginx -s reload</span><br><span class="line">打开浏览器测试</span><br></pre></td></tr></table></figure>
+<h1 id="输出nginx的基本状态信息"><a href="#输出nginx的基本状态信息" class="headerlink" title="输出nginx的基本状态信息"></a>输出nginx的基本状态信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">location  /basic_status &#123;</span><br><span class="line">	stub_status;</span><br><span class="line">	&#125;	</span><br><span class="line">		</span><br><span class="line">- Active connections: 291 </span><br><span class="line">- server accepts handled requests</span><br><span class="line">- 16630948 16630948 31070465 </span><br><span class="line">- Reading: 6 Writing: 179 Waiting: 106 	</span><br><span class="line"></span><br><span class="line">	- Active connections: 活动状态的连接数；</span><br><span class="line">	- accepts：已经接受的客户端请求的总数；</span><br><span class="line">	- handled：已经处理完成的客户端请求的总数；</span><br><span class="line">	- requests：客户端发来的总的请求数；</span><br><span class="line">	- Reading：处于读取客户端请求报文首部的连接的连接数；</span><br><span class="line">	- Writing：处于向客户端发送响应报文过程中的连接数；</span><br><span class="line">	- Waiting：处于等待客户端发出请求的空闲连接数；</span><br><span class="line"></span><br><span class="line">例：</span><br><span class="line">    范例：ngx_http_stub_status_module模块：用于输出nginx的基本状态信息；</span><br><span class="line"></span><br><span class="line">    vim /etc/nginx/nginx.conf</span><br><span class="line">            &#125;</span><br><span class="line">            location = /ngx_status &#123;	#声明访问指定的location可以查看nginx的基本状态信息</span><br><span class="line">            stub_status;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    nginx -t</span><br><span class="line">    nginx -s reload</span><br><span class="line"></span><br><span class="line">    curl 172.20.101.158:8080/ngx_status</span><br><span class="line">        Active connections: 1 </span><br><span class="line">        server accepts handled requests</span><br><span class="line">        9 9 8 </span><br><span class="line">        Reading: 0 Writing: 1 Waiting: 0</span><br></pre></td></tr></table></figure>
+<h1 id="nginx日志"><a href="#nginx日志" class="headerlink" title="nginx日志"></a>nginx日志</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">error_log file [level];#错误日志级别 默认为crit, 该级别在日志名后边定义格式如下：</span><br><span class="line">#全局错误日志定义类型，[ debug | info | notice | warn | error | crit ]</span><br><span class="line">error_log /var/log/nginx/error.log crit;</span><br><span class="line"></span><br><span class="line">crit 记录的日志最少，而debug记录的日志最多。如果你的nginx遇到一些问题，比如502比较频繁出现，但是看默认的error_log并没有看到有意义的信息，那么就可以调一下错误日志的级别，当你调成error级别时，错误日志记录的内容会更加丰富。</span><br><span class="line"></span><br><span class="line">#查看安装完nginx默认定义的日志的格式</span><br><span class="line">#默认放置在http上下文，对所有的sever生效</span><br><span class="line">#日志格式设定</span><br><span class="line">    log_format access &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">    &apos;&quot;$http_user_agent&quot; $http_x_forwarded_for&apos;;</span><br><span class="line">#定义本虚拟主机的访问日志</span><br><span class="line">access_log /var/log/nginx/ha97access.log access;</span><br><span class="line"></span><br><span class="line">ngx_http_log_module模块:gx_http_log_module模块以指定的格式写入请求日志</span><br><span class="line">log_format name string ...;</span><br><span class="line">string可以使用nginx核心模块及其它模块内嵌的变量:</span><br><span class="line">    $bytes_sent</span><br><span class="line">    发送到客户端的字节数</span><br><span class="line"></span><br><span class="line">    $connection</span><br><span class="line">    连接序列号</span><br><span class="line"></span><br><span class="line">    $connection_requests</span><br><span class="line">    通过连接发出的当前请求数（1.1.18）</span><br><span class="line"></span><br><span class="line">    $msec</span><br><span class="line">    以秒为单位的时间，日志写入时的分辨率为毫秒</span><br><span class="line"></span><br><span class="line">    $pipe</span><br><span class="line">    “ p”如果请求是流水线的，“ .”否则</span><br><span class="line"></span><br><span class="line">    $request_length</span><br><span class="line">    请求长度（包括请求行，标题和请求正文）</span><br><span class="line"></span><br><span class="line">    $request_time</span><br><span class="line">    以毫秒为单位请求处理时间（以秒为单位）; 从客户端读取第一个字节之间经过的时间，并将最后一个字节发送到客户端后的日志写入</span><br><span class="line"></span><br><span class="line">    $status</span><br><span class="line">    回应状态</span><br><span class="line"></span><br><span class="line">    $time_iso8601</span><br><span class="line">    当地时间采用ISO 8601标准格式</span><br><span class="line"></span><br><span class="line">    $time_local</span><br><span class="line">    通用日志格式的本地时间</span><br><span class="line"></span><br><span class="line">    $remote_addr </span><br><span class="line">    远程客户端地址</span><br><span class="line"></span><br><span class="line">    $http_referer</span><br><span class="line">    ~]# curl -e &quot;www.baidu.com&quot; 172.20.101.158:8080/ngx_status</span><br><span class="line">    ~]# cat /var/log/nginx/access.log </span><br><span class="line">    172.20.101.158 - - [10/Jan/2019:10:18:57 +0800] &quot;GET /ngx_status HTTP/1.1&quot; 200 100 &quot;www.baidu.com&quot; &quot;curl/7.29.0&quot; &quot;-&quot;</span><br><span class="line"></span><br><span class="line">按字母顺序排列的变量索引</span><br><span class="line">http://nginx.org/en/docs/varindex.html</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/12/Nginx工作模型/" rel="next" title="Nginx工作模型">
+                <i class="fa fa-chevron-left"></i> Nginx工作模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx配置结构"><span class="nav-number">1.</span> <span class="nav-text">Nginx配置结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置命令解释"><span class="nav-number">2.</span> <span class="nav-text">配置命令解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx-Rewrite语法分析"><span class="nav-number">3.</span> <span class="nav-text">nginx Rewrite语法分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟主机配置"><span class="nav-number">4.</span> <span class="nav-text">虚拟主机配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx-conf配置概括"><span class="nav-number">5.</span> <span class="nav-text">nginx.conf配置概括</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx反向代理"><span class="nav-number">6.</span> <span class="nav-text">Nginx反向代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#location正则表达式"><span class="nav-number">7.</span> <span class="nav-text">location正则表达式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx禁止访问下载某类型的文件"><span class="nav-number">8.</span> <span class="nav-text">Nginx禁止访问下载某类型的文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx防盗链"><span class="nav-number">9.</span> <span class="nav-text">nginx防盗链</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现基于用户的访问控制"><span class="nav-number">10.</span> <span class="nav-text">实现基于用户的访问控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#输出nginx的基本状态信息"><span class="nav-number">11.</span> <span class="nav-text">输出nginx的基本状态信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx日志"><span class="nav-number">12.</span> <span class="nav-text">nginx日志</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
