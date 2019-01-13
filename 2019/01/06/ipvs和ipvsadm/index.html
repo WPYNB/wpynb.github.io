@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ipvs内核中的协议栈上实现 ipvs是LVS软件核心，是运行在LB上的，这是个基于ip层的负载均衡。 ipvs的总体结构主要有ip包处理，负载均衡算法，系统配置和管理三个模块以及虚拟服务器与真实服务器链表组成。 ipvs管理集群服务管理服务上的RS。 一个ipvs主机可以同时定义多个cluster server，但可能会影响调度性格。 一个ipvs服务至少应该有一个RS。 grep -i -C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ipvs和ipvsadm">
+<meta property="og:url" content="http://yoursite.com/2019/01/06/ipvs和ipvsadm/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="ipvs内核中的协议栈上实现 ipvs是LVS软件核心，是运行在LB上的，这是个基于ip层的负载均衡。 ipvs的总体结构主要有ip包处理，负载均衡算法，系统配置和管理三个模块以及虚拟服务器与真实服务器链表组成。 ipvs管理集群服务管理服务上的RS。 一个ipvs主机可以同时定义多个cluster server，但可能会影响调度性格。 一个ipvs服务至少应该有一个RS。 grep -i -C">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-12T10:51:50.876Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ipvs和ipvsadm">
+<meta name="twitter:description" content="ipvs内核中的协议栈上实现 ipvs是LVS软件核心，是运行在LB上的，这是个基于ip层的负载均衡。 ipvs的总体结构主要有ip包处理，负载均衡算法，系统配置和管理三个模块以及虚拟服务器与真实服务器链表组成。 ipvs管理集群服务管理服务上的RS。 一个ipvs主机可以同时定义多个cluster server，但可能会影响调度性格。 一个ipvs服务至少应该有一个RS。 grep -i -C">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/06/ipvs和ipvsadm/"/>
+
+
+
+
+
+  <title>ipvs和ipvsadm | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/ipvs和ipvsadm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ipvs和ipvsadm</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T21:03:24+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/ipvs和ipvsadm/" itemprop="url" rel="index">
+                    <span itemprop="name">ipvs和ipvsadm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ipvs"><a href="#ipvs" class="headerlink" title="ipvs"></a>ipvs</h1><p>内核中的协议栈上实现</p>
+<pre><code>ipvs是LVS软件核心，是运行在LB上的，这是个基于ip层的负载均衡。
+ipvs的总体结构主要有ip包处理，负载均衡算法，系统配置和管理三个模块以及虚拟服务器与真实服务器链表组成。
+ipvs管理集群服务管理服务上的RS。
+一个ipvs主机可以同时定义多个cluster server，但可能会影响调度性格。
+一个ipvs服务至少应该有一个RS。
+grep -i -C 10 &quot;ipvs&quot; /boot/config-VERSION-RELEASE.x86_64
+支持的协议：TCP，UDP，AH，ESP，AH_ESP，SCTP
+ipvs 规则： /proc/net/ip_vs
+ipvs 连接：/proc/net/ip_vs_conn
+</code></pre><h1 id="ipvsadm"><a href="#ipvsadm" class="headerlink" title="ipvsadm"></a>ipvsadm</h1><p>用户空间的集群服务管理工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line">1）程序包：ipvsadm</span><br><span class="line">    rpm -ql ipvsadm </span><br><span class="line">    /etc/sysconfig/ipvsadm-config</span><br><span class="line">    /usr/lib/systemd/system/ipvsadm.service</span><br><span class="line">    /usr/sbin/ipvsadm</span><br><span class="line">    /usr/sbin/ipvsadm-restore</span><br><span class="line">    /usr/sbin/ipvsadm-save</span><br><span class="line">    /usr/share/doc/ipvsadm-1.27</span><br><span class="line">    /usr/share/doc/ipvsadm-1.27/README</span><br><span class="line">    </span><br><span class="line">    Unit File: ipvsadm.service</span><br><span class="line">    主程序：/usr/sbin/ipvsadm</span><br><span class="line">    规则保存工具：/usr/sbin/ipvsadm-save</span><br><span class="line">    规则重载工具：/usr/sbin/ipvsadm-restore</span><br><span class="line">    配置文件：/etc/sysconfig/ipvsadm-config</span><br><span class="line">2）命令：ipvsadm</span><br><span class="line">    ipvsadm - Linux Virtual Server administration</span><br><span class="line">      ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]] [-M netmask] [--pe persistence_engine] [-b sched-flags]</span><br><span class="line">      ipvsadm -D -t|u|f service-address</span><br><span class="line">      ipvsadm -C</span><br><span class="line">      ipvsadm -R</span><br><span class="line">      ipvsadm -S [-n]</span><br><span class="line">      ipvsadm -a|e -t|u|f service-address -r server-address [options]</span><br><span class="line">      ipvsadm -d -t|u|f service-address -r server-address</span><br><span class="line">      ipvsadm -L|l [options]</span><br><span class="line">      ipvsadm -Z [-t|u|f service-address]</span><br><span class="line">      ipvsadm --set tcp tcpfin udp</span><br><span class="line">      ipvsadm --start-daemon state [--mcast-interface interface] [--syncid sid]</span><br><span class="line">      ipvsadm --stop-daemon state</span><br><span class="line">        -A   ，--add-service         添加一个集群服务</span><br><span class="line">        -E   ，--edit-service        修改已添加的集群服务</span><br><span class="line">        -D   ，--delete-service      删除虚拟服务</span><br><span class="line">        -C   ，--clear               清空整个表</span><br><span class="line">        -R   ，--restore             从标准输入重载</span><br><span class="line">        -S   ，--save                保存值到标准输出。</span><br><span class="line">        -a   ，--add-server          向指定的Client Server中添加Real Server.</span><br><span class="line">        -e   ，--edit-server         修改RS</span><br><span class="line">        -d   ，--delete-server       删除真实服务</span><br><span class="line">        -L|-l，--list                列出表</span><br><span class="line">        -Z   ，--zero                清空计数器</span><br><span class="line">        --set tcp tcpfin udp        设置连接超时值</span><br><span class="line">        --start-daemon              开启连接同步后台进程</span><br><span class="line">        --stop-daemon               停止连接同步后台进程</span><br><span class="line">        -t service-address，--tcp-service        服务地址是 host[:port]，tcp协议</span><br><span class="line">        -u service-address，--udp-service        服务地址是host[:port]，udp协议</span><br><span class="line">        -f fwmark，--fwmark-service              防火墙标记</span><br><span class="line">        -6          ，--ipv6                 fwmark 项使用 IPv6</span><br><span class="line">        -s scheduler，--scheduler            rr|wrr|lc|wlc|lblc|lblcr|dh|sh|sed|nq,调度方法其中之一，默认为wlc。</span><br><span class="line">        --pe engine         备用持久性引擎可能是 sip,默认情况下不设置</span><br><span class="line">        -p [timeout]      ，--persistent         持续连接</span><br><span class="line">        -M netmask        ，--netmask            持久粒度掩码</span><br><span class="line">        -r server-address ，--real-server        服务地址主机和端口，只有支持端口映射的LVS类型才允许此处使用和集群服务中不同的端口</span><br><span class="line">        -g                ，--gatewaying         gatewaying (direct routing) (default)，dr模式</span><br><span class="line">        -i                ，--ipip               ipip encapsulation (tunneling)，tun模式</span><br><span class="line">        -m                ，--masquerading       masquerading (NAT)，nat模式</span><br><span class="line">        -w weight         ，--weight             实际服务器容量，指定权重</span><br><span class="line">        -x uthreshold     ，--u-threshold        连接的高等门限</span><br><span class="line">        -y lthreshold     ，--l-threshold        连接的低等门限</span><br><span class="line">        --mcast-interface interface             连接同步的多播接口</span><br><span class="line">        --syncid sid                            syncid 同步连接(default=255)</span><br><span class="line">        -c，--connection                         显示ipvs连接</span><br><span class="line">        --timeout                               超时时间输出(tcp tcpfin udp)</span><br><span class="line">        --daemon                                后台进程信息输出</span><br><span class="line">        --stats                                 统计数据</span><br><span class="line">        --rate                                  速率</span><br><span class="line">        --exact                                 精确值</span><br><span class="line">        --thresholds                            线程信息输出</span><br><span class="line">        --persistent-conn                       当前连接信息输出</span><br><span class="line">        --nosort                                禁用对服务器/服务的排序输出</span><br><span class="line">        --sort                                  不做任何事情，因为后台兼容性</span><br><span class="line">        -o       ，--ops                         单包调度</span><br><span class="line">        -n       ，--numeric                     数字格式显示ip和port，注意-n只能写在-L之后。</span><br><span class="line">        -b flags ，--sched-flags                 调度标志(comma-separated)</span><br><span class="line">        </span><br><span class="line">3）核心功能：</span><br><span class="line">        集群服务管理：增、删、改</span><br><span class="line">        集群服务的RS管理：增、删、改</span><br><span class="line">        查看</span><br><span class="line">    </span><br><span class="line">4）管理集群服务：增、改、删</span><br><span class="line">        增、改：</span><br><span class="line">            ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]]</span><br><span class="line">        删除：</span><br><span class="line">            ipvsadm -D -t|u|f service-address</span><br><span class="line">            service-address： </span><br><span class="line">                -t|u|f： </span><br><span class="line">                    -t: TCP 协议的端口，VIP:TCP_PORT</span><br><span class="line">                    -u: TCP 协议的端口，VIP:UDP_PORT</span><br><span class="line">                    -f ：firewall MARK ，标记，一个数字</span><br><span class="line">            [-s scheduler] ：指定集群的调度算法，默认为wl</span><br><span class="line">    </span><br><span class="line">5）管理集群上的RS ：增、改、删</span><br><span class="line">        增、改：</span><br><span class="line">            ipvsadm -a|e -t|u|f service-address -r server-address [-g|i|m] [-w weight]</span><br><span class="line">        删：</span><br><span class="line">            ipvsadm -d -t|u|f service-address -r server-address</span><br><span class="line">            server-address：</span><br><span class="line">                rip[:port] 如省略port ，不作端口映射</span><br><span class="line">        选项：</span><br><span class="line">            lvs类型：</span><br><span class="line">                -g: gateway, dr 类型，默认</span><br><span class="line">                -i: ipip, tun 类型</span><br><span class="line">                -m: masquerade, nat 类型</span><br><span class="line">                -w weight：指定权重</span><br><span class="line">6）清空定义的所有内容：ipvsadm –C</span><br><span class="line">    </span><br><span class="line">7）清空计数器：ipvsadm -Z [-t|u|f service-address]</span><br><span class="line">    </span><br><span class="line">8）查看：</span><br><span class="line">        ipvsadm -L|l [options]</span><br><span class="line">            --numeric, -n ：以数字形式输出地址和端口号</span><br><span class="line">            --exact ：扩展信息，精确值</span><br><span class="line">            --connection ，-c ：当前IPVS 连接输出</span><br><span class="line">            --stats ：统计信息</span><br><span class="line">            --rate  ：输出速率信息</span><br><span class="line">9）保存：</span><br><span class="line">        建议保存至/etc/sysconfig/ipvsadm</span><br><span class="line">        ipvsadm-save &gt; /PATH/TO/IPVSADM_FILE</span><br><span class="line">        ipvsadm -S &gt; /PATH/TO/IPVSADM_FILE</span><br><span class="line">        systemctl stop ipvsadm.service</span><br><span class="line">10）重载：</span><br><span class="line">        ipvsadm-restore &lt; /PATH/FROM/IPVSADM_FILE</span><br><span class="line">        ipvsadm -R &lt; /PATH/FROM/IPVSADM_FILE</span><br><span class="line">        systemctl restart ipvsadm.service</span><br></pre></td></tr></table></figure></p>
+<h1 id="FireWall-Mark：FWM"><a href="#FireWall-Mark：FWM" class="headerlink" title="FireWall Mark：FWM"></a>FireWall Mark：FWM</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">1）MARK target 可用于给特定的报文打标记，在netfilter上给报文打标记，mangle表</span><br><span class="line">    --set-mark value</span><br><span class="line">    其中：value 为十六进制数字</span><br><span class="line"></span><br><span class="line">2）借助于防火墙标记来分类报文，而后基于标记定义集群服务。</span><br><span class="line">    可将多个不同的应用使用同一个集群服务进行调度。</span><br><span class="line">    也就是将http和https统一调度，可以实现无论你访问http和https都给你调度到后面的真实的服务器，不用每一个服务都单独的创建一个集群服务。</span><br><span class="line">    打标记实现方法：</span><br><span class="line">        在Director 主机打标记：</span><br><span class="line">            iptables -t mangle -A PREROUTING -d $vip -p $proto –m multiport --dports $port1,$port2,… -j MARK --set-mark NUMBER</span><br><span class="line">        在Director 主机基于标记定义集群服务：</span><br><span class="line">            ipvsadm -A -f NUMBER [options]++++</span><br><span class="line">    定义集群服务：</span><br><span class="line">        ipvsadm -A -f MARK -s rr -p</span><br><span class="line">        ipvsadm  -a  -f   MARK  -r  ip  -g  -w 1</span><br><span class="line">    查看</span><br><span class="line">        ipvsadm -Ln </span><br><span class="line">        ipvsadm -Ln --rate</span><br><span class="line">            Forward：转发方法</span><br><span class="line">            Weight：权重</span><br><span class="line">            ActiveConn：活动连接数</span><br><span class="line">            InActiveConn：非活动连接数</span><br><span class="line">            CPS:connections per seconds</span><br><span class="line">            InnPPS：Input packets per seconds</span><br><span class="line">            OutPPS：output packets per seconds</span><br><span class="line">            InBPS：input bytes per seconds</span><br><span class="line">            OutBPS：Output bytes per seconds</span><br><span class="line">3）作用：</span><br><span class="line">    同一服务不同端口使用一个设置搞定</span><br><span class="line">     </span><br><span class="line">4）具体实现</span><br><span class="line">    在VS上进行如下设置</span><br><span class="line">        iptables -t mangle -A PREROUTING -d 192.168.74.88 -p tcp -m multiport --dports 80,443 -j MARK --set-mark 12  </span><br><span class="line">            ##无论访问VIP的80还是443端口统一打标签为12</span><br><span class="line">        iptables -t mangle -vnL </span><br><span class="line">        ipvsadm -A -f 12 -s wrr   -</span><br><span class="line">            ##创建一个集群服务，只要标签是12的调度算法都是wrr</span><br><span class="line">        ipvsadm -a -f 12 -r 192.168.74.129 -g -w 3  </span><br><span class="line">            ##将RS添加到集群服务里</span><br><span class="line">        ipvsadm -a -f 12 -r 192.168.74.133 -g</span><br><span class="line">        ipvsadm -Ln</span><br><span class="line">    在客户端进行测试</span><br><span class="line">        curl 192.168.74.88</span><br><span class="line">        curl -k https://192.168.74.88/  </span><br><span class="line">        ##k表示忽略证书访问</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/06/LVS负载均衡/" rel="next" title="LVS负载均衡">
+                <i class="fa fa-chevron-left"></i> LVS负载均衡
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/12/Nginx工作模型/" rel="prev" title="Nginx工作模型">
+                Nginx工作模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ipvs"><span class="nav-number">1.</span> <span class="nav-text">ipvs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ipvsadm"><span class="nav-number">2.</span> <span class="nav-text">ipvsadm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FireWall-Mark：FWM"><span class="nav-number">3.</span> <span class="nav-text">FireWall Mark：FWM</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
