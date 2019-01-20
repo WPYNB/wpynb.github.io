@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/nfs.png">
 <meta property="og:image" content="http://yoursite.com/images/nfs1.png">
-<meta property="og:updated_time" content="2018-12-19T09:07:49.453Z">
+<meta property="og:updated_time" content="2019-01-13T13:19:13.552Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NFS服务">
 <meta name="twitter:description" content="NFS服务介绍NFS：Network File System 网络文件系统，基于内核的文件系统。Sun公司开发，通过使用NFS，用户和程序可以像访问本地文件一样访问远端系统上的文件，基于RPC（Remote Procedure Call Protocol远程过程调用）实现 RPC采用C/S模式。客户机请求程序调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠">
@@ -384,10 +384,10 @@ rpc.statd 非必要，检查文件一致性，可修复文件
 • netgroups：NIS域的主机组，@group_name
 • anonymous：表示使用*通配所有客户端
 </code></pre><h2 id="每个条目指定目录导出到的哪些主机，及相关的权限和选项"><a href="#每个条目指定目录导出到的哪些主机，及相关的权限和选项" class="headerlink" title="每个条目指定目录导出到的哪些主机，及相关的权限和选项"></a>每个条目指定目录导出到的哪些主机，及相关的权限和选项</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">• 默认选项：(ro,sync,root_squash,no_all_squash)</span><br><span class="line">• ro,rw 只读和读写</span><br><span class="line">• async 异步，数据变化后不立即写磁盘，性能高</span><br><span class="line">• sync（1.0.0后为默认）同步，数据在请求时立即写入共享</span><br><span class="line">• no_all_squash （默认）保留共享文件的UID和GID</span><br><span class="line">• all_squash 所有远程用户(包括root)都变成nfsnobody</span><br><span class="line">• root_squash （默认）远程root映射为nfsnobody,UID为65534，早期版本是4294967294 (nfsnobody)</span><br><span class="line">• no_root_squash 远程root映射成root用户</span><br><span class="line">• anonuid和anongid 指明匿名用户映射为特定用户UID和组GID，而非nfsnobody,可配合all_squash使用</span><br></pre></td></tr></table></figure>
-<h2 id="NFS配置示例"><a href="#NFS配置示例" class="headerlink" title="NFS配置示例"></a>NFS配置示例</h2><p>在/etc/exports文件中定义导出目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">• /myshare server.example.com</span><br><span class="line">• /myshare *.example.com</span><br><span class="line">• /myshare server?.example.com</span><br><span class="line">• /myshare server[0-20].example.com</span><br><span class="line">• /myshare 172.25.11.10</span><br><span class="line">• /myshare 172.25.0.0/16</span><br><span class="line">• /myshare 2000:472:18:b51:c32:a21</span><br><span class="line">• /myshare 2000:472:18:b51::/64</span><br><span class="line">• /myshare *.example.com 172.25.0.0/16</span><br><span class="line">• /myshare desktop.example.com(ro)</span><br><span class="line">• /myshare desktop.example.com(ro) server[0-20].example.com(rw)</span><br><span class="line">• /myshare diskless.example.com(rw,no_root_squash)</span><br></pre></td></tr></table></figure></p>
+<h2 id="NFS配置示例"><a href="#NFS配置示例" class="headerlink" title="NFS配置示例"></a>NFS配置示例</h2><p>在/etc/exports文件中定义共享目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">• /nfsdir server.example.com</span><br><span class="line">• /nfsdir *.example.com</span><br><span class="line">• /nfsdir server?.example.com</span><br><span class="line">• /nfsdir server[0-20].example.com</span><br><span class="line">• /nfsdir 172.25.11.10</span><br><span class="line">• /nfsdir 172.25.0.0/16</span><br><span class="line">• /nfsdir 2000:472:18:b51:c32:a21</span><br><span class="line">• /nfsdir 2000:472:18:b51::/64</span><br><span class="line">• /nfsdir *.example.com 172.25.0.0/16</span><br><span class="line">• /nfsdir desktop.example.com(ro)</span><br><span class="line">• /nfsdir desktop.example.com(ro) server[0-20].example.com(rw)</span><br><span class="line">• /nfsdir diskless.example.com(rw,no_root_squash)</span><br></pre></td></tr></table></figure></p>
 <h1 id="NFS工具"><a href="#NFS工具" class="headerlink" title="NFS工具"></a>NFS工具</h1><h2 id="rpcinfo"><a href="#rpcinfo" class="headerlink" title="rpcinfo"></a>rpcinfo</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpcinfo -p hostname</span><br><span class="line">rpcinfo –s hostname 查看RPC注册程序</span><br></pre></td></tr></table></figure>
 <h2 id="exportfs"><a href="#exportfs" class="headerlink" title="exportfs"></a>exportfs</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">–v 查看本机所有NFS共享</span><br><span class="line">–r 重读配置文件，并共享目录</span><br><span class="line">–a 输出本机所有共享</span><br><span class="line">–au 停止本机所有共享</span><br></pre></td></tr></table></figure>
-<pre><code>showmount -e hostname 
+<pre><code>showmount -e ip或主机名 #查看共享主机共享出来的目录
 mount.nfs 挂载工具
 NFSv4支持通过挂载NFS服务器的共享“根”，从而浏览NFS服务器上的共享目录列表
 mount nfsserver:/ /mnt/nfs
@@ -533,7 +533,7 @@ NFS相关的挂载选项：
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">59</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -544,7 +544,7 @@ NFS相关的挂载选项：
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

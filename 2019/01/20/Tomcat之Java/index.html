@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是java java所涉及到的相关概念如下图。总体来说就是java语言、java API、jvm等构成。 jvm：java虚拟机，java的代码都是运行在jvm上，这是java语言跨平台的保证，针对不同的系统jvm也不同，这就实现了同一份代码，通过不同jvm的运行可以让对应的操作系统识别。 JRE（java running environment）：就是提供给java代码一个运行环境，java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat之Java">
+<meta property="og:url" content="http://yoursite.com/2019/01/20/Tomcat之Java/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="什么是java java所涉及到的相关概念如下图。总体来说就是java语言、java API、jvm等构成。 jvm：java虚拟机，java的代码都是运行在jvm上，这是java语言跨平台的保证，针对不同的系统jvm也不同，这就实现了同一份代码，通过不同jvm的运行可以让对应的操作系统识别。 JRE（java running environment）：就是提供给java代码一个运行环境，java">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/tomjava1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/tomjava2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/tomjava3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/tomjava4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/tomjava5.png">
+<meta property="og:image" content="http://yoursite.com/images/tomjava5.png">
+<meta property="og:image" content="http://yoursite.com/images/tomjava6.png">
+<meta property="og:updated_time" content="2019-01-20T08:54:30.290Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat之Java">
+<meta name="twitter:description" content="什么是java java所涉及到的相关概念如下图。总体来说就是java语言、java API、jvm等构成。 jvm：java虚拟机，java的代码都是运行在jvm上，这是java语言跨平台的保证，针对不同的系统jvm也不同，这就实现了同一份代码，通过不同jvm的运行可以让对应的操作系统识别。 JRE（java running environment）：就是提供给java代码一个运行环境，java">
+<meta name="twitter:image" content="http://yoursite.com/images/tomjava1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/20/Tomcat之Java/"/>
+
+
+
+
+
+  <title>Tomcat之Java | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/20/Tomcat之Java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Tomcat之Java</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-20T16:18:50+08:00">
+                2019-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Tomcat之Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat之Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是java"><a href="#什么是java" class="headerlink" title="什么是java"></a>什么是java</h1><ul>
+<li>java所涉及到的相关概念如下图。总体来说就是java语言、java API、jvm等构成。</li>
+<li>jvm：java虚拟机，java的代码都是运行在jvm上，这是java语言跨平台的保证，针对不同的系统jvm也不同，这就实现了同一份代码，通过不同jvm的运行可以让对应的操作系统识别。</li>
+<li>JRE（java running environment）：就是提供给java代码一个运行环境，java代码运行在jvm上，但是开发程序的时候往往除本身代码外会有引入的api，当程序运行时，jvm会加载相关的类，所以一个能保证代码能正常运行的环境是jvm+api（java se api）。</li>
+<li>JDK（java development kit）：java开发环境，JDK=java语言+开发相关的API+JRE。开发环境除了要正常运行程序外（JRE环境），还需要进行开发相关的操作如打包、编译等这类工具。</li>
+</ul>
+<p><img src="/images/tomjava1.jpg" alt="Alt text"></p>
+<h1 id="java-API"><a href="#java-API" class="headerlink" title="java API"></a>java API</h1><ul>
+<li><p>平时API听多了，但是或许并不了解，这里做下简要解释。一个操作系统会提供很多API接口让程序员使用计算机的硬件资源，这是系统API，这里涉及到一个POSXI的概念，POSIX表示可移植操作系统接口（Portable Operating System Interface ，缩写为 POSIX ），POSIX标准定义了操作系统应该为应用程序提供的接口标准，为一个POSIX兼容的操作系统编写的程序，应该可以在任何其它的POSIX操作系统（即使是来自另一个厂商）上编译执行。因为遵循POSXI标准的操作系统，所定义的操作系统API都相同，所以开发程序的时候，使用的API在名称参数上都可以兼容，所以换一个系统，不需要重新编写代码。POSIX是针对API的标准，即针对API的函数名，返回值，参数类型等。POSIX兼容也就指定这些接口函数兼容，但是并不管API具体如何实现。</p>
+</li>
+<li><p>Java api：就是用java语言编写的功能代码，为访问主机上的本地资源，Java api调用了本地方法（操作系统API），直接通过内核请求调用相关内核函数。而后将功能相似的这些代码归类，组成java api类库。</p>
+</li>
+<li><p>以linux编程为例：我们编写linux用户程序的时候，是不能直接调用内核里面的函数的，内核里面的函数位于进程虚拟地址空间里面的内核空间，用户空间函数及函数库都处于进程虚拟地址空间里面的用户空间，用户空间调用内核空间的函数只有一个通道，这个通道就是系统调用指令，所以通常要调用glibc等库的接口函数（C语言的API），glibc也是用户空间的，但glibc自己实现了调用特殊的宏汇编系统调用指令进行cpu运行状态的切换，把进程从用户空间切换到内核空间。</p>
+</li>
+</ul>
+<p><img src="/images/tomjava2.jpg" alt="Alt text"></p>
+<p><img src="/images/tomjava3.jpg" alt="Alt text"></p>
+<h1 id="java内存结构"><a href="#java内存结构" class="headerlink" title="java内存结构"></a>java内存结构</h1><p><img src="/images/tomjava4.jpg" alt="Alt text"></p>
+<ul>
+<li><p>java中通过多线程机制使得多个任务同时执行处理，所有的线程共享JVM内存区域main memory，而每个线程又单独的有自己的工作内存，当线程与内存区域进行交互时，数据从主存拷贝到工作内存，进而交由线程处理。</p>
+</li>
+<li><p>程序计数器（Program Counter Register）：由于Java 虚拟机的多线程是通过线程轮流切换并分配处理器执行时间的方式来实现的，在任何一个确定的时刻，一个处理器（对于多核处理器来说是一个内核）只会执行一条线程中的指令。因此，为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器</p>
+</li>
+<li><p>Java 虚拟机栈（Java Virtual Machine Stacks）：每个放在被执行的时候都会同时创建一个栈帧用于存当前线程中局部基本类型的变量（java中定义的八种基本类型：boolean、char、byte、short、int、long、float、double），操作数栈，动态链接，方法出口等信息。虚拟内存栈就是我们经常讲的“栈”。其中局部变量表所需内存是在编译期完成分配。</p>
+</li>
+<li><p>方法区（Method Area）：与Java 堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。它有一个别名叫做Non-Heap（非堆），目的应该是与Java 堆区分开来。也称为持久代（Permanet Generation）。</p>
+</li>
+<li><p>Java 堆（Java Heap）：是Java 虚拟机所管理的内存中最大的一块。它是JVM用来存储对象实例以及数组值的区域，可以认为Java中所有通过new创建的对象的内存都在此分配。Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做“GC 堆”（Garbage Collected Heap）。</p>
+</li>
+<li><p>本地方法栈：与虚拟机栈类似，区别在于虚拟机栈为虚拟机执行Java方法服务，而本地方法栈为虚拟机使用Native方法（系统接口）服务。</p>
+</li>
+</ul>
+<h1 id="WEB-CGI"><a href="#WEB-CGI" class="headerlink" title="WEB CGI"></a>WEB CGI</h1><ul>
+<li><p>早期的web只能实现静态的页面，如果我们需要一种效果，就是我们向服务器请求时想让web服务器现场处理并将处理过的数据结果返回给我们，该如何实现呢。</p>
+<ul>
+<li>第一种方式：开发一个程序，接收用户请求，解析请求内容，查找相关数据进行计算处理，将处理结果封装成响应报文返回给用户。</li>
+<li>第二种方式：既然已经存在web服务器了，那没必要重新开发程序来处理HTTP协议的东西，只需要开发另一种方式，让计算机能够将处理后的数据，发送给web服务器，服务器再返回给用户</li>
+<li>于是CGI协议就产生了，web服务器接收到请求，可是它自身无法解决请求之中需要经过计算处理的内容，那样服务器就去找帮手，找个能处理这个内容的其他程序，这个其他程序通过一种方式（CGI）和服务器进行交流，处理好之后将结果送给web服务器。</li>
+</ul>
+</li>
+<li><p>早期使用的web服务器扩展机制CGI，它允许用户调用web服务器上的CGI程序。CGI即是公共网关接口，大多数的CGI程序使用Perl来编写，也使用C、Pyhton或者PHP来编写。用户通过单机某个链接或者直接在浏览器的地址栏中输入Url来访问CGI程序，web服务接收到请求后，发现这个请求是给CGI程序的，于是就启动并运行这个CGI程序，对用户请求进行处理，CGI程序解析请求中的CGI数据，处理数据，并产生了一个响应（通常是HTML页面）。这个响应被返回给Web服务器，Web服务器包装这个响应（例如添加消息报头），以HTTP响应的形式发送给web浏览器</p>
+</li>
+</ul>
+<p><img src="/images/tomjava5.png" alt="Alt text"></p>
+<h2 id="什么是CGI"><a href="#什么是CGI" class="headerlink" title="什么是CGI"></a>什么是CGI</h2><ul>
+<li><p>如上文所述，HTTP服务器是一个很简单的东西，并不负责动态页面的构建，只能转发静态页面，事物总是不断发展，网站也越来越复杂，所以出现动态技术。同时Apache也说，能支持perl，生成动态页面，这个支持perl，其实是Apache越位了，做了一件额外的事情。<br>既然HTTP Server自己不能做，外包给别人但是要与第三者做个约定，我给你什么，然后你给我什么，就是我把请求参数发给你，然后我接收你的处理结果给客户端，那这个约定就是Common Gatway Interface(CGI)</p>
+</li>
+<li><p>CGI全称是“通用网关接口”，是HTTP服务器与你的或其他机器上的程序进行“交谈”的一种工具，其程序必须运行在网络服务器上，是一种根据请求信息动态产生的响应内容的接口协议，CGI可以用任何一种语言编写，只要这种语言具有标准输入，输出和环境变量。如php，perl,tcl等。</p>
+</li>
+<li><p>通过CGI,HTTP sERVER可以将根据请求不同启动不同的外部程序，并将请求内容转发给该程序，在程序执行结束后，将执行结果作为回应返回给客户端。也就是说，对于每个请求，都要产生一个新的进程进行处理，因为每个进程都会占有很多服务器的资源和时间，这就导致服务器无法同时处理很多的并发请求，另外CGI程序都是与操作系统平台相关的，虽然在互联网爆发的初期，CGI为开发互联网应用做出了很大的贡献，但是随着技术的发展，开始逐渐衰落。所以，CGI的定义是：外部应用程序与HTTP服务器之间的接口协议。</p>
+</li>
+</ul>
+<h1 id="Serlvet与Servlet容器"><a href="#Serlvet与Servlet容器" class="headerlink" title="Serlvet与Servlet容器"></a>Serlvet与Servlet容器</h1><ul>
+<li><p>当java想实现CGI这样的功能时，因为java代码运行在jvm中，而jvm是没有办法直接跟web服务器进行交流的，所以Servlet就出现了。</p>
+</li>
+<li><p>当初在Apache Server 开发时CGI这样的功能时还未出现Serlet的概念，所以Apache不能内置支持Servlet。实际上，除了Apache，其他许多HTTP Server软件都不能直接支持Servlet。为了支持Servlet，通常要单独开发程序，这种程序一般称为服务小程序的容器（servlet container） ，有时也叫做服务器小程序引擎（servlet engine）。它的web服务器或者应用程序服务器的一部分，用于在发送的请求和响应之上提供的网络服务，解码基于MMIE的请求，格式化基于MIME的响应，它在Servlet的生命周期内包括和管理Servlet，是一个实时运行的外壳程序，运行时由wab服务器软件处理一般的请求，并把Servlet调用传递给“容器”来处理。</p>
+</li>
+</ul>
+<ul>
+<li><p>既然java作为编程语言，那么我们可以开发自己想要的功能，我们开发一个程序，使之能够与web服务器进行交互。所以java写了一个servlet类，这个类可以实例化为servlet程序，这个程序可以接受来自web服务器的请求并处理。那问题又来了， 如果多个web请求过来，仅仅一个Servlet程序是不够的，而且请求来了如何对java代码编译呢，于是乎就在外层增加一个管理功能的容器（这里纯属个人臆想），所以如果把Servlet类库完整实现了，那就是Servlet容器。这个容器的作用是什么呢？</p>
+<ul>
+<li><p>1、利用容器提供的方法，你能轻松的让servlet与web服务器对话，而不用自己建立serversocket、监听某个端口、创建流等等。容器知道自己与web服务器之间的协议，所以你的servlet不用担心web服务器（如Apache）和你自己的web代码之间的API，只需要考虑如何在servlet中实现业务逻辑（比如从数据库或者磁盘中获取数据并处理）。</p>
+</li>
+<li><p>2、多线程支持：容器会自动为它所接收的每个servlet请求创建一个新的java线程。针对用户的请求，如果servlet已经运行完相应的http服务方法，这个线程就会结束。</p>
+</li>
+<li><p>3、生命周期管理：servlet容器控制着servlet的生与死，它负责加载类、实例化和初始化servlet，调用servlet方法，以及使servlet实例被垃圾回收。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/tomjava5.png" alt="Alt text"></p>
+<ul>
+<li><p>Java Servlet 是运行在 Web 服务器或应用服务器上的程序，它是作为来自 Web 浏览器或其他 HTTP 客户端的请求和 HTTP 服务器上的数据库或应用程序（服务器响应）之间的中间层，位于Web 服务器内部的服务器端的Java应用程序，与传统的从命令行启动的Java应用程序不同，Servlet由Web服务器进行加载，该Web服务器必须包含支持Servlet的Java虚拟机。客户端发送请求至服务器；服务器启动并调用Servlet，Servlet根据客户端请求生成响应内容并将其传给服务器；服务器将响应返回客户端。</p>
+</li>
+<li><p>servlet就是一个组件，需要部署到servlet容器才能运行。servlet容器为servlet提供网络相关的服务：即servlet容器为将请求中的相关数据解析出来，并且封装到请求对象(request)里面，这样一来，servlet就不需要理解http协议(只需要调用request对象的相关方法即可获取数)，另外，当servlet处理请求完毕，只需要将结果写到响应对象(response)里面,servlet容器会自动将response对象中的数据打包，发送给浏览器。</p>
+</li>
+</ul>
+<h1 id="java-servlet-简单代码实现"><a href="#java-servlet-简单代码实现" class="headerlink" title="java servlet 简单代码实现"></a>java servlet 简单代码实现</h1><ul>
+<li><p>Java Servlet与CGI (Common Gateway Interface 公共网关接口)的比较:</p>
+</li>
+<li><p>与传统的CGI和许多其他类似CGI的技术相比，Java Servlet具有更高的效率，更容易使用，功能更强大，具有更好的可移植性，更节省投资。在未来的技术发展过程中，Servlet有可能彻底取代CGI。</p>
+</li>
+<li><p>在传统的CGI中，每个请求都要启动一个新的进程，如果CGI程序本身的执行时间较短，启动进程所需要的开销很可能反而超过实际执行时间。而在Servlet中，每个请求由一个轻量级的Java线程处理(而不是重量级的操作系统进程)。</p>
+</li>
+<li><p>在传统CGI中，如果有N个并发的对同一CGI程序的请求，则该CGI程序的代码在内存中重复装载了N次；而对于Servlet，处理请求的是N个线程，只需要一份Servlet类代码。在性能优化方面，Servlet也比CGI有着更多的选择。</p>
+</li>
+</ul>
+<h1 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h1><ul>
+<li>使用Servlet可以实现java程序和web服务器的交互，但是Servlet和CGI一样存在一个问题，Servlet程序在返回结果的时候必须连带HTML标签一起返回，所以负责格式显示的HTML代码和负责数据产生的Java代码混在一起了，程序员和页面编辑人员无法各自实现自己的工作，就要求java程序员必须要了解HTML显示效果。所以就有了JSP技术产生，有了JSP一个web请求的执行流程如下。</li>
+</ul>
+<p><img src="/images/tomjava6.png" alt="Alt text"></p>
+<ul>
+<li>其实JSP也是java的一个类库而已，要想写出的JSP代码能够被识别，这时候就需要一个JSP容器负责来解析。JSP代码最终会被编译成Servlet，然后再由Servlet处理请求。一个JSP页面包含了JSP规范的java代码（元素）和HTML标签（数据模板），元素则交给JSP容器处理，模板数据直接返回给客户端。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/12/Nginx基本配置/" rel="next" title="Nginx基本配置">
+                <i class="fa fa-chevron-left"></i> Nginx基本配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/20/Tomcat安装与组件/" rel="prev" title="Tomcat安装与组件">
+                Tomcat安装与组件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是java"><span class="nav-number">1.</span> <span class="nav-text">什么是java</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java-API"><span class="nav-number">2.</span> <span class="nav-text">java API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java内存结构"><span class="nav-number">3.</span> <span class="nav-text">java内存结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WEB-CGI"><span class="nav-number">4.</span> <span class="nav-text">WEB CGI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是CGI"><span class="nav-number">4.1.</span> <span class="nav-text">什么是CGI</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Serlvet与Servlet容器"><span class="nav-number">5.</span> <span class="nav-text">Serlvet与Servlet容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java-servlet-简单代码实现"><span class="nav-number">6.</span> <span class="nav-text">java servlet 简单代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSP"><span class="nav-number">7.</span> <span class="nav-text">JSP</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
