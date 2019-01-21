@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="session会话 session(会话保持) session stick:调度器 使用调度器的调度算法来解决问题，损害调度器的负载均衡效果，引入session单点即有一台服务器宕机都会造成数据的丢失。   session replication cluster (sesssion复制集群)：后端服务器组织成集群 将后端的服务器组织起来（单播，多播，广播等方式）将单个服务器的会话同步给集群中的其他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat负载均衡及会话保持">
+<meta property="og:url" content="http://yoursite.com/2019/01/22/Tomcat负载均衡及会话保持/index.html">
+<meta property="og:site_name" content="海之子">
+<meta property="og:description" content="session会话 session(会话保持) session stick:调度器 使用调度器的调度算法来解决问题，损害调度器的负载均衡效果，引入session单点即有一台服务器宕机都会造成数据的丢失。   session replication cluster (sesssion复制集群)：后端服务器组织成集群 将后端的服务器组织起来（单播，多播，广播等方式）将单个服务器的会话同步给集群中的其他">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/tom1.png">
+<meta property="og:updated_time" content="2019-01-20T12:03:39.120Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat负载均衡及会话保持">
+<meta name="twitter:description" content="session会话 session(会话保持) session stick:调度器 使用调度器的调度算法来解决问题，损害调度器的负载均衡效果，引入session单点即有一台服务器宕机都会造成数据的丢失。   session replication cluster (sesssion复制集群)：后端服务器组织成集群 将后端的服务器组织起来（单播，多播，广播等方式）将单个服务器的会话同步给集群中的其他">
+<meta name="twitter:image" content="http://yoursite.com/images/tom1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/22/Tomcat负载均衡及会话保持/"/>
+
+
+
+
+
+  <title>Tomcat负载均衡及会话保持 | 海之子</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">海之子</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Tomcat负载均衡及会话保持/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WPY">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/yy.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海之子">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Tomcat负载均衡及会话保持</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T19:43:24+08:00">
+                2019-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Tomcat负载均衡及会话保持/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat负载均衡及会话保持</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="session会话"><a href="#session会话" class="headerlink" title="session会话"></a>session会话</h1><ul>
+<li>session(会话保持)<ul>
+<li>session stick:调度器<ul>
+<li>使用调度器的调度算法来解决问题，损害调度器的负载均衡效果，引入session单点即有一台服务器宕机都会造成数据的丢失。</li>
+</ul>
+</li>
+<li>session replication cluster (sesssion复制集群)：后端服务器组织成集群<ul>
+<li>将后端的服务器组织起来（单播，多播，广播等方式）将单个服务器的会话同步给集群中的其他服务器，从而使得用户的请求被调度到任何一个服务器上得到的session都是相同的（实现调度的服务器到后端被调度的服务器之间的解耦，实现将有状态变成了无状态实现按需进行调度）</li>
+<li>劣势：每个节点都会持有集群中的所有的session信息，对内存资源的消耗非常大，同时对网络资源的占用也非常严重</li>
+<li>session server:后端服务器之后即存储服务器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果对tomcat实现负载均衡调度，一定要考虑到会话保持</li>
+</ul>
+<p>如何对tomcat实现负载均衡（ session stick:调度器）</p>
+<p><img src="/images/tom1.png" alt="Alt text"></p>
+<h1 id="使用nginx实现负载均衡"><a href="#使用nginx实现负载均衡" class="headerlink" title="使用nginx实现负载均衡"></a>使用nginx实现负载均衡</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">实验准备</span><br><span class="line">  三台主机</span><br><span class="line">    nginx_server      yum install nginx -y</span><br><span class="line">    tomcat_serverA    yum install java-11-openjdk-devel -y  &amp;&amp; yum install tomcat-admin-webapps tomcat-webapps tomcat-docs-webapp -y </span><br><span class="line">    tomcat_serverB    yum install java-11-openjdk-devel -y  &amp;&amp; yum install tomcat-admin-webapps tomcat-webapps tomcat-docs-webapp -y </span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">在两台tomcat上分别创建测试页面并定制虚拟主机</span><br><span class="line"></span><br><span class="line">tomcatA</span><br><span class="line">  ~]# mkdir /data/webapps/myapp-v0.1</span><br><span class="line">  ~]# cd /data/webapps/myapp-v0.1</span><br><span class="line">  myapp-v0.1]# mkdir classes lib WEB-INF WETA-INF</span><br><span class="line">  myapp-v0.1]#  vi index.jsp</span><br><span class="line">  &lt;%@ page language=&quot;java&quot; %&gt;</span><br><span class="line">   &lt;html&gt;</span><br><span class="line">      &lt;head&gt;&lt;title&gt;TomcatA&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">       &lt;body&gt;</span><br><span class="line">         &lt;h1&gt;&lt;font color=&quot;purple&quot;&gt;TomcatA.centos.com&lt;/font&gt;&lt;/h1&gt;</span><br><span class="line">            &lt;table align=&quot;centre&quot; border=&quot;1&quot;&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">              &lt;td&gt;Session ID&lt;/td&gt;</span><br><span class="line">            &lt;% session.setAttribute(&quot;a.com&quot;,&quot;a.com&quot;); %&gt;</span><br><span class="line">              &lt;td&gt;&lt;%= session.getId() %&gt;&lt;/td&gt;</span><br><span class="line">             &lt;/tr&gt;</span><br><span class="line">             &lt;tr&gt;</span><br><span class="line">         &lt;td&gt;Created on&lt;/td&gt;</span><br><span class="line">      &lt;td&gt;&lt;%= session.getCreationTime() %&gt;&lt;/td&gt;</span><br><span class="line">      &lt;/tr&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">   &lt;/html&gt;</span><br><span class="line"></span><br><span class="line">  webapps]# ln -sv myapp-v0.1 myapp</span><br><span class="line">   ~]# tree /data</span><br><span class="line">  /data</span><br><span class="line">  └── webapps</span><br><span class="line">     ├── myapp -&gt; myapp-v0.1</span><br><span class="line">     └── myapp-v0.1</span><br><span class="line">          ├── classes</span><br><span class="line">          ├── index.jsp</span><br><span class="line">          ├── lib</span><br><span class="line">          ├── WEB-INF</span><br><span class="line">          └── WETA-INF</span><br><span class="line">#定义虚拟主机使用别名访问</span><br><span class="line">   ~]# vim /etc/tomcat/server.xml </span><br><span class="line">   #140行</span><br><span class="line">  &lt;Context path=&quot;/myapp&quot; docBase=&quot;/data/webapps/myapp&quot; reloadable=&quot;&quot;/&gt;</span><br><span class="line"></span><br><span class="line">#打开页面管理接口（manager app和 host manager）</span><br><span class="line">  ~]# vim /etc/tomcat/tomcat-users.xml </span><br><span class="line">  &lt;tomcat-users&gt;</span><br><span class="line">  &lt;role rolename=&quot;manager-gui&quot;/&gt;</span><br><span class="line">  &lt;role rolename=&quot;admin-gui&quot;/&gt;</span><br><span class="line">  &lt;role rolename=&quot;manager-script&quot;/&gt; </span><br><span class="line">  &lt;user username=&quot;tomcat&quot; password=&quot;centos&quot; roles=&quot;manager-gui,manager-script,admin-gui,admin-script&quot;/&gt;</span><br><span class="line">  &lt;/tomcat-users&gt;</span><br><span class="line"></span><br><span class="line">  ~]# systemctl start tomcat</span><br><span class="line">  ~]# ss -tnl</span><br><span class="line"></span><br><span class="line">tomcatB</span><br><span class="line">  ~]# tree /data</span><br><span class="line">  /data</span><br><span class="line">  └── webapps</span><br><span class="line">      └── myapp-v0.1</span><br><span class="line">          ├── classes</span><br><span class="line">          ├── index.jsp</span><br><span class="line">          ├── lib</span><br><span class="line">          ├── WEB-INF</span><br><span class="line">          └── WETA-INF</span><br><span class="line">  ~]# vim /data/webapps/myapp-v0.1/index.jsp </span><br><span class="line">  &lt;%@ page language=&quot;java&quot; %&gt;</span><br><span class="line">   &lt;html&gt;</span><br><span class="line">      &lt;head&gt;&lt;title&gt;TomcatA&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">       &lt;body&gt;</span><br><span class="line">         &lt;h1&gt;&lt;font color=&quot;red&quot;&gt;TomcatB.centos.com&lt;/font&gt;&lt;/h1&gt;</span><br><span class="line">            &lt;table align=&quot;centre&quot; border=&quot;1&quot;&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">              &lt;td&gt;Session ID&lt;/td&gt;</span><br><span class="line">            &lt;% session.setAttribute(&quot;a.com&quot;,&quot;a.com&quot;); %&gt;</span><br><span class="line">              &lt;td&gt;&lt;%= session.getId() %&gt;&lt;/td&gt;</span><br><span class="line">             &lt;/tr&gt;</span><br><span class="line">             &lt;tr&gt;</span><br><span class="line">         &lt;td&gt;Created on&lt;/td&gt;</span><br><span class="line">      &lt;td&gt;&lt;%= session.getCreationTime() %&gt;&lt;/td&gt;</span><br><span class="line">      &lt;/tr&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">   &lt;/html&gt;</span><br><span class="line"></span><br><span class="line">  webapps]# ln -sv myapp-v0.1 myapp</span><br><span class="line"></span><br><span class="line">#定义虚拟主机使用别名访问</span><br><span class="line">   ~]# vim /etc/tomcat/server.xml </span><br><span class="line">   #140行</span><br><span class="line">  &lt;Context path=&quot;/myapp&quot; docBase=&quot;/data/webapps/myapp&quot; reloadable=&quot;&quot;/&gt;</span><br><span class="line"></span><br><span class="line">#打开页面管理接口（manager app和 host manager）</span><br><span class="line">  ~]# vim /etc/tomcat/tomcat-users.xml </span><br><span class="line">  &lt;tomcat-users&gt;</span><br><span class="line">  &lt;role rolename=&quot;manager-gui&quot;/&gt;</span><br><span class="line">  &lt;role rolename=&quot;admin-gui&quot;/&gt;</span><br><span class="line">  &lt;role rolename=&quot;manager-script&quot;/&gt; </span><br><span class="line">  &lt;user username=&quot;tomcat&quot; password=&quot;centos&quot; roles=&quot;manager-gui,manager-script,admin-gui,admin-script&quot;/&gt;</span><br><span class="line">  &lt;/tomcat-users&gt;</span><br><span class="line"></span><br><span class="line">  ~]# systemctl start tomcat</span><br><span class="line">  ~]# ss -tnl</span><br></pre></td></tr></table></figure>
+<h1 id="nginx完全反代tomcat"><a href="#nginx完全反代tomcat" class="headerlink" title="nginx完全反代tomcat"></a>nginx完全反代tomcat</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">使用nginx实现客户端的请求完全向后端代理</span><br><span class="line">nginx_server</span><br><span class="line">  ~]# vim /etc/nginx/nginx.conf</span><br><span class="line">  upstream tcserver &#123;</span><br><span class="line">        server 172.18.135.1:8080; #tomcat A 地址</span><br><span class="line">        server 172.18.135.5:8080; #tomcat B 地址</span><br><span class="line">        &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80 default_server;</span><br><span class="line">        listen       [::]:80 default_server;</span><br><span class="line">        server_name  _;</span><br><span class="line">        root         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">        # Load configuration files for the default server block.</span><br><span class="line">        include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">        proxy_pass http://tcserver/;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page 404 /404.html;</span><br><span class="line">            location = /40x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page 500 502 503 504 /50x.html;</span><br><span class="line">            location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">  ~]# nginx -t</span><br><span class="line">  ~]# nginx -s reload</span><br><span class="line">  ~]# ss -tnl</span><br></pre></td></tr></table></figure>
+<p>（此时是不能保持session会话,服务器认为是不同的session）</p>
+<h2 id="利用nginx的hash算法实现会话绑定"><a href="#利用nginx的hash算法实现会话绑定" class="headerlink" title="利用nginx的hash算法实现会话绑定"></a>利用nginx的hash算法实现会话绑定</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#基于一致性hash算法实现会话绑定</span><br><span class="line">nginx_server</span><br><span class="line">   upstream tcserver &#123;</span><br><span class="line">        hash $remote_addr consistent;</span><br><span class="line">        server 172.18.135.1:8080;</span><br><span class="line">        server 172.18.135.5:8080;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">  ~]# nginx -t</span><br><span class="line">  ~]# nginx -s reload</span><br></pre></td></tr></table></figure>
+<p>（怎么刷新都会是一个tomcat服务器响应，认为是一个客户端）</p>
+<p>但是这用基于hash的机制是存在劣势的，万一响应的服务器宕机则客户端则无法接收到响应</p>
+<h1 id="http实现tomcat负载均衡"><a href="#http实现tomcat负载均衡" class="headerlink" title="http实现tomcat负载均衡"></a>http实现tomcat负载均衡</h1><ul>
+<li><p>httpd也可以实现负载均衡以及会话保持，甚至支持coocki级别的会话保持</p>
+<ul>
+<li>持续支持的调度算法（lbmethod）<ul>
+<li>bytraffic:后端服务器流量大小承载调度（流量小被调度）</li>
+<li>byrequests:根据请求调度，不考虑后端服务器的繁忙程度（轮询）</li>
+<li>by business ：商业版本支持</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>参考手册：<a href="http://httpd.apache.org/docs/2.4/howto/reverse_proxy.html" target="_blank" rel="noopener">http://httpd.apache.org/docs/2.4/howto/reverse_proxy.html</a></p>
+</li>
+</ul>
+<h2 id="基于http协议反代"><a href="#基于http协议反代" class="headerlink" title="基于http协议反代"></a>基于http协议反代</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#httpd做tomcat前端调度支持的协议（http\ajp 8009）</span><br><span class="line">#nginx做tomcat前端调度支持的协议（http）</span><br><span class="line">httpd_server httpd协议</span><br><span class="line"></span><br><span class="line">  ~]# vim /etc/httpd/conf.d/tomcat-cluster.conf</span><br><span class="line"></span><br><span class="line">  &lt;proxy balancer://tcsrvs&gt;</span><br><span class="line">  BalancerMember http://172.18.135.1:8080 loadfactor=2  #定义负载因子如果不定义默认都为1</span><br><span class="line">  BalancerMember http://172.18.135.5:8080</span><br><span class="line">  ProxySet lbmethod=byrequests</span><br><span class="line">  &lt;/Proxy&gt;</span><br><span class="line"></span><br><span class="line">  &lt;VirtualHost *:80&gt;</span><br><span class="line">        ServerName www.centos.com    #nginx主机名   </span><br><span class="line">        ProxyVia On</span><br><span class="line">        ProxyRequests Off</span><br><span class="line">        ProxyPreserveHost On</span><br><span class="line">  &lt;Proxy *&gt;</span><br><span class="line">        Require all granted</span><br><span class="line">  &lt;/Proxy&gt;</span><br><span class="line">        ProxyPass / balancer://tcsrvs/</span><br><span class="line">        ProxyPassReverse / balancer://tcsrvs/</span><br><span class="line">  &lt;Location /&gt;</span><br><span class="line">        Require all granted</span><br><span class="line">  &lt;/Location&gt;</span><br><span class="line">  &lt;/VirtualHost&gt;</span><br><span class="line"></span><br><span class="line">  ~]# httpd -t</span><br><span class="line">  ~]# systemctl start httpd</span><br></pre></td></tr></table></figure>
+<p>（此时保证不了会话绑定）</p>
+<h2 id="基于ajp协议反代"><a href="#基于ajp协议反代" class="headerlink" title="基于ajp协议反代"></a>基于ajp协议反代</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">httpd_server ajp协议</span><br><span class="line">		&lt;proxy balancer://tcsrvs&gt;</span><br><span class="line">					BalancerMember ajp://172.18.100.67:8009</span><br><span class="line">					BalancerMember ajp://172.18.100.68:8009</span><br><span class="line">					ProxySet lbmethod=byrequests</span><br><span class="line">				&lt;/Proxy&gt;</span><br><span class="line"></span><br><span class="line">				&lt;VirtualHost *:80&gt;</span><br><span class="line">					ServerName lb.magedu.com</span><br><span class="line">					ProxyVia On</span><br><span class="line">					ProxyRequests Off</span><br><span class="line">					ProxyPreserveHost On</span><br><span class="line">					&lt;Proxy *&gt;</span><br><span class="line">						Require all granted</span><br><span class="line">					&lt;/Proxy&gt;</span><br><span class="line">					ProxyPass / balancer://tcsrvs/</span><br><span class="line">					ProxyPassReverse / balancer://tcsrvs/</span><br><span class="line">					&lt;Location /&gt;</span><br><span class="line">						Require all granted</span><br><span class="line">					&lt;/Location&gt;</span><br><span class="line">					&lt;Location /balancer-manager&gt;</span><br><span class="line">						SetHandler balancer-manager</span><br><span class="line">						ProxyPass !</span><br><span class="line">						Require all granted</span><br><span class="line">					&lt;/Location&gt;</span><br><span class="line">				&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="会话粘性（httpd基于cookie的会话粘性）"><a href="#会话粘性（httpd基于cookie的会话粘性）" class="headerlink" title="会话粘性（httpd基于cookie的会话粘性）"></a>会话粘性（httpd基于cookie的会话粘性）</h2><ul>
+<li>基于cookie会话粘性实现会话保持<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">#httpd不支持客户端地址的粘性</span><br><span class="line">#httpd是根据客户端的cookie做会话粘性</span><br><span class="line">httpd服务保持会话粘性：</span><br><span class="line">  #当服务器第一次收到客户端的请求给他设定cookie时候，在这个cookie中把原有值之外额外设置添加一个对应的键（键名可以自己定义），值则是调度器第一次挑选要负载用户请求的后端服务器的名称，随后用户每后来的访问一定默认会带着cookie,而人为定义之后cookie之中是带有人为设置的键和值的对应信息的（不是基于原ip绑定，而是实现人为的会话中的cookie中插入的键值一致性实现的）</span><br><span class="line"></span><br><span class="line">Header add Set-Cookie &quot;ROUTEID=.%&#123;BALANCER_WORKER_ROUTE&#125;e; path=/&quot; env=BALANCER_ROUTE_CHANGED</span><br><span class="line"></span><br><span class="line">Header add Set-Cookie #给客户端设置的cookie</span><br><span class="line">  ROUTEID= #键名</span><br><span class="line">  .%&#123;BALANCER_WORKER_ROUTE&#125;e  #调度服务器挑选出后端服务器</span><br><span class="line">  path= #指定会话cookie的适用范围</span><br><span class="line"></span><br><span class="line">编辑调度器httpd_server设置会话粘性</span><br><span class="line">  ~]# vim /etc/httpd/conf.d/tomcat-cluster.conf </span><br><span class="line">  Header add Set-Cookie &quot;ROUTEID=.%&#123;BALANCER_WORKER_ROUTE&#125;e; path=/&quot; env=BALANCER_ROUTE_CHANGED</span><br><span class="line">  &lt;proxy balancer://tcsrvs&gt;BalancerMember http://172.18.135.1:8080 loadfactor=2 route=TomcatA </span><br><span class="line">  BalancerMember http://172.18.135.5:8080 route=TomcatA loadfactor=1</span><br><span class="line">  ProxySet lbmethod=byrequests</span><br><span class="line">  ProxySet stickysession=ROUTEID</span><br><span class="line">  &lt;/Proxy&gt;</span><br><span class="line"></span><br><span class="line">  &lt;VirtualHost *:80&gt;</span><br><span class="line">        ServerName www.centos.com</span><br><span class="line">        ProxyVia On</span><br><span class="line">        ProxyRequests Off</span><br><span class="line">        ProxyPreserveHost On</span><br><span class="line">  &lt;Proxy *&gt;</span><br><span class="line">        Require all granted</span><br><span class="line">  &lt;/Proxy&gt;</span><br><span class="line">        ProxyPass / balancer://tcsrvs/</span><br><span class="line">        ProxyPassReverse / balancer://tcsrvs/</span><br><span class="line">  &lt;Location /&gt;</span><br><span class="line">        Require all granted</span><br><span class="line">  &lt;/Location&gt;</span><br><span class="line">  &lt;/VirtualHost&gt;</span><br><span class="line"></span><br><span class="line">  ~]# httpd -t #检查语法</span><br><span class="line">  ~]# systemctl restart httpd</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>（已经实现基于cookie的会话粘性。可以使用Chrome开发者模式F12查看）</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/22/Tomcat反代/" rel="next" title="Tomcat反代">
+                <i class="fa fa-chevron-left"></i> Tomcat反代
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/yy.jpg"
+                alt="WPY" />
+            
+              <p class="site-author-name" itemprop="name">WPY</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#session会话"><span class="nav-number">1.</span> <span class="nav-text">session会话</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用nginx实现负载均衡"><span class="nav-number">2.</span> <span class="nav-text">使用nginx实现负载均衡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx完全反代tomcat"><span class="nav-number">3.</span> <span class="nav-text">nginx完全反代tomcat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用nginx的hash算法实现会话绑定"><span class="nav-number">3.1.</span> <span class="nav-text">利用nginx的hash算法实现会话绑定</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#http实现tomcat负载均衡"><span class="nav-number">4.</span> <span class="nav-text">http实现tomcat负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于http协议反代"><span class="nav-number">4.1.</span> <span class="nav-text">基于http协议反代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于ajp协议反代"><span class="nav-number">4.2.</span> <span class="nav-text">基于ajp协议反代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#会话粘性（httpd基于cookie的会话粘性）"><span class="nav-number">4.3.</span> <span class="nav-text">会话粘性（httpd基于cookie的会话粘性）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WPY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
