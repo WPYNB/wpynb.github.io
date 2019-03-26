@@ -102,7 +102,7 @@
 <meta property="og:image" content="http://yoursite.com/images/tomhot14.png">
 <meta property="og:image" content="http://yoursite.com/images/tomhot15.jpg">
 <meta property="og:image" content="http://yoursite.com/images/tomhot16.png">
-<meta property="og:updated_time" content="2019-01-20T12:03:34.902Z">
+<meta property="og:updated_time" content="2019-03-26T06:13:50.696Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tomcat热部署">
 <meta name="twitter:description" content="默认界面分析 点击接口进入：但是需要认证进入，点击取消可以查看如何授权用户访问此管理接口   授权用户一下几种权限： manager-gui - allows access to the HTML GUI and the status pages（授权的用户可以通过web界面访问） manager-script - allows access to the text interface and t">
@@ -381,7 +381,7 @@
 </ul>
 </li>
 </ul>
-<h1 id="部署-manager"><a href="#部署-manager" class="headerlink" title="部署(manager)"></a>部署(manager)</h1><p>方法一：<br>例：授权账号可以访问web界面的manager的控制接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~]# vim /etc/tomcat/tomcat-users.xml </span><br><span class="line">  &lt;tomcat-users&gt;</span><br><span class="line">  &lt;role rolename=&quot;manager-gui&quot;/&gt; --&gt;</span><br><span class="line">  &lt;user username=&quot;tomcat&quot; password=&quot;centos&quot; roles=&quot;manager-gui,manager-script&quot;/&gt;</span><br><span class="line">  &lt;/tomcat-users&gt;</span><br><span class="line"></span><br><span class="line">#此文件是tomcat启动时加载到内存中的所以要重新启动tomcat</span><br><span class="line">~]# systemctl restart tomcat</span><br></pre></td></tr></table></figure></p>
+<h1 id="部署-manager"><a href="#部署-manager" class="headerlink" title="部署(manager)"></a>部署(manager)</h1><p>方法一：<br>例：授权账号可以访问web界面的manager的控制接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~]# vim /etc/tomcat/tomcat-users.xml </span><br><span class="line">&lt;tomcat-users&gt;</span><br><span class="line">&lt;role rolename=&quot;manager-gui&quot;/&gt;</span><br><span class="line">&lt;user username=&quot;tomcat&quot; password=&quot;centos&quot; roles=&quot;manager-gui&quot;/&gt;</span><br><span class="line">&lt;/tomcat-users&gt;</span><br><span class="line"></span><br><span class="line">#此文件是tomcat启动时加载到内存中的所以要重新启动tomcat</span><br><span class="line">~]# systemctl restart tomcat</span><br></pre></td></tr></table></figure></p>
 <p>已经授权账号，登陆查看</p>
 <p><img src="/images/tomhot4.jpg" alt="Alt text"></p>
 <ul>
