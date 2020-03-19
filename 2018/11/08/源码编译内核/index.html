@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="海之子">
 <meta property="og:description" content="1.解压内核包,进入解压好的文件12[root@centos7 ~]#tar -xvf linux-4.18.13.tar.xz[root@centos7 ~]#cd linux-4.18.13/ 2.因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为.config。并执行make menuconfig进入菜单选项自定义选项安装。12[root@centos7 lin">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-13T05:11:58.996Z">
+<meta property="og:updated_time" content="2020-03-19T04:47:36.624Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="源码编译内核">
 <meta name="twitter:description" content="1.解压内核包,进入解压好的文件12[root@centos7 ~]#tar -xvf linux-4.18.13.tar.xz[root@centos7 ~]#cd linux-4.18.13/ 2.因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为.config。并执行make menuconfig进入菜单选项自定义选项安装。12[root@centos7 lin">
@@ -355,7 +355,7 @@
         <h1 id="1-解压内核包-进入解压好的文件"><a href="#1-解压内核包-进入解压好的文件" class="headerlink" title="1.解压内核包,进入解压好的文件"></a>1.解压内核包,进入解压好的文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]#tar -xvf linux-4.18.13.tar.xz</span><br><span class="line">[root@centos7 ~]#cd linux-4.18.13/</span><br></pre></td></tr></table></figure>
 <h1 id="2-因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为-config。并执行make-menuconfig进入菜单选项自定义选项安装。"><a href="#2-因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为-config。并执行make-menuconfig进入菜单选项自定义选项安装。" class="headerlink" title="2.因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为.config。并执行make menuconfig进入菜单选项自定义选项安装。"></a>2.因为源码编译内核选项参数过多，我们直接拷贝现有内核文件到解压好文件目录下，命名为.config。并执行make menuconfig进入菜单选项自定义选项安装。</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 linux-4.18.13]#cp /boot/config-3.10.0-862.el7.x86_64 /root/liunx-4.18.13/.config</span><br><span class="line">[root@centos7 linux-4.18.13]#make menuconfig #自定义安装选项</span><br></pre></td></tr></table></figure>
 <h1 id="3-安装开发包组工具及依赖包"><a href="#3-安装开发包组工具及依赖包" class="headerlink" title="3.安装开发包组工具及依赖包"></a>3.安装开发包组工具及依赖包</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 linux-4.18.13]#yum install &quot;Development tools&quot;  # 开发包组工具</span><br><span class="line">[root@centos7 linux-4.18.13]#yum install ncurses-devel # 运行make menuconfig所依赖包</span><br><span class="line">[root@centos7 linux-4.18.13]#yum install elfutils-libelf-devel </span><br><span class="line">[root@centos7 linux-4.18.13]#yum install openssl-devel</span><br></pre></td></tr></table></figure>
-<h1 id="4-开始编译安装"><a href="#4-开始编译安装" class="headerlink" title="4.开始编译安装"></a>4.开始编译安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 linux-4.18.13]#make -j 4  #4为4颗CPU</span><br><span class="line">[root@centos7 linux-4.18.13]#make modules_install  #安装生成模块信息</span><br><span class="line">[root@centos7 linux-4.18.13]#make install  #安装内核相关文件。</span><br></pre></td></tr></table></figure>
+<h1 id="4-开始编译安装"><a href="#4-开始编译安装" class="headerlink" title="4.开始编译安装"></a>4.开始编译安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 linux-4.18.13]#make -j 4  #4为4核CPU。</span><br><span class="line">[root@centos7 linux-4.18.13]#make modules_install  #安装生成模块信息</span><br><span class="line">[root@centos7 linux-4.18.13]#make install  #安装内核相关文件。</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -538,7 +538,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
